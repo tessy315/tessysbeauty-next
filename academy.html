@@ -175,61 +175,37 @@
   
 </div>
 
-
-      <!-- Step 2 -->
-      <div id="step-2" class="hidden">
-        <h3  class="text-2xl font-bold mb-2">2. Information Paiement</h3>
-        <p class="mt-2">Options : MonCash (36 21 73 00, Nom: Tessy Jean) ou Sogebank (HTG: 901227090 · USD: 911092419).</p>
-        <img src="https://i.ibb.co/rGSkFhnf/Tessy-Moncash-Qr-Code.png" alt="QR Code MonCash" class="mx-auto my-4 max-w-xs md:max-w-sm rounded-md shadow"/>
-        <div class="flex justify-between mt-4">
-          <button id="step2-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">Étape précédente</button>
-          <button id="step2-next" class="px-4 py-2 bg-pink-600 text-white rounded-none hover:bg-pink-700">Étape suivante</button>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div id="step-3" class="hidden">
-  <h3 class="text-2xl font-bold mb-2">3. Soumettre preuve de paiement</h3>
-  <p class="mb-4 text-gray-600">Effectuez votre paiement puis soumettez votre preuve via WhatsApp.</p>
-
-  <!-- Bouton WhatsApp toujou vèt epi aktif -->
-  <a id="proof-btn" href="https://wa.me/50939310139" target="_blank" rel="noopener noreferrer"
-     class="inline-block px-6 py-3 bg-green-600 text-white rounded-none cursor-pointer mb-2">
-     Soumettre preuve de paiement (WhatsApp)
-  </a>
-  
+   <!-- Step 2 -->
+<div id="step-2" class="hidden">
+  <h3 class="text-2xl font-bold mb-2">2. Paiement</h3>
+  <p class="mt-2 text-gray-600">
+    Cliquez sur le bouton ci-dessous pour payer votre inscription.
+  </p>
+  <button id="pay-btn" class="px-6 py-3 bg-pink-600 text-white rounded-none hover:bg-pink-700 mt-4">
+    Payer maintenant
+  </button>
+  <p id="payment-msg" class="text-sm italic text-gray-500 mt-2"></p>
   <div class="flex justify-between mt-4">
-    <!-- Bouton précédent -->
-    <button id="step3-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">Étape précédente</button>
-
-    <!-- Bouton étape suivante toujou wòz epi aktif -->
-    <button id="step3-next" class="px-4 py-2 bg-pink-600 text-white rounded-none cursor-pointer">
-      Étape suivante
+    <button id="step2-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">
+      Étape précédente
     </button>
   </div>
 </div>
 
+<!-- Step 3 -->
+<div id="step-3" class="hidden">
+  <h3 class="text-2xl font-bold mb-2">3. Accès aux cours</h3>
+  <p id="course-access-msg" class="text-gray-600 mb-4">
+    Votre accès sera automatiquement activé après paiement.
+  </p>
+  <a id="dashboard-link" href="/courses" target="_blank"
+     class="hidden px-6 py-3 bg-pink-600 text-white rounded-none hover:bg-pink-700">
+     Accéder aux cours
+  </a>
+</div>
 
-      <!-- Step 4 -->
-      <div id="step-4" class="hidden">
-        <h3 class="text-2xl font-bold mb-2">4. Accéder au Google Classroom</h3>
-        <p class="mb-4 text-gray-600">Un code PIN vous sera donné sur WhatsApp après validation de votre paiement.</p>
-        <input type="text" id="pin-input" placeholder="Entrez le PIN reçu"
-               class="px-4 py-2 border rounded-none mb-2 w-full"/>
-        <button id="pin-validate" class="px-6 py-3 bg-pink-600 text-white rounded-none shadow hover:bg-pink-700 mb-2">
-          Valider PIN
-        </button>
-        <p id="pin-msg" class="text-sm italic text-gray-500 mb-2"></p>
-        <a id="classroom-link" href="https://classroom.google.com" target="_blank"
-           class="hidden px-6 py-3 bg-pink-600 text-white rounded-none shadow hover:bg-pink-700">
-           Accéder au Google Classroom
-        </a>
-        <div class="flex justify-between mt-4">
-          <button id="step4-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">Étape précédente</button>
-        </div>
-      </div>
 
-      <!-- Step 5 fixe -->
+      <!-- Step 4 fixe -->
       <div id="step-5" class="mt-16 text-left">
         <h3 class="text-3xl font-semibold text-pink-600 mb-8 text-center">Ressources & Infos</h3>
 
