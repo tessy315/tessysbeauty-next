@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Certificat | Tessy’s Beauty Academy</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Nunito', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-pink-100 min-h-screen flex items-center justify-center px-4">
+
+<div class="bg-white p-10 rounded-none shadow-sm max-w-3xl w-full text-center">
+
+  <h1 class="text-3xl font-bold text-pink-700 mb-2">
+    🎓 Certificat de Réussite
+  </h1>
+
+  <p class="text-gray-600 mb-8">
+    Tessy’s Beauty Academy certifie que
+  </p>
+
+  <p id="studentName"
+     class="text-2xl font-semibold text-gray-800 mb-4">
+     Étudiant(e)
+  </p>
+
+  <p class="text-gray-600 mb-6">
+    a complété avec succès la formation
+  </p>
+
+  <p class="text-xl font-semibold mb-6">
+    Maquillage Professionnel
+  </p>
+
+  <div class="flex justify-between items-center mt-10 text-sm text-gray-600">
+    <div>
+      <p>Date</p>
+      <p id="date"></p>
+    </div>
+
+    <div>
+      <p>ID Certificat</p>
+      <p id="certId" class="font-mono"></p>
+    </div>
+  </div>
+
+  <button class="mt-10 bg-pink-600 text-white px-8 py-3 rounded-none hover:bg-pink-700">
+    Télécharger (PDF bientôt)
+  </button>
+
+</div>
+
+<script>
+  // STATIC FOR NOW → WILL COME FROM D1
+  const student = "Étudiant(e)";
+  const certId = "TBA-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+  const today = new Date().toLocaleDateString("fr-FR");
+
+  document.getElementById("studentName").textContent = student;
+  document.getElementById("certId").textContent = certId;
+  document.getElementById("date").textContent = today;
+
+  // Later:
+  // save certId to D1
+  // generate PDF via Worker
+</script>
+
+</body>
+</html>
