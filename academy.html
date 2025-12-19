@@ -162,63 +162,38 @@
 
     <div class="space-y-8 text-left max-w-3xl mx-auto">
 
-      <!-- Step 1 -->
-     
-<div id="step-1" class="step"> 
-  <h3 class="text-xl font-semibold mb-4">1. Formulaire d'inscription</h3>
-  
-  <!-- Bouton ouvri fòm -->
-  <button id="open-form-btn" 
-          class="px-4 py-2 bg-blue-500 text-white rounded-none mt-2 shadow-sm hover:bg-blue-600 transition">
-    Ouvrir le formulaire d’inscription
-  </button>
-  
-</div>
+     <!-- Step 1: Open Registration Form -->
+    <div id="step-1" class="step">
+      <h3 class="text-xl font-semibold mb-4">1. Formulaire d'inscription</h3>
+      <button id="open-form-btn" class="px-4 py-2 bg-blue-500 text-white rounded-none shadow hover:bg-blue-600 transition">
+        Ouvrir le formulaire d’inscription
+      </button>
+    </div>
 
- <!-- Step 2: Payment -->
-<div id="step-2" class="hidden">
-  <h3 class="text-2xl font-bold mb-4">2. Paiement</h3>
-  <p class="mb-4 text-gray-600">
-    Choisissez votre mode de paiement pour accéder à votre formation :
-  </p>
+    <!-- Step 2: Payment Options -->
+    <div id="step-2" class="hidden">
+      <h3 class="text-2xl font-bold mb-2">2. Paiement</h3>
+      <p class="mb-4 text-gray-600">Choisissez une option de paiement :</p>
 
-  <!-- MonCash Sandbox -->
-  <button id="pay-moncash" 
-          class="w-full mb-4 px-6 py-3 bg-green-600 text-white rounded-none hover:bg-green-700 transition">
-    Payer avec MonCash (Sandbox)
-  </button>
+      <div class="flex flex-col md:flex-row gap-4">
+        <button id="pay-moncash" class="px-6 py-3 bg-green-600 text-white rounded-none shadow hover:bg-green-700">MonCash Sandbox</button>
+        <button id="pay-stripe" class="px-6 py-3 bg-purple-600 text-white rounded-none shadow hover:bg-purple-700">Stripe Sandbox</button>
+      </div>
 
-  <!-- Stripe Sandbox -->
-  <button id="pay-stripe" 
-          class="w-full mb-4 px-6 py-3 bg-blue-600 text-white rounded-none hover:bg-blue-700 transition">
-    Payer avec Stripe (Sandbox)
-  </button>
+      <p id="payment-msg" class="mt-4 text-gray-600"></p>
+    </div>
 
-  <!-- Message -->
-  <p id="payment-msg" class="text-sm italic text-gray-500 mb-2"></p>
-
-  <div class="flex justify-between mt-4">
-    <button id="step2-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">Étape précédente</button>
-  </div>
-</div>
-
-<!-- Step 3: Course / Dashboard Access -->
-<div id="step-3" class="hidden">
-  <h3 class="text-2xl font-bold mb-4">3. Accès aux cours</h3>
-  <p id="course-access-msg" class="mb-4 text-gray-600">
-    Une fois le paiement confirmé, vous pourrez accéder à vos cours ici :
-  </p>
-
-  <!-- Dashboard link -->
-  <a id="dashboard-link" href="/courses" target="_blank"
-     class="hidden inline-block px-6 py-3 bg-pink-600 text-white rounded-none hover:bg-pink-700 transition">
-     Accéder à mon tableau de bord
-  </a>
-
-  <div class="flex justify-between mt-4">
-    <button id="step3-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">Étape précédente</button>
-  </div>
-</div>
+    <!-- Step 3: Confirmation / Dashboard Access -->
+    <div id="step-3" class="hidden">
+      <h3 class="text-2xl font-bold mb-2">3. Accès au Tableau de Bord</h3>
+      <p class="mb-4 text-gray-600">Après confirmation du paiement, accédez à votre tableau de bord :</p>
+      <a id="dashboard-link" href="/dashboard.html" target="_blank" class="hidden px-6 py-3 bg-pink-600 text-white rounded-none shadow hover:bg-pink-700">
+        Accéder au Dashboard
+      </a>
+      <div class="flex justify-between mt-4">
+        <button id="step3-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">Étape précédente</button>
+      </div>
+    </div>
 
 
 
