@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Examen | Tessy’s Beauty Academy</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Nunito', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-pink-50 min-h-screen">
+
+<!-- HEADER -->
+<header class="bg-white shadow-sm fixed top-0 w-full z-50">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <span class="text-pink-700 font-semibold text-lg">
+      📝 Examen final – Maquillage professionnel
+    </span>
+
+    <span id="timer" class="text-sm font-semibold text-gray-700">
+      ⏱ 60:00
+    </span>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="pt-24 max-w-3xl mx-auto px-4 pb-16">
+
+  <!-- QUIZ BOX -->
+  <div class="bg-white p-6 rounded-none shadow-sm">
+
+    <div id="quiz-container"></div>
+
+    <!-- NAVIGATION -->
+    <div class="flex justify-between mt-6">
+      <button id="prevBtn"
+              class="px-4 py-2 bg-gray-300 text-gray-700 rounded-none disabled:opacity-50"
+              disabled>
+        ← Précédent
+      </button>
+
+      <button id="nextBtn"
+              class="px-4 py-2 bg-pink-600 text-white rounded-none hover:bg-pink-700">
+        Suivant →
+      </button>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-pink-600 text-white text-center py-6 px-4">
+  <p class="text-sm">
+    © 2025 Tessy’s Beauty Academy
+  </p>
+</footer>
+
+<!-- QUIZ ENGINE -->
+<script>
+/* ==========================
+   QUIZ DATA (STATIC FOR NOW)
+   ========================== */
+const quiz = [
+  {
+    question: "Quel est le premier principe du maquillage professionnel ?",
+    options: [
+      "Choisir des couleurs vives",
+      "Respecter l’hygiène",
+      "Suivre la mode",
+      "Utiliser des produits chers"
+    ],
+    answer: 1
+  },
+  {
+    question: "Quel outil est utilisé pour appliquer le fond de teint ?",
+    options: [
+      "Pinceau plat",
+      "Pince à épiler",
+      "Brosse à sourcils",
+      "Crayon"
+    ],
+    answer: 0
+  },
+  {
+    question: "Pourquoi analyser la morphologie du visage ?",
+    options: [
+      "Pour choisir les bijoux",
+      "Pour adapter le maquillage",
+      "Pour changer la forme du visage",
+      "Pour suivre une tendance"
+    ],
+    answer: 1
+  }
+];
+
+/* ==========================
+   STATE
+   ========================== */
+let current = 0;
+let score = 0;
+let answers = [];
+
+/* ==========================
+   TIMER (60 MIN)
+   ========================== */
+let time = 60 * 60;
+const timerEl = document.getElementById("timer");
+
+const countdown = setInterval(() => {
+  time--;
+  const min = String(Math.floor(time / 60)).padStart(2, "0");
+  const sec = String(time % 60).padStart(2, "0");
+  timerEl.textContent = `⏱ ${min}:${sec}`;
+
+  if (time <= 0) {
+    clearInterval(countdown);
+    submitQuiz();
+  }
+}, 1000);
+
+/* ==========================
+   RENDER QUESTION
+   ========================== */
+function renderQuestion() {
+  const q = quiz[current];
+
+  document.getElementById("quiz-container").innerHTML = `
+    <h2 class="text-lg font-semibold mb-4">
+      Question ${current + 1} / ${quiz.length}
+    </h2>
+
+    <p class="mb-4 text-gray-800">${q.question}</p>
+
+    <div class="space-y-2">
+      ${q.options.map((opt, i) => `
+        <label class="block border p-3 rounded-none cursor-pointer hover:bg-pink-50">
+          <input type="radio" name="option" value="${i}"
+            ${answers[current] === i ? "checked" : ""}>
+          ${opt}
+        </label>
+      `).join("")}
+    </div>
+  `;
+
+  document.getElementById("prevBtn").disabled = current === 0;
+  document.getElementById("nextBtn").textContent =
+    current === quiz.length - 1 ? "Soumettre" : "Suivant →";
+}
+
+/* ==========================
+   NAVIGATION
+   ========================== */
+document.getElementById("nextBtn").onclick = () => {
+  const selected = document.querySelector("input[name='option']:checked");
+  if (!selected) return alert("Veuillez choisir une réponse.");
+
+  answers[current] = parseInt(selected.value);
+
+  if (current === quiz.length - 1) {
+    submitQuiz();
+  } else {
+    current++;
+    renderQuestion();
+  }
+};
+
+document.getElementById("prevBtn").onclick = () => {
+  current--;
+  renderQuestion();
+};
+
+/* ==========================
+   SUBMIT
+   ========================== */
+function submitQuiz() {
+  clearInterval(countdown);
+
+  score = quiz.reduce((acc, q, i) =>
+    acc + (answers[i] === q.answer ? 1 : 0), 0);
+
+  const percent = Math.round((score / quiz.length) * 100);
+  const passed = percent >= 70;
+
+  document.body.innerHTML = `
+    <div class="min-h-screen flex items-center justify-center bg-pink-50 px-4">
+      <div class="bg-white p-8 rounded-none shadow-sm text-center max-w-md w-full">
+        <h1 class="text-2xl font-bold mb-4">
+          ${passed ? "🎉 Félicitations !" : "❌ Échec"}
+        </h1>
+
+        <p class="text-gray-700 mb-2">
+          Score : <strong>${percent}%</strong>
+        </p>
+
+        <p class="mb-6 text-gray-600">
+          ${passed
+            ? "Vous avez réussi l’examen."
+            : "Vous n’avez pas atteint le score requis (70%)."}
+        </p>
+
+        ${passed ? `
+          <a href="/courses/dashboard.html"
+             class="inline-block bg-pink-600 text-white px-6 py-2 rounded-none hover:bg-pink-700">
+            Accéder au certificat
+          </a>
+        ` : `
+          <a href="/courses/quiz.html"
+             class="inline-block bg-gray-400 text-white px-6 py-2 rounded-none">
+            Recommencer
+          </a>
+        `}
+      </div>
+    </div>
+  `;
+}
+
+renderQuestion();
+</script>
+
+</body>
+</html>
