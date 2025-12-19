@@ -175,38 +175,55 @@
   
 </div>
 
-   <!-- Step 2 -->
+ <!-- Step 2: Payment -->
 <div id="step-2" class="hidden">
-  <h3 class="text-2xl font-bold mb-2">2. Paiement</h3>
-  <p class="mt-2 text-gray-600">
-    Cliquez sur le bouton ci-dessous pour payer votre inscription.
+  <h3 class="text-2xl font-bold mb-4">2. Paiement</h3>
+  <p class="mb-4 text-gray-600">
+    Choisissez votre mode de paiement pour accéder à votre formation :
   </p>
-  <button id="pay-btn" class="px-6 py-3 bg-pink-600 text-white rounded-none hover:bg-pink-700 mt-4">
-    Payer maintenant
+
+  <!-- MonCash Sandbox -->
+  <button id="pay-moncash" 
+          class="w-full mb-4 px-6 py-3 bg-green-600 text-white rounded-none hover:bg-green-700 transition">
+    Payer avec MonCash (Sandbox)
   </button>
-  <p id="payment-msg" class="text-sm italic text-gray-500 mt-2"></p>
+
+  <!-- Stripe Sandbox -->
+  <button id="pay-stripe" 
+          class="w-full mb-4 px-6 py-3 bg-blue-600 text-white rounded-none hover:bg-blue-700 transition">
+    Payer avec Stripe (Sandbox)
+  </button>
+
+  <!-- Message -->
+  <p id="payment-msg" class="text-sm italic text-gray-500 mb-2"></p>
+
   <div class="flex justify-between mt-4">
-    <button id="step2-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">
-      Étape précédente
-    </button>
+    <button id="step2-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">Étape précédente</button>
   </div>
 </div>
 
-<!-- Step 3 -->
+<!-- Step 3: Course / Dashboard Access -->
 <div id="step-3" class="hidden">
-  <h3 class="text-2xl font-bold mb-2">3. Accès aux cours</h3>
-  <p id="course-access-msg" class="text-gray-600 mb-4">
-    Votre accès sera automatiquement activé après paiement.
+  <h3 class="text-2xl font-bold mb-4">3. Accès aux cours</h3>
+  <p id="course-access-msg" class="mb-4 text-gray-600">
+    Une fois le paiement confirmé, vous pourrez accéder à vos cours ici :
   </p>
+
+  <!-- Dashboard link -->
   <a id="dashboard-link" href="/courses" target="_blank"
-     class="hidden px-6 py-3 bg-pink-600 text-white rounded-none hover:bg-pink-700">
-     Accéder aux cours
+     class="hidden inline-block px-6 py-3 bg-pink-600 text-white rounded-none hover:bg-pink-700 transition">
+     Accéder à mon tableau de bord
   </a>
+
+  <div class="flex justify-between mt-4">
+    <button id="step3-prev" class="px-4 py-2 bg-gray-300 rounded-none hover:bg-gray-400">Étape précédente</button>
+  </div>
 </div>
 
 
+
       <!-- Step 4 fixe -->
-      <div id="step-5" class="mt-16 text-left">
+      <div id="step-4" class="mt-16 text-left">
         <h3 class="text-3xl font-semibold text-pink-600 mb-8 text-center">Ressources & Infos</h3>
 
        <!-- Vidéo d’Inscription et Paiement -->
