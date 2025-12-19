@@ -1,5 +1,5 @@
 // ----------------------------------------
-// ACADEMY.JS 
+// ACADEMY.JS - FULL AUTOMATED FLOW
 // ----------------------------------------
 
 function $(id) { return document.getElementById(id); }
@@ -8,152 +8,123 @@ function on(el, event, fn) { if (el) el.addEventListener(event, fn); }
 document.addEventListener("DOMContentLoaded", async () => {
 
   // ----------------------------------------
-  // SYSTEME ETAP + PROGRESS BAR
+  // STEP MANAGEMENT + PROGRESS BAR
   // ----------------------------------------
-  const steps = ["step-1", "step-2", "step-3", "step-4"];
+  const steps = ["step-1", "step-2", "step-3"];
   const progressBar = $("progress-bar");
 
   function showStep(step) {
     steps.forEach((id, index) => {
       const el = $(id);
       if (!el) return;
-
-      if (index + 1 === step) {
-        el.classList.remove("hidden");     // montre ETAP la
-      } else {
-        el.classList.add("hidden");        // kache lòt yo
-      }
+      if (index + 1 === step) el.classList.remove("hidden");
+      else el.classList.add("hidden");
     });
 
-    // MAJ PROGRESS BAR
-    const percent =
-      step === 1 ? 16.66 :
-      step === 2 ? 33.33 :
-      step === 3 ? 66.66 :
-      step === 4 ? 100 : 0;
-
+    const percent = step === 1 ? 33.33 : step === 2 ? 66.66 : 100;
     if (progressBar) progressBar.style.width = percent + "%";
   }
 
-  // ETAP INISYAL SUIVAN URL + FORM SUBMIT
+  // Start step
   let startStep = 1;
   const urlParams = new URLSearchParams(window.location.search);
   const stepParam = urlParams.get("step");
-
-  if (stepParam === "2" || localStorage.getItem("formSubmitted") === "1") {
-    startStep = 2;
-  }
+  if (stepParam === "2" || localStorage.getItem("formSubmitted") === "1") startStep = 2;
+  if (urlParams.get("payment") === "success") startStep = 3;
 
   showStep(startStep);
 
-
   // ----------------------------------------
-  // NAVIGATION — BOUTON PRECEDENT / SUIVANT
+  // STEP NAVIGATION
   // ----------------------------------------
   on($("step2-prev"), "click", () => showStep(1));
-  on($("step2-next"), "click", () => showStep(3));
-  on($("step3-prev"), "click", () => showStep(2));
-  on($("step3-next"), "click", () => showStep(4));
-  on($("step4-prev"), "click", () => showStep(3));
-
 
   // ----------------------------------------
-  // STEP 1 — OUVRIR FORMULAIRE
+  // STEP 1 - FORM SUBMISSION
   // ----------------------------------------
-  const openFormBtn = $("open-form-btn");
-  if (openFormBtn) {
-    on($("open-form-btn"), "click", () => {
-  window.location.href = "https://www.tessysbeauty.com/formulaire";
-});
-  }
+  const form = $("academy-form");
+  if (form) {
+    on(form, "submit", async (e) => {
+      e.preventDefault();
 
+      const formData = {
+        nom: $("nom").value,
+        prenom: $("prenom").value,
+        adresse: $("adresse").value,
+        email: $("email").value,
+        sexe: $("sexe").value,
+        telephone: $("telephone").value,
+        experience: form.querySelector('input[name="experience"]:checked')?.value || "",
+        source: Array.from(form.querySelectorAll('input[name="source[]"]:checked')).map(c => c.value),
+        profession: $("profession").value,
+        attentes: $("attentes").value,
+        engagement: form.querySelector('input[name="engagement"]')?.checked || false
+      };
 
-  // ----------------------------------------
-  // STEP 3 — PROOF PAIEMENT (Always Active)
-  // ----------------------------------------
-  const proofBtn = $("proof-btn");
-  const step3Next = $("step3-next");
+      try {
+        const res = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        });
 
-  if (proofBtn) {
-    proofBtn.classList.remove("cursor-not-allowed", "bg-gray-300", "text-gray-600");
-    proofBtn.classList.add("bg-green-600", "text-white", "cursor-pointer");
-
-    on(proofBtn, "click", () => {
-      window.open("https://wa.me/50939310139", "_blank");
+        if (res.ok) {
+          localStorage.setItem("formSubmitted", "1");
+          showStep(2);
+        } else {
+          alert("Erreur d'inscription. Réessayez.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erreur de connexion au serveur.");
+      }
     });
   }
 
-  if (step3Next) {
-    step3Next.classList.remove("cursor-not-allowed", "bg-gray-300", "text-gray-600");
-    step3Next.classList.add("bg-pink-600", "text-white", "cursor-pointer");
-    step3Next.disabled = false;
-  }
-
-
   // ----------------------------------------
-  // STEP 4 — PIN VALIDATION + GOOGLE CLASSROOM
+  // STEP 2 - PAYMENT
   // ----------------------------------------
-  const PIN_API_URL = "https://tess.tessysbeautyy.workers.dev/pin";
-  let MASTER_PIN = null;
+  const payBtn = $("pay-btn");
+  const paymentMsg = $("payment-msg");
+  const dashboardLink = $("dashboard-link");
 
-  async function fetchMasterPin() {
-    try {
-      const res = await fetch(PIN_API_URL, {
-        method: "GET",
-        headers: { "x-api-key": "admin2025_secret_key" },
-        cache: "no-cache"
-      });
+  if (payBtn) {
+    on(payBtn, "click", async () => {
+      paymentMsg.textContent = "Création de la session de paiement…";
 
-      if (!res.ok) {
-        console.error(await res.text());
-        return;
+      try {
+        const res = await fetch("/api/create-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: $("email").value,
+            courseId: "COURSE_001"
+          })
+        });
+
+        const data = await res.json();
+        if (data.paymentUrl) {
+          window.location.href = data.paymentUrl;
+        } else {
+          paymentMsg.textContent = "Erreur: impossible de créer la session.";
+        }
+      } catch (err) {
+        console.error(err);
+        paymentMsg.textContent = "Erreur lors de la connexion au serveur.";
       }
-
-      const data = await res.json();
-      MASTER_PIN = data?.pin ?? null;
-
-    } catch (err) {
-      console.error("Erreur fetch PIN:", err);
-    }
-  }
-  await fetchMasterPin();
-
-  const btnValidate = $("pin-validate");
-  const inputPIN = $("pin-input");
-  const classroomLink = $("classroom-link");
-  const pinMsg = $("pin-msg");
-
-  function showMessage(msg, type = "info") {
-    if (!pinMsg) return;
-    pinMsg.textContent = msg;
-
-    pinMsg.className = "";
-    pinMsg.classList.add(
-      type === "error" ? "text-red-500" :
-      type === "success" ? "text-green-500" :
-      "text-gray-600"
-    );
+    });
   }
 
-  on(btnValidate, "click", () => {
-    const userPin = inputPIN?.value.trim();
-    if (!userPin) return showMessage("Veuillez entrer le PIN", "error");
-
-    if (MASTER_PIN && userPin === String(MASTER_PIN)) {
-      showMessage("Code PIN valide ✅", "success");
-      classroomLink?.classList.remove("hidden");
-      localStorage.setItem("academyAccessGranted", "1");
-    } else {
-      showMessage("Code PIN invalide ❌", "error");
-    }
-  });
-
-  // Accès déjà validé
-  if (localStorage.getItem("academyAccessGranted") === "1") {
-    classroomLink?.classList.remove("hidden");
-    showMessage("Accès déjà autorisé.", "success");
+  // ----------------------------------------
+  // STEP 3 - COURSE / DASHBOARD ACCESS
+  // ----------------------------------------
+  if (urlParams.get("payment") === "success") {
+    showStep(3);
+    dashboardLink?.classList.remove("hidden");
+    $("course-access-msg").textContent = "Paiement confirmé ✅ Vous pouvez accéder à vos cours.";
   }
 
+});
 
   // ----------------------------------------
   // REVIEWS (Optionnel)
