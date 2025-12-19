@@ -1,18 +1,29 @@
-// formulaire.js
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("academy-form"); // chanje ak ID fòm ou a si li diferan
+const form = document.getElementById("academy-form");
+const msg = document.getElementById("form-msg");
 
-  if (!form) return;
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault(); // evite reload page, si ou itilize GAS oubyen fetch pou poste done
-    // --- PLACEHOLDER pou GAS: voye done fòm lan --- 
-    alert("Formulaire soumis ✅"); 
+  const data = {};
+  new FormData(form).forEach((v, k) => data[k] = v);
 
-    // Mete nan localStorage ke fòm lan fin soumèt
+  try {
+    const res = await fetch("https://tessysbeauty-next.tessysbeautyy.workers.dev/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": "admin2025_secret_key" },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+
+    msg.textContent = "Inscription réussie ✅ Vous pouvez maintenant procéder au paiement.";
+    msg.classList.add("text-green-500");
     localStorage.setItem("formSubmitted", "1");
+    window.location.href = "/academy.html?step=2"; // Go to payment step
 
-    // Opsyonèl: si ou vle retounen otomatikman sou academy.html
-    // window.location.href = "/academy.html"; // ak step2 otomatik, paske localStorage deja la
-  });
+  } catch(err) {
+    msg.textContent = "Erreur lors de l'inscription ❌: " + err.message;
+    msg.classList.add("text-red-500");
+    console.error(err);
+  }
 });
