@@ -1,6 +1,7 @@
 export default {
   async fetch(request, env) {
-    const res = await env.TESSYS_LMS_DB
+    const res = await env.tessys_lms_db
+
       .prepare("SELECT * FROM admins")
       .all();
 
