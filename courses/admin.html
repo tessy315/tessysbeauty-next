@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel | Tessy’s Beauty Academy</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Nunito', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-pink-50 min-h-screen">
+
+<!-- HEADER -->
+<header class="bg-white shadow-sm fixed top-0 w-full z-50">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <h1 class="text-pink-700 font-semibold text-lg">🔧 Admin Panel</h1>
+    <button id="logoutBtn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-none hover:bg-gray-400">
+      Logout
+    </button>
+  </div>
+</header>
+
+<main class="pt-24 max-w-7xl mx-auto px-4 pb-16">
+
+  <!-- LOGIN -->
+  <div id="loginBox" class="max-w-md mx-auto mt-12 bg-white p-6 rounded-none shadow-sm">
+    <h2 class="text-xl font-semibold mb-4">Connexion Admin</h2>
+
+    <input type="text" id="adminUser" placeholder="Nom d’utilisateur"
+           class="w-full border px-4 py-2 rounded-none mb-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+
+    <input type="password" id="adminPass" placeholder="Mot de passe"
+           class="w-full border px-4 py-2 rounded-none mb-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+
+    <button id="loginBtn" class="w-full bg-pink-600 text-white py-2 rounded-none hover:bg-pink-700">
+      Se connecter
+    </button>
+
+    <p id="loginError" class="text-red-600 text-sm mt-2 hidden">Nom d’utilisateur ou mot de passe incorrect</p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden space-y-6">
+
+    <!-- USERS TABLE -->
+    <div class="bg-white p-6 rounded-none shadow-sm">
+      <h3 class="font-semibold text-lg mb-4">👥 Utilisateurs</h3>
+      <table class="w-full border-collapse text-sm">
+        <thead>
+          <tr class="bg-pink-100">
+            <th class="border px-2 py-1">Nom</th>
+            <th class="border px-2 py-1">Email</th>
+            <th class="border px-2 py-1">Status</th>
+            <th class="border px-2 py-1">Action</th>
+          </tr>
+        </thead>
+        <tbody id="userTable">
+          <!-- Filled by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CERTIFICATES TABLE -->
+    <div class="bg-white p-6 rounded-none shadow-sm">
+      <h3 class="font-semibold text-lg mb-4">🎓 Certificats</h3>
+      <table class="w-full border-collapse text-sm">
+        <thead>
+          <tr class="bg-pink-100">
+            <th class="border px-2 py-1">ID Certificat</th>
+            <th class="border px-2 py-1">Utilisateur</th>
+            <th class="border px-2 py-1">Cours</th>
+            <th class="border px-2 py-1">Action</th>
+          </tr>
+        </thead>
+        <tbody id="certTable">
+          <!-- Filled by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+/* ==========================
+   STATIC DEMO DATA (REPLACE LATER WITH D1)
+   ========================== */
+const mockUsers = [
+  {id:"U1", name:"Alice", email:"alice@email.com", status:"pending"},
+  {id:"U2", name:"Bob", email:"bob@email.com", status:"active"}
+];
+
+const mockCerts = [
+  {id:"TBA-1234", user:"Alice", course:"Maquillage Professionnel"}
+];
+
+/* ==========================
+   SIMPLE ADMIN AUTH
+   ========================== */
+const adminCred = {user:"admin", pass:"Tessy123"};
+
+function showDashboard() {
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+  populateUsers();
+  populateCerts();
+}
+
+function populateUsers() {
+  const tbody = document.getElementById("userTable");
+  tbody.innerHTML = "";
+  mockUsers.forEach(u=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="border px-2 py-1">${u.name}</td>
+      <td class="border px-2 py-1">${u.email}</td>
+      <td class="border px-2 py-1">${u.status}</td>
+      <td class="border px-2 py-1 space-x-2">
+        <button class="px-2 py-1 bg-green-600 text-white rounded-none hover:bg-green-700" onclick="activateUser('${u.id}')">Activer</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function populateCerts() {
+  const tbody = document.getElementById("certTable");
+  tbody.innerHTML = "";
+  mockCerts.forEach(c=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="border px-2 py-1">${c.id}</td>
+      <td class="border px-2 py-1">${c.user}</td>
+      <td class="border px-2 py-1">${c.course}</td>
+      <td class="border px-2 py-1">
+        <button class="px-2 py-1 bg-pink-600 text-white rounded-none hover:bg-pink-700" onclick="revokeCert('${c.id}')">Révoquer</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ==========================
+   ACTIONS
+   ========================== */
+function activateUser(id) {
+  const user = mockUsers.find(u=>u.id===id);
+  if(user) {
+    user.status="active";
+    populateUsers();
+    alert(`Utilisateur ${user.name} activé ✔️`);
+  }
+}
+
+function revokeCert(id) {
+  const index = mockCerts.findIndex(c=>c.id===id);
+  if(index!==-1) {
+    alert(`Certificat ${mockCerts[index].id} révoqué`);
+    mockCerts.splice(index,1);
+    populateCerts();
+  }
+}
+
+/* ==========================
+   LOGIN HANDLER
+   ========================== */
+document.getElementById("loginBtn").onclick = () => {
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value.trim();
+  if(user===adminCred.user && pass===adminCred.pass){
+    sessionStorage.setItem("adminLoggedIn","true");
+    showDashboard();
+  } else {
+    document.getElementById("loginError").classList.remove("hidden");
+  }
+};
+
+/* ==========================
+   LOGOUT
+   ========================== */
+document.getElementById("logoutBtn").onclick = () => {
+  sessionStorage.removeItem("adminLoggedIn");
+  location.reload();
+};
+
+/* ==========================
+   AUTO SHOW DASHBOARD IF LOGGED IN
+   ========================== */
+if(sessionStorage.getItem("adminLoggedIn")==="true"){
+  showDashboard();
+}
+</script>
+
+</body>
+</html>
