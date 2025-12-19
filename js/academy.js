@@ -1,5 +1,5 @@
 // ----------------------------------------
-// ACADEMY.JS - FULL AUTOMATED FLOW
+// ACADEMY.JS – FULLY AUTOMATED
 // ----------------------------------------
 
 function $(id) { return document.getElementById(id); }
@@ -8,7 +8,7 @@ function on(el, event, fn) { if (el) el.addEventListener(event, fn); }
 document.addEventListener("DOMContentLoaded", async () => {
 
   // ----------------------------------------
-  // STEP MANAGEMENT + PROGRESS BAR
+  // STEP NAVIGATION
   // ----------------------------------------
   const steps = ["step-1", "step-2", "step-3"];
   const progressBar = $("progress-bar");
@@ -21,107 +21,94 @@ document.addEventListener("DOMContentLoaded", async () => {
       else el.classList.add("hidden");
     });
 
-    const percent = step === 1 ? 33.33 : step === 2 ? 66.66 : 100;
+    const percent = step === 1 ? 16.66 :
+                    step === 2 ? 33.33 :
+                    step === 3 ? 66.66 :
+                    100;
     if (progressBar) progressBar.style.width = percent + "%";
   }
 
-  // Start step
   let startStep = 1;
   const urlParams = new URLSearchParams(window.location.search);
   const stepParam = urlParams.get("step");
   if (stepParam === "2" || localStorage.getItem("formSubmitted") === "1") startStep = 2;
-  if (urlParams.get("payment") === "success") startStep = 3;
 
   showStep(startStep);
 
   // ----------------------------------------
-  // STEP NAVIGATION
+  // BUTTON NAVIGATION
   // ----------------------------------------
   on($("step2-prev"), "click", () => showStep(1));
+  on($("step2-next"), "click", () => showStep(3));
+  on($("step3-prev"), "click", () => showStep(2));
+  on($("step4-prev"), "click", () => showStep(3));
 
   // ----------------------------------------
-  // STEP 1 - FORM SUBMISSION
+  // STEP 1 – OPEN FORMULAIRE
   // ----------------------------------------
-  const form = $("academy-form");
-  if (form) {
-    on(form, "submit", async (e) => {
-      e.preventDefault();
-
-      const formData = {
-        nom: $("nom").value,
-        prenom: $("prenom").value,
-        adresse: $("adresse").value,
-        email: $("email").value,
-        sexe: $("sexe").value,
-        telephone: $("telephone").value,
-        experience: form.querySelector('input[name="experience"]:checked')?.value || "",
-        source: Array.from(form.querySelectorAll('input[name="source[]"]:checked')).map(c => c.value),
-        profession: $("profession").value,
-        attentes: $("attentes").value,
-        engagement: form.querySelector('input[name="engagement"]')?.checked || false
-      };
-
-      try {
-        const res = await fetch("/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
-        });
-
-        if (res.ok) {
-          localStorage.setItem("formSubmitted", "1");
-          showStep(2);
-        } else {
-          alert("Erreur d'inscription. Réessayez.");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Erreur de connexion au serveur.");
-      }
+  const openFormBtn = $("open-form-btn");
+  if (openFormBtn) {
+    on(openFormBtn, "click", () => {
+      // Open formulaire in a new tab
+      window.open("/formulaire.html", "_blank");
     });
   }
 
   // ----------------------------------------
-  // STEP 2 - PAYMENT
+  // STEP 2 – PAYMENT
   // ----------------------------------------
-  const payBtn = $("pay-btn");
+  const payMoncashBtn = $("pay-moncash");
+  const payStripeBtn = $("pay-stripe");
   const paymentMsg = $("payment-msg");
   const dashboardLink = $("dashboard-link");
 
-  if (payBtn) {
-    on(payBtn, "click", async () => {
-      paymentMsg.textContent = "Création de la session de paiement…";
-
-      try {
-        const res = await fetch("/api/create-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: $("email").value,
-            courseId: "COURSE_001"
-          })
-        });
-
-        const data = await res.json();
-        if (data.paymentUrl) {
-          window.location.href = data.paymentUrl;
-        } else {
-          paymentMsg.textContent = "Erreur: impossible de créer la session.";
-        }
-      } catch (err) {
-        console.error(err);
-        paymentMsg.textContent = "Erreur lors de la connexion au serveur.";
-      }
-    });
+  function showPaymentMessage(msg, type="info") {
+    if (!paymentMsg) return;
+    paymentMsg.textContent = msg;
+    paymentMsg.className = "";
+    paymentMsg.classList.add(
+      type === "success" ? "text-green-500" :
+      type === "error" ? "text-red-500" :
+      "text-gray-600"
+    );
   }
 
-  // ----------------------------------------
-  // STEP 3 - COURSE / DASHBOARD ACCESS
-  // ----------------------------------------
-  if (urlParams.get("payment") === "success") {
+  // MonCash sandbox simulation
+  on(payMoncashBtn, "click", async () => {
+    showPaymentMessage("Redirection vers MonCash Sandbox…", "info");
+    try {
+      await new Promise(res => setTimeout(res, 1500)); // simulate API call
+      localStorage.setItem("paymentStatus", "moncash_success");
+      showPaymentMessage("Paiement MonCash confirmé ✅", "success");
+      dashboardLink.classList.remove("hidden");
+      showStep(3);
+    } catch(err) {
+      showPaymentMessage("Erreur MonCash ❌", "error");
+      console.error(err);
+    }
+  });
+
+  // Stripe sandbox simulation
+  on(payStripeBtn, "click", async () => {
+    showPaymentMessage("Redirection vers Stripe Sandbox…", "info");
+    try {
+      await new Promise(res => setTimeout(res, 1500)); // simulate API call
+      localStorage.setItem("paymentStatus", "stripe_success");
+      showPaymentMessage("Paiement Stripe confirmé ✅", "success");
+      dashboardLink.classList.remove("hidden");
+      showStep(3);
+    } catch(err) {
+      showPaymentMessage("Erreur Stripe ❌", "error");
+      console.error(err);
+    }
+  });
+
+  // Auto-show dashboard if payment already done
+  if (localStorage.getItem("paymentStatus") === "moncash_success" ||
+      localStorage.getItem("paymentStatus") === "stripe_success") {
+    dashboardLink.classList.remove("hidden");
+    showPaymentMessage("Paiement déjà confirmé, accès au tableau de bord ✅", "success");
     showStep(3);
-    dashboardLink?.classList.remove("hidden");
-    $("course-access-msg").textContent = "Paiement confirmé ✅ Vous pouvez accéder à vos cours.";
   }
 
 });
