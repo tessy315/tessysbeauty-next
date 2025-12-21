@@ -152,19 +152,8 @@
   </p>
 </footer>
 
-<!-- JS (STATIC → D1 READY) -->
-<script>
-  let progress = 20;
 
-  document.getElementById("completeLessonBtn").onclick = () => {
-    progress = Math.min(progress + 20, 100);
-
-    document.getElementById("progressPercent").textContent = progress;
-    document.getElementById("progressBar").style.width = progress + "%";
-
-    alert("Leçon complétée ✔️ (sera sauvegardé dans D1 plus tard)");
-  };
-</script>
+<script src="js/lesson.js"></script>
 
 </body>
 </html>
