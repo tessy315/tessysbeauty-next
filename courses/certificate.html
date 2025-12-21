@@ -56,20 +56,7 @@
 
 </div>
 
-<script>
-  // STATIC FOR NOW → WILL COME FROM D1
-  const student = "Étudiant(e)";
-  const certId = "TBA-" + Math.random().toString(36).substring(2, 10).toUpperCase();
-  const today = new Date().toLocaleDateString("fr-FR");
-
-  document.getElementById("studentName").textContent = student;
-  document.getElementById("certId").textContent = certId;
-  document.getElementById("date").textContent = today;
-
-  // Later:
-  // save certId to D1
-  // generate PDF via Worker
-</script>
+<script src="js/certificate.js"></script>
 
 </body>
 </html>
