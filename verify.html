@@ -50,71 +50,7 @@
 
 </div>
 
-<script>
-/* ==========================
-   TEMP STATIC DATA
-   ========================== */
-const mockCertificates = {
-  "TBA-ABCD1234": {
-    name: "Étudiant(e)",
-    course: "Maquillage Professionnel",
-    date: "15/06/2025",
-    status: "valide"
-  }
-};
-
-/* ==========================
-   READ URL PARAM
-   ========================== */
-const params = new URLSearchParams(window.location.search);
-const certFromUrl = params.get("id");
-
-if (certFromUrl) {
-  document.getElementById("certInput").value = certFromUrl;
-  verify(certFromUrl);
-}
-
-/* ==========================
-   VERIFY ACTION
-   ========================== */
-document.getElementById("verifyBtn").onclick = () => {
-  const id = document.getElementById("certInput").value.trim();
-  verify(id);
-};
-
-function verify(id) {
-  const resultBox = document.getElementById("result");
-  resultBox.classList.remove("hidden");
-
-  // STATIC → REPLACE BY WORKER FETCH
-  const cert = mockCertificates[id];
-
-  if (!cert) {
-    resultBox.innerHTML = `
-      <div class="text-red-600 font-semibold">
-        ❌ Certificat non valide ou introuvable
-      </div>
-      <p class="text-sm text-gray-600 mt-2">
-        Vérifiez l’identifiant du certificat.
-      </p>
-    `;
-    return;
-  }
-
-  resultBox.innerHTML = `
-    <div class="text-green-700 font-semibold mb-2">
-      ✅ Certificat valide
-    </div>
-
-    <ul class="text-sm text-gray-700 space-y-1">
-      <li><strong>Nom :</strong> ${cert.name}</li>
-      <li><strong>Formation :</strong> ${cert.course}</li>
-      <li><strong>Date d’émission :</strong> ${cert.date}</li>
-      <li><strong>Statut :</strong> ${cert.status}</li>
-    </ul>
-  `;
-}
-</script>
+<script src="js/verify_certificate.js"></script>
 
 </body>
 </html>
