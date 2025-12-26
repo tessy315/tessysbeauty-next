@@ -87,7 +87,9 @@
     "description": "Accédez à Tessy's Beauty Academy et découvrez nos cours de maquillage, formations en ligne et programmes professionnels.",
     "logo": "https://i.ibb.co/ynmX90YW/1759790410129-removebg-preview.png"
   }
-  </script>
+  </script> 
+ <script src="https://accounts.google.com/gsi/client" async defer></script>
+
 
 
  </head>
@@ -185,6 +187,25 @@
         class="w-full py-3 bg-pink-600 text-white font-medium hover:bg-pink-700 transition rounded-none">
         🔐 Se connecter
       </button>
+     <div class="mt-6 text-center">
+  <div
+    id="g_id_onload"
+    data-client_id="YOUR_GOOGLE_CLIENT_ID"
+    data-callback="handleGoogleLogin"
+    data-auto_prompt="false">
+  </div>
+
+  <div
+    class="g_id_signin"
+    data-type="standard"
+    data-shape="rectangular"
+    data-theme="outline"
+    data-text="signin_with"
+    data-size="large"
+    data-logo_alignment="left">
+  </div>
+</div>
+
 
     </form>
 
