@@ -1,4 +1,4 @@
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const status = document.getElementById("statusMsg");
@@ -7,14 +7,16 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   status.classList.remove("hidden");
 
   const payload = {
-    email: document.getElementById("email").value,
+    email: document.getElementById("email").value.trim(),
     password: document.getElementById("password").value
   };
 
   try {
-    const res = await fetch("/api/auth", {
+    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/auth", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(payload)
     });
 
@@ -22,23 +24,63 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
     if (!res.ok) {
       status.className = "text-sm text-center text-red-600";
-      status.textContent = data.message || "Erreur de connexion";
+      status.textContent = data.error || "Erreur de connexion";
       return;
     }
 
+    // ✅ Pending user (payment not validated yet)
     if (data.status === "pending") {
       status.className = "text-sm text-center text-yellow-600";
-      status.textContent = "Paiement en attente de validation.";
+      status.textContent = "Compte créé. Paiement en attente de validation.";
       return;
     }
 
-    // Save token (later switch to cookie)
-    localStorage.setItem("academy_token", data.token);
+    // ✅ Save session (simple version)
+    localStorage.setItem("academy_user_id", data.id);
+    localStorage.setItem("academy_status", data.status);
 
+    // Redirect to dashboard
     window.location.href = "/courses/dashboard.html";
 
   } catch (err) {
     status.className = "text-sm text-center text-red-600";
-    status.textContent = "Erreur réseau.";
+    status.textContent = "Erreur réseau. Veuillez réessayer.";
   }
 });
+
+async function handleGoogleLogin(response) {
+  try {
+    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id_token: response.credential
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Google login failed");
+      return;
+    }
+
+    // Save session
+    localStorage.setItem("academy_user_id", data.id);
+    localStorage.setItem("academy_status", data.status);
+
+    if (data.status === "pending") {
+      alert("Compte créé. Paiement requis pour activer.");
+      return;
+    }
+
+    // Redirect after success
+    window.location.href = "/courses/dashboard.html";
+
+  } catch (err) {
+    alert("Erreur réseau Google login");
+  }
+}
+
