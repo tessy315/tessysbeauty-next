@@ -5,7 +5,7 @@ async function completeEnrollment(courseId) {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    window.location.href = "/courses/login.html";
+    window.location.href = "/courses/auth.html";
     return;
   }
 
