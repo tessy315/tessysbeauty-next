@@ -44,8 +44,26 @@ on(hamburger, "click", () => {
 document.querySelectorAll("#mobile-menu a").forEach(link => {
   on(link, "click", closeMenu);
 });
+  
+ // ==============================
+// MOBILE ACCORDION STYLE
+// ==============================
 
+document.querySelectorAll('#mobile-menu .mobile-menu-item > button').forEach(button => {
+  button.addEventListener('click', () => {
+    const submenu = button.nextElementSibling;
+    const icon = button.querySelector('span');
 
+    if(submenu.style.maxHeight){
+      submenu.style.maxHeight = null;
+      if(icon) icon.style.transform = 'rotate(0deg)';
+    } else {
+      submenu.style.maxHeight = submenu.scrollHeight + "px";
+      if(icon) icon.style.transform = 'rotate(-180deg)';
+    }
+  });
+});
+  
   // ==============================
   // GENERAL SLIDER FUNCTIONS
   // ==============================
