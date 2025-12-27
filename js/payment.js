@@ -1,5 +1,5 @@
 const API = "https://academy-api.tessysbeautyy.workers.dev";
-const stripe = Stripe("pk_test_REPLACE_WITH_YOUR_PUBLIC_KEY");
+const stripe = Stripe("pk_test_51Siyg82M8ztFJb4DGPu0jlzKyMqrKhy7g4ZE2NyDamob7CuBxjGFmAKOYlEZUvfwoLJVIBDVAPU2fTx2DcBcbt1000CtQLaTLL");
 
 const params = new URLSearchParams(window.location.search);
 const courseId = params.get("course");
