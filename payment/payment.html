@@ -1,141 +1,137 @@
 <!doctype html>
 <html lang="fr">
 <head>
- <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CDFB9G8MGC"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-CDFB9G8MGC');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CDFB9G8MGC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-CDFB9G8MGC');
+  </script>
 
-<script type="text/javascript">
-  (function(c,l,a,r,i,t,y){
-      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}
-      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-  })(window, document, "clarity", "script", "u5mcnbtnuo");
-</script>
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "u5mcnbtnuo");
+  </script>
 
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Paiement | Tessy’s Beauty Academy</title>
 
-<title>Paiement | Tessy’s Beauty Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<link rel="stylesheet" href="css/style.css">
-<script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <meta name="description" content="Paiement sécurisé – Tessy’s Beauty Academy" />
+  <link rel="icon" href="https://i.ibb.co/hJ0HYyNx/favicon-Tessys-Beauty.png">
 
-<meta name="description" content="Paiement sécurisé – Tessy’s Beauty Academy" />
-
-<link rel="icon" href="https://i.ibb.co/hJ0HYyNx/favicon-Tessys-Beauty.png">
-
-<script src="https://js.stripe.com/v3/"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
-<body class="min-h-screen bg-gradient-to-b from-pink-100 to-white text-gray-800">
-<!-- Header -->
-  <header  id="man-header" class="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
+<body class="min-h-screen flex flex-col bg-gradient-to-b from-pink-100 to-white text-gray-800">
+
+  <!-- Header -->
+  <header id="man-header" class="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
     <div id="header-inner" class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-       <!-- LOGO -->
-   <a href="index.html" class="flex items-center space-x-1 transition-all duration-500">
-   <img 
-  id="logo"
-  src="https://i.ibb.co/ynmX90YW/1759790410129-removebg-preview.png" 
-  alt="Tessy's Beauty & More Logo" 
-  class="h-14 sm:h-14 md:h-20 w-auto max-w-[160px] sm:max-w-[160px] md:max-w-[260px] object-contain transition-all duration-500"
-/>
-        <span class="text-pink-700 font-semibold text-xl md:text-2xl" style="font-family: 'Nunito', sans-serif;">
-  Tessy’s Beauty & More
-</span>
-
-    </a>
+        <!-- LOGO -->
+        <a href="index.html" class="flex items-center space-x-1 transition-all duration-500">
+          <img 
+            id="logo"
+            src="https://i.ibb.co/ynmX90YW/1759790410129-removebg-preview.png" 
+            alt="Tessy's Beauty & More Logo" 
+            class="h-14 sm:h-14 md:h-20 w-auto max-w-[160px] sm:max-w-[160px] md:max-w-[260px] object-contain transition-all duration-500"
+          />
+          <span class="text-pink-700 font-semibold text-xl md:text-2xl" style="font-family: 'Nunito', sans-serif;">
+            Tessy’s Beauty & More
+          </span>
+        </a>
       </div>
+
       <nav class="hidden md:flex font-medium justify-center md:justify-end">
-  <ul class="flex space-x-6 flex-wrap">
-   <a href="/index.html" class="hover:text-pink-500">Accueil</a> 
-   <a href="/formulaire.html" class="hover:text-pink-500">Formulaire</a> 
-   <a href="#contact" class="hover:text-pink-500">Contact</a> 
-  </ul> 
+        <ul class="flex space-x-6 flex-wrap">
+          <a href="/index.html" class="hover:text-pink-500">Accueil</a> 
+          <a href="/formulaire.html" class="hover:text-pink-500">Formulaire</a> 
+          <a href="#contact" class="hover:text-pink-500">Contact</a> 
+        </ul> 
       </nav> 
+
       <!-- Hamburger mobile -->
-<div class="md:hidden">
-  <button id="hamburger" class="text-pink-600 text-2xl focus:outline-none">
-    &#9776;
-  </button>
-</div>
-</div> 
+      <div class="md:hidden">
+        <button id="hamburger" class="text-pink-600 text-2xl focus:outline-none">
+          &#9776;
+        </button>
+      </div>
+    </div> 
     
     <!-- Mobile menu -->
-<div id="mobile-menu" class="max-h-0 overflow-hidden transition-[max-height] duration-500 ease-in-out md:hidden flex-col mt-2 space-y-2 text-center">
- <a href="/index.html" class="hover:text-pink-500 block">Accueil</a>  
-<a href="/formulaire.html" class="hover:text-pink-500 block">Formulaire</a>  
-<a href="#contact" class="hover:text-pink-500 block">Contact</a>
- 
-</div>
+    <div id="mobile-menu" class="max-h-0 overflow-hidden transition-[max-height] duration-500 ease-in-out md:hidden flex flex-col mt-2 space-y-2 text-center">
+      <a href="/index.html" class="hover:text-pink-500 block">Accueil</a>  
+      <a href="/formulaire.html" class="hover:text-pink-500 block">Formulaire</a>  
+      <a href="#contact" class="hover:text-pink-500 block">Contact</a>
+    </div>
+  </header>
 
-</header>
-<main class="max-w-xl mx-auto px-4 py-10">
+  <!-- Main Content -->
+  <main class="flex-grow max-w-xl mx-auto px-4 py-10 pt-32 md:pt-40">
+    <div class="bg-white shadow-lg rounded-none p-6">
+      <h1 class="text-2xl font-semibold text-center mb-6">
+        Finaliser votre paiement
+      </h1>
 
-  <div class="bg-white shadow-lg rounded-none p-6">
-    <h1 class="text-2xl font-semibold text-center mb-6">
-      Finaliser votre paiement
-    </h1>
+      <form id="payment-form">
+        <div id="payment-element" class="mb-4"></div>
 
-    <form id="payment-form">
-      <div id="payment-element" class="mb-4"></div>
+        <button
+          id="submit"
+          class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-none transition"
+        >
+          Payer maintenant
+        </button>
 
-      <button
-        id="submit"
-        class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-none transition"
-      >
-        Payer maintenant
-      </button>
+        <p id="message" class="text-center text-red-600 mt-4"></p>
+      </form>
+    </div>
+  </main>
 
-      <p id="message" class="text-center text-red-600 mt-4"></p>
-    </form>
-  </div>
+  <!-- Footer -->
+  <footer class="bg-pink-600 text-white text-center py-6 px-4">
+    <p class="mb-3">
+      <a href="https://docs.google.com/document/d/18MLlfHRXgH2eMLH0FdQL-bQ__Xi5FQ9ZkJpWQGpyM4I/edit?usp=drivesdk"
+         target="_blank"
+         class="text-white italic hover:text-pink-300 hover:underline transition-colors duration-300">
+         Termes & Conditions
+      </a>
+    </p>
 
-</main>
+    <div class="flex justify-center gap-6 mb-3">
+      <a href="https://www.facebook.com/share/19vWzQBaC6/" target="_blank">
+        <i class="fab fa-facebook-f text-xl"></i>
+      </a>
+      <a href="https://www.instagram.com/tessysbeautyy" target="_blank">
+        <i class="fab fa-instagram text-xl"></i>
+      </a>
+      <a href="https://www.tiktok.com/@tessysbeauty" target="_blank">
+        <i class="fab fa-tiktok text-xl"></i>
+      </a>
+    </div>
 
-<!-- FOOTER -->
-<footer class="bg-pink-600 text-white text-center py-6 px-4 relative">
+    <p class="text-sm text-white/90">
+      © 2025 Tessy’s Beauty & More | Tous droits réservés.
+    </p>
+  </footer>
 
-  <p class="mb-3">
-    <a href="https://docs.google.com/document/d/18MLlfHRXgH2eMLH0FdQL-bQ__Xi5FQ9ZkJpWQGpyM4I/edit?usp=drivesdk"
-       target="_blank"
-       class="text-white italic hover:text-pink-300 hover:underline transition-colors duration-300">
-       Termes & Conditions
-    </a>
-  </p>
-
-  <div class="flex justify-center gap-6 mb-3">
-    <a href="https://www.facebook.com/share/19vWzQBaC6/" target="_blank">
-      <i class="fab fa-facebook-f text-xl"></i>
-    </a>
-    <a href="https://www.instagram.com/tessysbeautyy" target="_blank">
-      <i class="fab fa-instagram text-xl"></i>
-    </a>
-    <a href="https://www.tiktok.com/@tessysbeauty" target="_blank">
-      <i class="fab fa-tiktok text-xl"></i>
-    </a>
-  </div>
-
-  <p class="text-sm text-white/90">
-    © 2025 Tessy’s Beauty & More | Tous droits réservés.
-  </p>
-</footer>
-
-<script src="js/payment.js"></script>
-
+  <script src="js/payment.js"></script>
 </body>
 </html>
