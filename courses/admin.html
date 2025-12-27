@@ -68,95 +68,61 @@
 </main>
 
 <script>
-const WORKER_BASE = "https://academy-api.tessysbeautyy.workers.dev";
-let ADMIN_TOKEN = null;
-
-/* =========================
-   LOGIN
-========================= */
-document.getElementById("loginBtn").onclick = async () => {
-  const user = document.getElementById("adminUser").value.trim();
-  const pass = document.getElementById("adminPass").value.trim();
-
-  try {
-    const res = await fetch(`${WORKER_BASE}/courses/auth`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": pass },
-      body: JSON.stringify({ name: user })
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      ADMIN_TOKEN = pass;
-      sessionStorage.setItem("adminLoggedIn", "true");
-      showDashboard();
-    } else {
-      document.getElementById("loginError").classList.remove("hidden");
-    }
-  } catch {
-    document.getElementById("loginError").classList.remove("hidden");
-  }
+/* ==========================
+   CONFIG
+========================== */
+const WORKER_URL = "https://academy-api.tessysbeautyy.workers.dev/courses/auth";
+const ADMIN_API_KEY = "tBA3R8v2kL9qXz5mN0yH"; // <--- your new key
+const CORS_HEADERS = {
+  "Content-Type": "application/json",
+  "x-api-key": ADMIN_API_KEY
 };
 
-/* =========================
-   DASHBOARD
-========================= */
-async function showDashboard() {
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
-  await fetchUsers();
-  await fetchCerts();
+/* ==========================
+   ELEMENTS
+========================== */
+const loginBox = document.getElementById("loginBox");
+const dashboard = document.getElementById("dashboard");
+const userTable = document.getElementById("userTable");
+const certTable = document.getElementById("certTable");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const loginError = document.getElementById("loginError");
+
+/* ==========================
+   STATIC DEMO DATA (REPLACE WITH LIVE DATA AFTER LOGIN)
+========================== */
+let mockUsers = [];
+let mockCerts = [];
+
+/* ==========================
+   DASHBOARD RENDER
+========================== */
+function showDashboard() {
+  loginBox.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+  fetchUsersAndCerts();
 }
 
-/* =========================
-   USERS
-========================= */
-async function fetchUsers() {
-  const res = await fetch(`${WORKER_BASE}/courses/dashboard`, {
-    headers: { "Authorization": `Bearer ${ADMIN_TOKEN}` }
-  });
-  const users = await res.json();
-
-  const tbody = document.getElementById("userTable");
-  tbody.innerHTML = "";
-  users.forEach(u => {
+function populateUsers() {
+  userTable.innerHTML = "";
+  mockUsers.forEach(u => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="border px-2 py-1">${u.name}</td>
       <td class="border px-2 py-1">${u.email}</td>
       <td class="border px-2 py-1">${u.status}</td>
-      <td class="border px-2 py-1">
+      <td class="border px-2 py-1 space-x-2">
         <button class="px-2 py-1 bg-green-600 text-white rounded-none hover:bg-green-700" onclick="activateUser('${u.id}')">Activer</button>
       </td>
     `;
-    tbody.appendChild(tr);
+    userTable.appendChild(tr);
   });
 }
 
-async function activateUser(userId) {
-  await fetch(`${WORKER_BASE}/courses/dashboard/activate`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${ADMIN_TOKEN}`
-    },
-    body: JSON.stringify({ user_id: userId })
-  });
-  fetchUsers();
-}
-
-/* =========================
-   CERTIFICATES
-========================= */
-async function fetchCerts() {
-  const res = await fetch(`${WORKER_BASE}/courses/certificate`, {
-    headers: { "Authorization": `Bearer ${ADMIN_TOKEN}` }
-  });
-  const certs = await res.json();
-
-  const tbody = document.getElementById("certTable");
-  tbody.innerHTML = "";
-  certs.forEach(c => {
+function populateCerts() {
+  certTable.innerHTML = "";
+  mockCerts.forEach(c => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="border px-2 py-1">${c.id}</td>
@@ -166,38 +132,90 @@ async function fetchCerts() {
         <button class="px-2 py-1 bg-pink-600 text-white rounded-none hover:bg-pink-700" onclick="revokeCert('${c.id}')">Révoquer</button>
       </td>
     `;
-    tbody.appendChild(tr);
+    certTable.appendChild(tr);
   });
 }
 
-async function revokeCert(certId) {
-  await fetch(`${WORKER_BASE}/courses/certificate/revoke`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${ADMIN_TOKEN}`
-    },
-    body: JSON.stringify({ certificate_id: certId })
-  });
-  fetchCerts();
+/* ==========================
+   FETCH USERS & CERTS
+========================== */
+async function fetchUsersAndCerts() {
+  try {
+    // USERS
+    const usersRes = await fetch("https://academy-api.tessysbeautyy.workers.dev/courses/dashboard", {
+      headers: CORS_HEADERS
+    });
+    mockUsers = await usersRes.json();
+    populateUsers();
+
+    // CERTIFICATES
+    const certRes = await fetch("https://academy-api.tessysbeautyy.workers.dev/courses/certificate", {
+      headers: CORS_HEADERS
+    });
+    mockCerts = await certRes.json();
+    populateCerts();
+  } catch (err) {
+    console.error("Error fetching dashboard:", err);
+  }
 }
 
-/* =========================
-   LOGOUT
-========================= */
-document.getElementById("logoutBtn").onclick = () => {
+/* ==========================
+   ACTIONS
+========================== */
+async function activateUser(id) {
+  const user = mockUsers.find(u => u.id === id);
+  if (user) {
+    // Call worker endpoint to update user status
+    try {
+      await fetch(`https://academy-api.tessysbeautyy.workers.dev/courses/dashboard/activate/${id}`, {
+        method: "POST",
+        headers: CORS_HEADERS
+      });
+      user.status = "active";
+      populateUsers();
+      alert(`Utilisateur ${user.name} activé ✔️`);
+    } catch (err) {
+      alert("Failed to activate user");
+    }
+  }
+}
+
+async function revokeCert(id) {
+  const index = mockCerts.findIndex(c => c.id === id);
+  if (index !== -1) {
+    try {
+      await fetch(`https://academy-api.tessysbeautyy.workers.dev/courses/certificate/revoke/${id}`, {
+        method: "POST",
+        headers: CORS_HEADERS
+      });
+      mockCerts.splice(index, 1);
+      populateCerts();
+      alert(`Certificat ${id} révoqué ✔️`);
+    } catch {
+      alert("Failed to revoke certificate");
+    }
+  }
+}
+
+/* ==========================
+   LOGIN & LOGOUT
+========================== */
+// AUTO LOGIN USING API KEY
+document.addEventListener("DOMContentLoaded", () => {
+  if (ADMIN_API_KEY) {
+    sessionStorage.setItem("adminLoggedIn", "true");
+    showDashboard();
+  }
+});
+
+logoutBtn.onclick = () => {
   sessionStorage.removeItem("adminLoggedIn");
-  ADMIN_TOKEN = null;
   location.reload();
 };
 
-/* =========================
-   AUTO SHOW DASHBOARD
-========================= */
-if(sessionStorage.getItem("adminLoggedIn")==="true"){
-  ADMIN_TOKEN = prompt("Enter admin API key again to continue");
-  showDashboard();
-}
+// HIDE LOGIN FORM if API key is set
+if (ADMIN_API_KEY) loginBox.classList.add("hidden");
 </script>
+
 </body>
 </html>
