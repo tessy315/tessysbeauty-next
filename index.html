@@ -111,7 +111,7 @@
  </head>
 <body class="min-h-screen bg-gradient-to-b from-pink-100 to-white text-gray-800">
 
-  <!-- Header -->
+
   <!-- Header -->
 <header id="man-header" class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
 
@@ -209,49 +209,6 @@
 
 </header>
 
-<!-- JS for Mobile Accordion -->
-<script>
-document.querySelectorAll('#mobile-menu .mobile-menu-item > button').forEach(button => {
-  button.addEventListener('click', () => {
-    const submenu = button.nextElementSibling;
-    const icon = button.querySelector('span');
-
-    if(submenu.style.maxHeight){
-      submenu.style.maxHeight = null;
-      if(icon) icon.style.transform = 'rotate(0deg)';
-    } else {
-      submenu.style.maxHeight = submenu.scrollHeight + "px";
-      if(icon) icon.style.transform = 'rotate(-180deg)';
-    }
-  });
-});
-</script>
-
-<!-- CSS for Mega-Menu -->
-<style>
-/* Desktop mega-menu fade + slide */
-nav .group:hover > div {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-nav .group > div {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-}
-
-/* Mobile accordion smooth */
-.submenu a {
-  transition: color 0.3s ease;
-}
-</style>
-
-
-
- 
 
   <!-- HOME PAGE -->
   <main id="home" class="page-section">
