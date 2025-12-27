@@ -1,7 +1,12 @@
-
 const API = "https://academy-api.tessysbeautyy.workers.dev";
 
-async function completeEnrollment(courseId) {
+// Stripe public key (SAFE to expose)
+const stripe = Stripe("pk_test_REPLACE_WITH_YOUR_PUBLIC_KEY");
+
+const params = new URLSearchParams(window.location.search);
+const courseId = params.get("course");
+
+document.getElementById("payBtn").addEventListener("click", async () => {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -9,20 +14,41 @@ async function completeEnrollment(courseId) {
     return;
   }
 
-  const res = await fetch(`${API}/enroll`, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + token,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ course_id: courseId })
-  });
+  try {
+    document.getElementById("status").textContent = "Création du paiement...";
 
-  const data = await res.json();
+    const res = await fetch(`${API}/payment/stripe`, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        course_id: courseId
+      })
+    });
 
-  if (data.success) {
-    window.location.href = "/dashboard";
-  } else {
-    alert(data.error || "Enrollment failed");
+    const data = await res.json();
+
+    if (!data.clientSecret) {
+      alert(data.error || "Erreur paiement");
+      return;
+    }
+
+    const result = await stripe.confirmCardPayment(data.clientSecret);
+
+    if (result.error) {
+      alert(result.error.message);
+      return;
+    }
+
+    if (result.paymentIntent.status === "succeeded") {
+      // enrollment happens on backend webhook
+      window.location.href = "/dashboard";
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Erreur paiement");
   }
-}
+});
