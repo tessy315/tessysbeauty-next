@@ -1,37 +1,100 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <title>Paiement – Tessy’s Beauty Academy</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CDFB9G8MGC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-CDFB9G8MGC');
+</script>
 
-  <script src="https://js.stripe.com/v3/"></script>
-  <script defer src="Payment/payment.js"></script>
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "u5mcnbtnuo");
+</script>
 
-  <link rel="stylesheet" href="https://cdn.tailwindcss.com">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<title>Paiement | Tessy’s Beauty Academy</title>
+
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<meta name="description" content="Paiement sécurisé – Tessy’s Beauty Academy" />
+
+<link rel="icon" href="https://i.ibb.co/hJ0HYyNx/favicon-Tessys-Beauty.png">
+
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
-<body class="bg-pink-50 min-h-screen flex items-center justify-center">
+<body class="min-h-screen bg-gradient-to-b from-pink-100 to-white text-gray-800">
 
-  <div class="bg-white p-8 shadow-md w-full max-w-md text-center">
-    <h1 class="text-2xl font-bold text-pink-700 mb-4">
-      Paiement du cours
+<main class="max-w-xl mx-auto px-4 py-10">
+
+  <div class="bg-white shadow-lg rounded-xl p-6">
+    <h1 class="text-2xl font-semibold text-center mb-6">
+      Finaliser votre paiement
     </h1>
 
-    <p class="text-gray-600 mb-6">
-      Finalisez votre inscription pour accéder au cours.
-    </p>
+    <form id="payment-form">
+      <div id="payment-element" class="mb-4"></div>
 
-    <button
-      id="payBtn"
-      class="w-full bg-pink-600 text-white py-3 rounded hover:bg-pink-700 transition"
-    >
-      💳 Payer maintenant
-    </button>
+      <button
+        id="submit"
+        class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-lg transition"
+      >
+        Payer maintenant
+      </button>
 
-    <p id="status" class="text-sm text-gray-600 mt-4"></p>
+      <p id="message" class="text-center text-red-600 mt-4"></p>
+    </form>
   </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-pink-600 text-white text-center py-6 px-4 relative">
+
+  <p class="mb-3">
+    <a href="https://docs.google.com/document/d/18MLlfHRXgH2eMLH0FdQL-bQ__Xi5FQ9ZkJpWQGpyM4I/edit?usp=drivesdk"
+       target="_blank"
+       class="text-white italic hover:text-pink-300 hover:underline transition-colors duration-300">
+       Termes & Conditions
+    </a>
+  </p>
+
+  <div class="flex justify-center gap-6 mb-3">
+    <a href="https://www.facebook.com/share/19vWzQBaC6/" target="_blank">
+      <i class="fab fa-facebook-f text-xl"></i>
+    </a>
+    <a href="https://www.instagram.com/tessysbeautyy" target="_blank">
+      <i class="fab fa-instagram text-xl"></i>
+    </a>
+    <a href="https://www.tiktok.com/@tessysbeauty" target="_blank">
+      <i class="fab fa-tiktok text-xl"></i>
+    </a>
+  </div>
+
+  <p class="text-sm text-white/90">
+    © 2025 Tessy’s Beauty & More | Tous droits réservés.
+  </p>
+</footer>
+
+<script src="js/payment.js"></script>
 
 </body>
 </html>
-
