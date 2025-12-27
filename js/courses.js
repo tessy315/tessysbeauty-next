@@ -1,36 +1,41 @@
 const API = "https://academy-api.tessysbeautyy.workers.dev";
 
-// TEMP auth storage (same pattern you already use)
+// Get logged user
 function getUserId() {
   return localStorage.getItem("user_id");
 }
 
-// Attach enroll handlers
-document.addEventListener("click", async (e) => {
-  if (!e.target.classList.contains("enroll-btn")) return;
+// Handle enroll button clicks
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".enroll-btn");
+  if (!btn) return;
 
-  const courseId = e.target.dataset.courseId;
+  const courseId = btn.dataset.courseId;
   const userId = getUserId();
 
+  // Not logged in → login first
   if (!userId) {
-    window.location.href = "/login.html";
+    window.location.href = "/courses/auth.html";
     return;
   }
 
-  // redirect to payment
-  window.location.href = `/payment.html?course=${courseId}`;
+  // Redirect to payment page
+  window.location.href = `/payment.html?course=${encodeURIComponent(courseId)}`;
 });
 
-// Load courses dynamically (optional)
+
+// OPTIONAL — load courses dynamically later
 async function loadCourses() {
   try {
     const res = await fetch(`${API}/courses`);
-    const courses = await res.json();
+    if (!res.ok) return;
 
+    const courses = await res.json();
     console.log("Courses:", courses);
-    // you can later render them dynamically
-  } catch (e) {
-    console.error("Failed to load courses");
+
+    // You can render cards later here
+  } catch (err) {
+    console.error("Failed to load courses", err);
   }
 }
 
