@@ -2,6 +2,24 @@ body {
   font-family: 'Inter', sans-serif;
 overflow-x: hidden; }
 
+/* Desktop mega-menu fade + slide */
+nav .group:hover > div {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+nav .group > div {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+/* Mobile accordion smooth */
+.submenu a {
+  transition: color 0.3s ease;
+}
 
 <!-- Tailwind Animation for Smooth Slide -->
 
