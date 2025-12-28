@@ -10,7 +10,7 @@ const DASHBOARD_API ="https://academy-api.tessysbeautyy.workers.dev/courses/dash
 const token = localStorage.getItem("tessys_token");
 
 if (!token) {
-  window.location.href = "/auth.html";
+  window.location.href = "/courses/auth.html";
 }
 
 // ------------------------------------
@@ -44,7 +44,7 @@ fetch(DASHBOARD_API, {
   console.error(err);
   alert("Session expirée. Veuillez vous reconnecter.");
   localStorage.removeItem("tessys_token");
-  window.location.href = "/auth.html";
+  window.location.href = "/courses/auth.html";
 });
 
 // ------------------------------------
