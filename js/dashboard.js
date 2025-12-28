@@ -135,3 +135,4 @@ function renderGlobalProgress(total, completed) {
 
   document.getElementById("progressPercent").textContent = percent;
 }
+console.log("Opening course:", course.course_id);
