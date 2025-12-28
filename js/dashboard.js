@@ -135,4 +135,14 @@ function renderGlobalProgress(total, completed) {
 
   document.getElementById("progressPercent").textContent = percent;
 }
-console.log("Opening course:", course.course_id);
+
+// ------------------------------------
+// EXAM REDIRECT
+// ------------------------------------
+
+document.querySelectorAll("[data-exam]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const course = btn.dataset.exam;
+    window.location.href = `/courses/quiz.html?course=${course}`;
+  });
+});
