@@ -17,25 +17,137 @@
 
 <body class="min-h-screen bg-gradient-to-b from-pink-100 to-white text-gray-800">
 
-<!-- HEADER -->
-<header class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur shadow z-50">
-  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+<!-- Header -->
+<!-- Header -->
+<header id="man-header" class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
 
-    <a href="/index.html" class="flex items-center gap-3">
-      <img src="https://i.ibb.co/7HsTJyz/Tessys-Beauty-Logo.png"
-           class="h-14 w-auto"
-           alt="Tessy's Beauty" />
-      <span class="text-pink-700 font-semibold text-xl">
-        Tessy’s Beauty
+  <div id="header-inner" class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+
+    <!-- Logo -->
+    <a href="index.html" class="flex items-center gap-3 transition-all duration-500">
+      <img
+        id="logo"
+        src="https://i.ibb.co/7HsTJyz/Tessys-Beauty-Logo.png"
+        alt="Tessy's Beauty & More Logo"
+        class="h-14 sm:h-14 md:h-20 w-auto max-w-[160px] sm:max-w-[160px] md:max-w-[260px] object-contain transition-all duration-500"
+      />
+      <span
+        class="text-pink-700 font-semibold text-xl md:text-2xl"
+        style="font-family: 'Nunito', sans-serif;"
+      >
+        Tessy’s Beauty & More
       </span>
     </a>
 
-    <nav class="hidden md:flex gap-6 font-medium">
-      <a href="/academy.html" class="hover:text-pink-500">Academy</a>
-      <a href="/courses/index.html" class="hover:text-pink-500">Mes cours</a>
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex font-medium justify-center md:justify-end relative">
+      <ul class="flex space-x-6 flex-wrap">
+
+        <!-- Academy -->
+        <li>
+          <a href="/academy.html" class="hover:text-pink-500 transition-all duration-300">
+            Academy
+          </a>
+        </li>
+
+        <!-- Courses -->
+        <li class="group relative">
+          <a href="/courses/index.html" class="hover:text-pink-500 transition-all duration-300">
+            Mes Cours
+          </a>
+
+          <div class="absolute left-0 top-full mt-2 w-64 bg-white shadow-lg border border-gray-200 rounded-none opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-300 z-50">
+            <div class="grid grid-cols-1 gap-2 p-4">
+              <a href="/courses/lesson.html" class="block py-2 px-2 hover:bg-pink-50">
+                Module
+              </a>
+            </div>
+            <div class="grid grid-cols-1 gap-2 p-4">
+              <a href="/courses/quiz.html" class="block py-2 px-2 hover:bg-pink-50">
+                examen
+              </a>
+            </div>
+            <div class="grid grid-cols-1 gap-2 p-4">
+              <a href="/verify.html" class="block py-2 px-2 hover:bg-pink-50">
+                Vérification certificat
+              </a>
+            </div>
+          </div>
+        </li>
+
+        <!-- Logout -->
+        <li>
+          <a href="..." class="hover:text-pink-500 transition-all duration-300">
+            Logout
+          </a>
+        </li>
+
+      </ul>
     </nav>
+
+    <!-- Mobile Hamburger -->
+    <div class="md:hidden">
+      <button id="hamburger" class="text-pink-600 text-2xl focus:outline-none">
+        &#9776;
+      </button>
+    </div>
+
   </div>
+
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="max-h-0 overflow-hidden transition-[max-height] duration-500 ease-in-out md:hidden flex-col mt-2 space-y-2 text-center bg-white/95 shadow-md"
+  >
+
+    <!-- Academy -->
+    <div class="border-b border-gray-200">
+      <a
+        href="/academy.html"
+        class="block py-2 px-4 text-gray-800 font-medium hover:text-pink-500 transition"
+      >
+        Academy
+      </a>
+    </div>
+
+    <!-- Courses -->
+    <div class="mobile-menu-item border-b border-gray-200">
+      <button class="w-full flex justify-between items-center py-2 px-4 text-gray-800 font-medium focus:outline-none">
+        Mes Cours
+        <span class="ml-2 transform transition-transform">&#x25BC;</span>
+      </button>
+
+      <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
+        <a href="/courses/lesson.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
+          Module
+        </a>
+      </div>
+      <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
+        <a href="/courses/quiz.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
+          Examen
+        </a>
+      </div>
+       <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
+        <a href="/verify.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
+          Vérification certificat
+        </a>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <div class="border-b border-gray-200">
+      <a
+        href="..."
+        class="block py-2 px-4 text-gray-800 font-medium hover:text-pink-500 transition"
+      >
+        Logout
+      </a>
+    </div>
+
+  </div>
+
 </header>
+
 
 <!-- MAIN -->
 <main class="pt-28 max-w-7xl mx-auto px-4 pb-16">
