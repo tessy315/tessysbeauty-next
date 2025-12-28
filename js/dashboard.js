@@ -2,7 +2,7 @@
  * Tessys LMS — Dashboard Logic
  **************************************/
 
-const DASHBOARD_API = "https://dashboard.tessysbeautyy.workers.dev/";
+const DASHBOARD_API ="https://academy-api.tessysbeautyy.workers.dev/courses/dashboard";
 
 // ------------------------------------
 // AUTH CHECK
@@ -10,7 +10,7 @@ const DASHBOARD_API = "https://dashboard.tessysbeautyy.workers.dev/";
 const token = localStorage.getItem("tessys_token");
 
 if (!token) {
-  window.location.href = "/login.html";
+  window.location.href = "/auth.html";
 }
 
 // ------------------------------------
@@ -20,7 +20,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("tessys_token");
-    window.location.href = "/login.html";
+    window.location.href = "/.html";
   });
 }
 
@@ -44,7 +44,7 @@ fetch(DASHBOARD_API, {
   console.error(err);
   alert("Session expirée. Veuillez vous reconnecter.");
   localStorage.removeItem("tessys_token");
-  window.location.href = "/login.html";
+  window.location.href = "/auth.html";
 });
 
 // ------------------------------------
