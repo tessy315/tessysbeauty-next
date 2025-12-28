@@ -104,7 +104,8 @@ function renderCourses(courses) {
         <p class="text-xs text-gray-500 mt-1">${progress}% complété</p>
       </div>
 
-      <a href="/lesson.html?course=${course.course_id}"
+      <a href="/courses/lesson.html?course=${course.course_id}"
+
          class="block mt-4 w-full text-center bg-pink-600 text-white py-2 rounded-none hover:bg-pink-700 transition">
         Continuer le cours
       </a>
