@@ -18,21 +18,18 @@ if (!userId || !userStatus) {
 // ------------------------------------
 // LOGOUT
 // ------------------------------------
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
+document.querySelectorAll("#logoutBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
     localStorage.clear();
     window.location.href = "/courses/auth.html";
   });
-}
+});
 
 // ------------------------------------
 // FETCH DASHBOARD DATA
 // ------------------------------------
 fetch(DASHBOARD_API, {
-  headers: {
-    "Authorization": "Bearer " + userId
-  }
+  headers: { "Authorization": "Bearer " + userId }
 })
   .then(res => {
     if (!res.ok) throw new Error("Unauthorized");
@@ -53,7 +50,6 @@ fetch(DASHBOARD_API, {
 // RENDER USER INFO
 // ------------------------------------
 function renderUser(user) {
-  document.getElementById("studentName").textContent = user.name;
   const statusEl = document.getElementById("accountStatus");
 
   if (user.status === "active") {
@@ -93,11 +89,12 @@ function renderCourses(courses, status) {
 
     const progressPercent = lessons.length === 0 ? 0 : Math.round((completed / lessons.length) * 100);
 
-    const disabled = status === "pending" ? "pointer-events-none opacity-50" : "";
-    const cursor = status === "pending" ? "cursor-not-allowed" : "cursor-pointer";
+    const lessonDisabled = status === "pending" ? "pointer-events-none opacity-50 cursor-not-allowed" : "";
+    const quizDisabled = status === "pending" || progressPercent < 100 ? "disabled bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-pink-600 text-white hover:bg-pink-700";
+    const certDisabled = !(status === "active" && course.certificate.issued) ? "disabled bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-green-100 text-green-600 underline";
 
     const courseCard = document.createElement("div");
-    courseCard.className = `bg-white p-6 shadow-sm ${disabled}`;
+    courseCard.className = `bg-white p-6 shadow-sm ${lessonDisabled}`;
 
     courseCard.innerHTML = `
       <h3 class="font-semibold text-lg text-gray-800">${course.title}</h3>
@@ -110,26 +107,20 @@ function renderCourses(courses, status) {
       </div>
 
       <a href="/courses/lesson.html?course=${course.course_id}"
-         class="block mt-4 w-full text-center bg-pink-600 text-white py-2 rounded-none hover:bg-pink-700 transition ${cursor}">
+         class="block mt-4 w-full text-center bg-pink-600 text-white py-2 rounded-none hover:bg-pink-700 transition ${lessonDisabled}">
         Continuer le cours
       </a>
 
       <button
-        ${status === "pending" ? "disabled" : ""}
         data-exam="${course.course_id}"
-        class="mt-2 w-full text-center py-2 ${progressPercent === 100 && status === 'active' ? 'bg-pink-600 text-white hover:bg-pink-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'} transition rounded-none"
-      >
+        class="mt-2 w-full text-center py-2 rounded-none transition ${quizDisabled}">
         Commencer l'examen
       </button>
 
-      ${
-        course.certificate.issued && status === "active"
-          ? `<a href="/certificate.html?id=${course.certificate.certificate_id}"
-               class="block mt-2 text-center text-green-600 underline">
-               🎓 Télécharger certificat
-             </a>`
-          : ""
-      }
+      <a href="/certificate.html?id=${course.certificate.certificate_id || ''}"
+         class="block mt-2 text-center py-2 ${certDisabled}">
+         🎓 Télécharger certificat
+      </a>
     `;
 
     container.appendChild(courseCard);
