@@ -1,13 +1,24 @@
+
 document.getElementById("academy-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const form = e.target;
   const msg = document.getElementById("form-msg");
 
+  const email = form.email.value.trim();
   const password = form.password.value;
   const confirmPassword = form.confirmPassword.value;
 
-  // ✅ Password match
+  // Email format validation
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+  if (!emailPattern.test(email)) {
+    msg.className = "text-sm text-center text-red-600";
+    msg.textContent = "Adresse email invalide.";
+    msg.classList.remove("hidden");
+    return;
+  }
+
+  // Passwords match
   if (password !== confirmPassword) {
     msg.className = "text-sm text-center text-red-600";
     msg.textContent = "Les mots de passe ne correspondent pas.";
@@ -15,9 +26,8 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
     return;
   }
 
-  // ✅ Strong password validation
+  // Strong password check
   const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-  // At least 8 chars, 1 lowercase, 1 uppercase, 1 number, 1 special
   if (!passwordPattern.test(password)) {
     msg.className = "text-sm text-center text-red-600";
     msg.textContent = "Mot de passe faible. Il doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole.";
@@ -32,7 +42,7 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
   const payload = {
     nom: form.nom.value.trim(),
     prenom: form.prenom.value.trim(),
-    email: form.email.value.trim(),
+    email,
     telephone: form.telephone.value.trim(),
     password
   };
@@ -65,3 +75,4 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
     msg.textContent = "Erreur réseau. Réessayez.";
   }
 });
+
