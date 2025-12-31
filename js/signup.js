@@ -20,7 +20,7 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": "admin2025_secret_key"
+        "x-api-key": "tBA3R8v2kL9qXz5mN0yH"
       },
       body: JSON.stringify(payload)
     });
