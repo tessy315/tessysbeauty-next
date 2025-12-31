@@ -15,7 +15,7 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
   };
 
   try {
-    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev", {
+    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/register", {
 
       method: "POST",
       headers: {
