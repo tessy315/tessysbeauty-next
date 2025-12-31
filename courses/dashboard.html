@@ -40,111 +40,100 @@
     </a>
 
     <!-- Desktop Navigation -->
-    <nav class="hidden md:flex font-medium justify-center md:justify-end relative">
-      <ul class="flex space-x-6 flex-wrap">
-
-        <!-- Academy -->
-        <li>
-          <a href="/academy.html" class="hover:text-pink-500 transition-all duration-300">
-            Academy
-          </a>
-        </li>
-
-        <!-- Courses -->
-        <li class="group relative">
-          <a href="/courses/index.html" class="hover:text-pink-500 transition-all duration-300">
-            Mes Cours
-          </a>
-
-          <div class="absolute left-0 top-full mt-2 w-64 bg-white shadow-lg border border-gray-200 rounded-none opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-300 z-50">
-            <div class="grid grid-cols-1 gap-2 p-4">
-              <a href="/courses/lesson.html" class="block py-2 px-2 hover:bg-pink-50">
-                Module
-              </a>
-            </div>
-            <div class="grid grid-cols-1 gap-2 p-4">
-              <a href="/courses/quiz.html" class="block py-2 px-2 hover:bg-pink-50">
-                examen
-              </a>
-            </div>
-            <div class="grid grid-cols-1 gap-2 p-4">
-              <a href="/verify.html" class="block py-2 px-2 hover:bg-pink-50">
-                Vérification certificat
-              </a>
-            </div>
-          </div>
-        </li>
-
-        <!-- Logout -->
-        <li>
-          <a href="..." class="hover:text-pink-500 transition-all duration-300">
-            Logout
-          </a>
-        </li>
-
-      </ul>
-    </nav>
-
-    <!-- Mobile Hamburger -->
-    <div class="md:hidden">
-      <button id="hamburger" class="text-pink-600 text-2xl focus:outline-none">
-        &#9776;
-      </button>
-    </div>
-
-  </div>
-
-  <!-- Mobile Menu -->
-  <div
-    id="mobile-menu"
-    class="max-h-0 overflow-hidden transition-[max-height] duration-500 ease-in-out md:hidden flex-col mt-2 space-y-2 text-center bg-white/95 shadow-md"
-  >
+<nav class="hidden md:flex font-medium justify-center md:justify-end relative">
+  <ul class="flex space-x-6 flex-wrap">
 
     <!-- Academy -->
-    <div class="border-b border-gray-200">
-      <a
-        href="/academy.html"
-        class="block py-2 px-4 text-gray-800 font-medium hover:text-pink-500 transition"
-      >
+    <li>
+      <a href="/academy.html" class="hover:text-pink-500 transition-all duration-300">
         Academy
       </a>
-    </div>
+    </li>
 
     <!-- Courses -->
-    <div class="mobile-menu-item border-b border-gray-200">
-      <button class="w-full flex justify-between items-center py-2 px-4 text-gray-800 font-medium focus:outline-none">
+    <li class="group relative">
+      <a href="/courses/index.html" class="hover:text-pink-500 transition-all duration-300">
         Mes Cours
-        <span class="ml-2 transform transition-transform">&#x25BC;</span>
-      </button>
+      </a>
 
-      <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
-        <a href="/courses/lesson.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
-          Module
-        </a>
+      <div class="absolute left-0 top-full mt-2 w-64 bg-white shadow-lg border border-gray-200 rounded-none opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-300 z-50">
+        <div class="grid grid-cols-1 gap-2 p-4">
+          <a href="/courses/lesson.html" class="block py-2 px-2 hover:bg-pink-50">
+            Module
+          </a>
+        </div>
+        <div class="grid grid-cols-1 gap-2 p-4">
+          <a href="/courses/quiz.html" class="block py-2 px-2 hover:bg-pink-50">
+            Examen
+          </a>
+        </div>
+        <div class="grid grid-cols-1 gap-2 p-4">
+          <a href="/verify.html" class="block py-2 px-2 hover:bg-pink-50">
+            Vérification certificat
+          </a>
+        </div>
       </div>
-      <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
-        <a href="/courses/quiz.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
-          Examen
-        </a>
-      </div>
-       <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
-        <a href="/verify.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
-          Vérification certificat
-        </a>
-      </div>
-    </div>
+    </li>
 
     <!-- Logout -->
-    <div class="border-b border-gray-200">
-      <a
-        href="..."
-        class="block py-2 px-4 text-gray-800 font-medium hover:text-pink-500 transition"
-      >
+    <li>
+      <button id="logoutBtn" class="hover:text-pink-500 transition-all duration-300">
         Logout
+      </button>
+    </li>
+
+  </ul>
+</nav>
+
+<!-- Mobile Menu -->
+<div
+  id="mobile-menu"
+  class="max-h-0 overflow-hidden transition-[max-height] duration-500 ease-in-out md:hidden flex-col mt-2 space-y-2 text-center bg-white/95 shadow-md"
+>
+
+  <!-- Academy -->
+  <div class="border-b border-gray-200">
+    <a
+      href="/academy.html"
+      class="block py-2 px-4 text-gray-800 font-medium hover:text-pink-500 transition"
+    >
+      Academy
+    </a>
+  </div>
+
+  <!-- Courses -->
+  <div class="mobile-menu-item border-b border-gray-200">
+    <button class="w-full flex justify-between items-center py-2 px-4 text-gray-800 font-medium focus:outline-none">
+      Mes Cours
+      <span class="ml-2 transform transition-transform">&#x25BC;</span>
+    </button>
+
+    <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
+      <a href="/courses/lesson.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
+        Module
       </a>
     </div>
-
+    <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
+      <a href="/courses/quiz.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
+        Examen
+      </a>
+    </div>
+     <div class="submenu max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out bg-white">
+      <a href="/verify.html" class="block py-2 px-6 text-gray-800 hover:text-pink-500 transition">
+        Vérification certificat
+      </a>
+    </div>
   </div>
+
+  <!-- Logout -->
+  <div class="border-b border-gray-200">
+    <button id="logoutBtn" class="block w-full py-2 px-4 text-gray-800 font-medium hover:text-pink-500 transition">
+      Logout
+    </button>
+  </div>
+
+</div>
+
 
 </header>
 
