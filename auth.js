@@ -12,13 +12,14 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   };
 
   try {
-    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/courses/auth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    const res = await fetch(
+      "https://academy-api.tessysbeautyy.workers.dev/courses/auth",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }
+    );
 
     const data = await res.json();
 
@@ -28,16 +29,10 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       return;
     }
 
-    // ✅ Pending user (payment not validated yet)
-    if (data.status === "pending") {
-      status.className = "text-sm text-center text-yellow-600";
-      status.textContent = "Compte créé. Paiement en attente de validation.";
-      return;
-    }
-
-    // ✅ Save session (simple version)
+    // ✅ Save session regardless of status
     localStorage.setItem("academy_user_id", data.id);
-    localStorage.setItem("academy_status", data.status);
+    localStorage.setItem("academy_status", data.status); // pending / active
+    localStorage.setItem("academy_name", data.nom || "Étudiant");
 
     // Redirect to dashboard
     window.location.href = "/courses/dashboard.html";
@@ -48,17 +43,17 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   }
 });
 
+// Google Login
 async function handleGoogleLogin(response) {
   try {
-    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/courses/auth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        id_token: response.credential
-      })
-    });
+    const res = await fetch(
+      "https://academy-api.tessysbeautyy.workers.dev/courses/auth",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_token: response.credential })
+      }
+    );
 
     const data = await res.json();
 
@@ -67,20 +62,15 @@ async function handleGoogleLogin(response) {
       return;
     }
 
-    // Save session
+    // ✅ Save session regardless of status
     localStorage.setItem("academy_user_id", data.id);
     localStorage.setItem("academy_status", data.status);
+    localStorage.setItem("academy_name", data.nom || "Étudiant");
 
-    if (data.status === "pending") {
-      alert("Compte créé. Paiement requis pour activer.");
-      return;
-    }
-
-    // Redirect after success
+    // Redirect to dashboard
     window.location.href = "/courses/dashboard.html";
 
   } catch (err) {
     alert("Erreur réseau Google login");
   }
 }
-
