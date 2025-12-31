@@ -12,7 +12,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   };
 
   try {
-    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/auth", {
+    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/courses/auth", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -50,7 +50,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
 async function handleGoogleLogin(response) {
   try {
-    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/auth", {
+    const res = await fetch("https://academy-api.tessysbeautyy.workers.dev/courses/auth", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
