@@ -7,9 +7,20 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
   const password = form.password.value;
   const confirmPassword = form.confirmPassword.value;
 
+  // ✅ Password match
   if (password !== confirmPassword) {
     msg.className = "text-sm text-center text-red-600";
     msg.textContent = "Les mots de passe ne correspondent pas.";
+    msg.classList.remove("hidden");
+    return;
+  }
+
+  // ✅ Strong password validation
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  // At least 8 chars, 1 lowercase, 1 uppercase, 1 number, 1 special
+  if (!passwordPattern.test(password)) {
+    msg.className = "text-sm text-center text-red-600";
+    msg.textContent = "Mot de passe faible. Il doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole.";
     msg.classList.remove("hidden");
     return;
   }
@@ -23,7 +34,7 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
     prenom: form.prenom.value.trim(),
     email: form.email.value.trim(),
     telephone: form.telephone.value.trim(),
-    password // include password
+    password
   };
 
   try {
@@ -47,7 +58,7 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
     msg.className = "text-sm text-center text-green-600";
     msg.textContent = "Compte créé avec succès ✅";
 
-    setTimeout(() => window.location.href = "/auth.html", 1200);
+    setTimeout(() => window.location.href = "/courses/auth.html", 1200);
 
   } catch (err) {
     msg.className = "text-sm text-center text-red-600";
