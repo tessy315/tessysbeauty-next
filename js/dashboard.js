@@ -67,7 +67,7 @@ function renderUser(user) {
     statusEl.className = "text-lg font-semibold text-orange-500";
 
     document.getElementById("payNowBtn").addEventListener("click", () => {
-      window.location.href = "/courses/payment.html";
+      window.location.href = "/api/payment.html";
     });
   }
 }
