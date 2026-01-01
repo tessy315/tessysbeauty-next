@@ -45,7 +45,6 @@
   <header id="man-header" class="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
     <div id="header-inner" class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <!-- LOGO -->
         <a href="index.html" class="flex items-center space-x-1 transition-all duration-500">
           <img 
             id="logo"
@@ -65,17 +64,15 @@
           <a href="/signup.html" class="hover:text-pink-500">S'inscrire</a> 
           <a href="#contact" class="hover:text-pink-500">Contact</a> 
         </ul> 
-      </nav> 
+      </nav>
 
-      <!-- Hamburger mobile -->
       <div class="md:hidden">
         <button id="hamburger" class="text-pink-600 text-2xl focus:outline-none">
           &#9776;
         </button>
       </div>
-    </div> 
-    
-    <!-- Mobile menu -->
+    </div>
+
     <div id="mobile-menu" class="max-h-0 overflow-hidden transition-[max-height] duration-500 ease-in-out md:hidden flex flex-col mt-2 space-y-2 text-center">
       <a href="/index.html" class="hover:text-pink-500 block">Accueil</a>  
       <a href="/signup.html" class="hover:text-pink-500 block">S'inscrire</a>  
@@ -83,13 +80,45 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <main class="flex-grow max-w-xl mx-auto px-4 py-10 pt-32 md:pt-40">
+
     <div class="bg-white shadow-lg rounded-none p-6">
+
       <h1 class="text-2xl font-semibold text-center mb-6">
-        Finaliser votre inscription
+        Paiement sécurisé & activation automatique
       </h1>
 
+      <!-- INFO MESSAGE -->
+      <div class="bg-pink-50 border border-pink-200 shadow-sm rounded-none p-6 mb-8 text-center">
+
+        <h2 class="text-xl font-semibold text-pink-700 mb-3">
+          Inscription confirmée – dernière étape ✔️
+        </h2>
+
+        <p class="text-gray-700 leading-relaxed max-w-md mx-auto">
+
+          Votre inscription a bien été enregistrée.<br><br>
+
+          🔐 <strong>Paiement 100 % sécurisé et automatique</strong><br>
+          Les paiements sont traités instantanément via <strong>Stripe</strong> ou <strong>MonCash</strong>.
+          Dès validation du paiement, votre accès est activé automatiquement, sans intervention manuelle.
+          <br><br>
+
+          💳 <strong>Montant à régler maintenant :</strong> <span class="font-semibold">1 000 HTG</span><br>
+          (frais d’inscription + accès immédiat à la plateforme en ligne)
+          <br><br>
+
+          📘 <strong>Frais restants pour la formation en présentiel :</strong><br>
+          <span class="font-semibold">7 500 HTG</span><br>
+          <span class="text-sm text-gray-600">
+            À régler avant le début des cours en salle.
+          </span>
+
+        </p>
+      </div>
+
+      <!-- PAYMENT -->
       <form id="payment-form">
         <div id="payment-element" class="mb-4"></div>
 
@@ -97,11 +126,12 @@
           id="submit"
           class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-none transition"
         >
-          Payer maintenant
+          Procéder au paiement sécurisé
         </button>
 
         <p id="message" class="text-center text-red-600 mt-4"></p>
       </form>
+
     </div>
   </main>
 
@@ -132,6 +162,6 @@
     </p>
   </footer>
 
-  <script src="js/payment.js"></script>
+  <script src="/js/payment.js"></script>
 </body>
 </html>
