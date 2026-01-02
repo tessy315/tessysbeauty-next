@@ -72,7 +72,7 @@ form.addEventListener("submit", async (e) => {
 const API_BASE = "https://academy-api.tessysbeautyy.workers.dev/reviews"; 
 const R2_BASE = "https://pub-21ee2076b2774a0ea376336500b6f999.r2.dev/";
 let currentPage = 1;
-const limit = 5; // reviews per page
+const limit = 6; // reviews per page
 
 function sanitizeText(text) {
   if (!text) return "";
