@@ -74,8 +74,14 @@ function renderUser(user) {
     statusEl.className = "text-lg font-semibold text-orange-500";
 
     document.getElementById("payNowBtn").addEventListener("click", () => {
-      window.location.href = "/api/payment.html";
-    });
+  const course = localStorage.getItem("selected_course");
+  if (!course) {
+    alert("Cours manquant");
+    return;
+  }
+  window.location.href = `/payment.html?course=${course}`;
+});
+
   }
 
   // Grey out navigation links if pending
