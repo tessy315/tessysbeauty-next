@@ -290,15 +290,16 @@
           class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 rounded-none">
           Publier mon avis
         </button>
-       <div class="flex justify-center gap-4 mt-6">
-  <button id="prev-page" class="px-4 py-2 border">← Précédent</button>
-  <span id="page-indicator" class="text-sm text-gray-600"></span>
-  <button id="next-page" class="px-4 py-2 border">Suivant →</button>
-</div>
-
-      </form>
+     </form>
     </div>
   </div>
+ <!-- Reviews List + Pagination -->
+<div id="reviews-container" class="max-w-4xl mx-auto grid gap-6 sm:grid-cols-2 mt-8"></div>
+<div id="reviews-pagination" class="mt-4 flex justify-center gap-2">
+  <button id="prev-page" disabled>« Prev</button>
+  <span id="page-info"></span>
+  <button id="next-page">Next »</button>
+</div>
 </section>
 
 <!-- CONTACT -->
@@ -345,7 +346,7 @@
   <p class="text-sm">© 2025 Tessy’s Beauty & More — Tous droits réservés.</p>
 </footer>
 
-<script src="js/commonUI.js"></script>
-<script src="js/academy.js"></script>
+<script src="/js/commonUI.js"></script>
+<script src="/js/academy.js"></script>
 </body>
 </html>
