@@ -42,7 +42,7 @@ function renderReviews(reviews) {
 
   reviews.forEach(r => {
     const div = document.createElement("div");
-    div.className = "border rounded p-3 mb-3 shadow-sm";
+    div.className = "border rounded-none p-3 mb-3 shadow-sm";
 
     div.innerHTML = `
       <div class="flex items-center mb-2">
@@ -50,7 +50,7 @@ function renderReviews(reviews) {
         <span class="text-yellow-500">${renderStars(r.rating)}</span>
       </div>
       <p class="mb-2">${r.comment}</p>
-      ${r.imageUrl ? `<img src="${r.imageUrl}" alt="Review image" class="max-w-xs rounded shadow mb-2">` : ""}
+      ${r.imageUrl ? `<img src="${r.imageUrl}" alt="Review image" class="max-w-xs rounded-none shadow mb-2">` : ""}
       <small class="text-gray-500">${new Date(r.created_at).toLocaleDateString()}</small>
     `;
 
