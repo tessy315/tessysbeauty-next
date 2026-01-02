@@ -34,10 +34,11 @@ const selectedCourseId = localStorage.getItem("selected_course");
 // FETCH DASHBOARD DATA
 // ------------------------------------
 fetch(DASHBOARD_API, {
-  headers: {
-    "Authorization": "Bearer " + localStorage.getItem("academy_token")
-  }
-});
+      headers: {
+        "Authorization": "Bearer " + userId,
+        "Content-Type": "application/json"
+      }
+    });
 
   .then(res => {
     if (!res.ok) throw new Error("Unauthorized");
