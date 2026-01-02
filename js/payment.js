@@ -13,7 +13,7 @@ if (!courseId) {
   throw new Error("Missing course id");
 }
 
-const token = localStorage.getItem("academy_token");
+const token = localStorage.getItem("token");
 if (!token) {
   window.location.href = "/courses/auth.html";
 }
@@ -25,7 +25,7 @@ async function initPayment() {
     const res = await fetch(`${API}/payment/stripe`, {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("academy_token"),
+        "Authorization": "Bearer " + userId,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ course_id: courseId })
