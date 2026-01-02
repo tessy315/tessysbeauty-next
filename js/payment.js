@@ -13,7 +13,7 @@ if (!courseId) {
   throw new Error("Missing course id");
 }
 
-const token = localStorage.getItem("token");
+const token = localStorage.getItem("academy_token");
 if (!token) {
   window.location.href = "/courses/auth.html";
 }
