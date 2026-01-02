@@ -1,169 +1,82 @@
 
-const API_REVIEWS = "https://academy-api.tessysbeautyy.workers.dev/reviews";
-const ADMIN_TOKEN = localStorage.getItem("admin_token") || null;
-
+const API_BASE = "https://academy-api.tessysbeautyy.workers.dev/reviews"; 
+const R2_BASE = "https://pub-21ee2076b2774a0ea376336500b6f999.r2.dev"; 
 let currentPage = 1;
-const limit = 6;
+const limit = 5; // reviews per page
 
-function escapeText(text) {
+function sanitizeText(text) {
+  if (!text) return "";
   return text
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/https?:\/\/\S+/gi, "[lien supprimé]");
+    .replace(/https?:\/\/\S+/gi, "")  // remove URLs
+    .replace(/<[^>]*>/g, "")         // strip HTML
+    .trim();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const popup = document.getElementById("review-popup");
-  const openBtn = document.getElementById("open-review-form");
-  const closeBtn = document.getElementById("close-popup");
-  const form = document.getElementById("review-form");
-  const list = document.getElementById("reviews-list");
+function renderStars(rating) {
+  const fullStar = "★";
+  const emptyStar = "☆";
+  return fullStar.repeat(rating) + emptyStar.repeat(5 - rating);
+}
 
-  const prevBtn = document.getElementById("prev-page");
-  const nextBtn = document.getElementById("next-page");
-  const pageLabel = document.getElementById("page-indicator");
+async function fetchReviews(page = 1) {
+  const url = `${API_BASE}?page=${page}&limit=${limit}`;
+  const res = await fetch(url);
+  if (!res.ok) return [];
 
-  const stars = document.querySelectorAll("#rating-stars span");
+  const reviews = await res.json();
+  return reviews.map(r => ({
+    ...r,
+    comment: sanitizeText(r.comment),
+    imageUrl: r.image_key ? `${R2_BASE}${r.image_key}` : null
+  }));
+}
 
-  let rating = 0;
+function renderReviews(reviews) {
+  const container = document.getElementById("reviews-container");
+  container.innerHTML = "";
 
-  /* ---------------- MODAL ---------------- */
-  openBtn?.addEventListener("click", () => popup.classList.remove("hidden"));
-  closeBtn?.addEventListener("click", () => popup.classList.add("hidden"));
-
-  /* ---------------- STARS ---------------- */
-  stars.forEach(star => {
-    star.addEventListener("click", () => {
-      rating = Number(star.dataset.value);
-      stars.forEach(s => {
-        s.classList.toggle("text-yellow-400", Number(s.dataset.value) <= rating);
-        s.classList.toggle("text-gray-400", Number(s.dataset.value) > rating);
-      });
-    });
-  });
-
-  /* ---------------- LOAD REVIEWS ---------------- */
-  async function loadReviews(page = 1) {
-    currentPage = page;
-
-    const res = await fetch(`${API_REVIEWS}?page=${page}&limit=${limit}`);
-    const data = await res.json();
-
-    list.innerHTML = "";
-
-    if (!data.items.length) {
-      list.innerHTML = `<p class="text-center text-gray-500">Aucun avis.</p>`;
-      return;
-    }
-
-    data.items.forEach(r => {
-      const stars = "★".repeat(r.rating) + "☆".repeat(5 - r.rating);
-
-      const card = document.createElement("div");
-      card.className =
-        "bg-white border border-pink-100 shadow p-5 rounded-none";
-
-      card.innerHTML = `
-        <div class="flex justify-between items-center mb-2">
-          <h4 class="font-semibold text-pink-700">${escapeText(r.name)}</h4>
-          <span class="text-yellow-400 text-lg">${stars}</span>
-        </div>
-
-        ${r.image_url ? `
-          <img src="${r.image_url}" 
-               class="w-full max-h-60 object-cover rounded-none mb-3 border" />
-        ` : ""}
-
-        <p class="text-gray-700 text-sm whitespace-pre-line">
-          ${escapeText(r.comment)}
-        </p>
-
-        <div class="flex justify-between items-center mt-3 text-xs text-gray-400">
-          <span>${new Date(r.created_at).toLocaleDateString()}</span>
-          ${
-            ADMIN_TOKEN
-              ? `<button data-id="${r.id}" class="delete-review text-red-500 hover:underline">Supprimer</button>`
-              : ""
-          }
-        </div>
-      `;
-
-      list.appendChild(card);
-    });
-
-    pageLabel.textContent = `Page ${data.page} / ${data.totalPages}`;
-
-    prevBtn.disabled = page <= 1;
-    nextBtn.disabled = page >= data.totalPages;
-
-    bindDeleteButtons();
+  if (reviews.length === 0) {
+    container.innerHTML = "<p>No reviews yet.</p>";
+    return;
   }
 
-  /* ---------------- DELETE (ADMIN) ---------------- */
-  function bindDeleteButtons() {
-    document.querySelectorAll(".delete-review").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        if (!confirm("Supprimer cet avis ?")) return;
+  reviews.forEach(r => {
+    const div = document.createElement("div");
+    div.className = "border rounded p-3 mb-3 shadow-sm";
 
-        const id = btn.dataset.id;
+    div.innerHTML = `
+      <div class="flex items-center mb-2">
+        <strong class="mr-2">${r.name}</strong>
+        <span class="text-yellow-500">${renderStars(r.rating)}</span>
+      </div>
+      <p class="mb-2">${r.comment}</p>
+      ${r.imageUrl ? `<img src="${r.imageUrl}" alt="Review image" class="max-w-xs rounded shadow mb-2">` : ""}
+      <small class="text-gray-500">${new Date(r.created_at).toLocaleDateString()}</small>
+    `;
 
-        await fetch(`${API_REVIEWS}/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Authorization": `Bearer ${ADMIN_TOKEN}`
-          }
-        });
-
-        loadReviews(currentPage);
-      });
-    });
-  }
-
-  /* ---------------- SUBMIT REVIEW ---------------- */
-  form?.addEventListener("submit", async e => {
-    e.preventDefault();
-
-    const name = form.querySelector("input[type='text']").value.trim();
-    const comment = form.querySelector("textarea").value.trim();
-    const image = form.querySelector("input[type='file']").files[0];
-
-    if (!name || !comment || rating === 0) {
-      alert("Veuillez remplir le nom, le message et la note.");
-      return;
-    }
-
-    const fd = new FormData();
-    fd.append("name", name);
-    fd.append("comment", comment);
-    fd.append("rating", rating);
-    if (image) fd.append("image", image);
-
-    const res = await fetch(API_REVIEWS, {
-      method: "POST",
-      body: fd
-    });
-
-    if (!res.ok) {
-      alert("Erreur lors de l’envoi.");
-      return;
-    }
-
-    form.reset();
-    rating = 0;
-    stars.forEach(s => s.classList.remove("text-yellow-400"));
-    popup.classList.add("hidden");
-
-    loadReviews(1);
+    container.appendChild(div);
   });
+}
 
-  /* ---------------- PAGINATION ---------------- */
-  prevBtn?.addEventListener("click", () => {
-    if (currentPage > 1) loadReviews(currentPage - 1);
-  });
+async function loadReviews() {
+  const reviews = await fetchReviews(currentPage);
+  renderReviews(reviews);
 
-  nextBtn?.addEventListener("click", () => {
-    loadReviews(currentPage + 1);
-  });
+  document.getElementById("page-info").textContent = `Page ${currentPage}`;
+  document.getElementById("prev-page").disabled = currentPage <= 1;
+  document.getElementById("next-page").disabled = reviews.length < limit;
+}
 
-  loadReviews(1);
+document.getElementById("prev-page").addEventListener("click", () => {
+  if (currentPage > 1) currentPage--;
+  loadReviews();
 });
+
+document.getElementById("next-page").addEventListener("click", () => {
+  currentPage++;
+  loadReviews();
+});
+
+// Initial load
+loadReviews();
+
