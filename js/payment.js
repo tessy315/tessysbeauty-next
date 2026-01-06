@@ -3,60 +3,29 @@ const API = "https://academy-api.tessysbeautyy.workers.dev";
 // ⚠️ clé publique TEST Stripe
 const stripe = Stripe("pk_test_51Siyg82M8ztFJb4DGPu0jlzKyMqrKhy7g4ZE2NyDamob7CuBxjGFmAKOYlEZUvfwoLJVIBDVAPU2fTx2DcBcbt1000CtQLaTLL");
 
-const params = new URLSearchParams(window.location.search);
-const courseId = params.get("course");
+const userId = localStorage.getItem("academy_user_id");
+if (!userId) window.location.href = "/courses/auth.html";
 
-const messageEl = document.getElementById("message");
-
-if (!courseId) {
-  messageEl.textContent = "Cours manquant.";
-  throw new Error("Missing course id");
-}
-
-const token = localStorage.getItem("token");
-if (!token) {
-  window.location.href = "/courses/auth.html";
-}
+const courseId = new URLSearchParams(window.location.search).get("course");
+if (!courseId) throw new Error("Missing course");
 
 let elements;
 
 async function initPayment() {
-  try {
-    const res = await fetch(`${API}/payment/stripe`, {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + userId,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ course_id: courseId })
-    });
+  const res = await fetch(`${API}/payment/stripe`, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + userId,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ course_id: courseId })
+  });
 
-    const data = await res.json();
+  const data = await res.json();
+  if (!data.clientSecret) throw new Error("Stripe init failed");
 
-    if (!data.clientSecret) {
-      messageEl.textContent = data.error || "Erreur lors de l'initialisation du paiement.";
-      return;
-    }
-
-    elements = stripe.elements({
-      clientSecret: data.clientSecret,
-      appearance: {
-        theme: "stripe",
-        variables: {
-          colorPrimary: "#db2777",
-          borderRadius: "6px",
-          fontFamily: "Poppins, system-ui, sans-serif"
-        }
-      }
-    });
-
-    const paymentElement = elements.create("payment");
-    paymentElement.mount("#payment-element");
-
-  } catch (err) {
-    messageEl.textContent = "Erreur réseau ou Stripe indisponible.";
-    console.error(err);
-  }
+  elements = stripe.elements({ clientSecret: data.clientSecret });
+  elements.create("payment").mount("#payment-element");
 }
 
 document.getElementById("payment-form").addEventListener("submit", async (e) => {
@@ -65,12 +34,12 @@ document.getElementById("payment-form").addEventListener("submit", async (e) => 
   const { error } = await stripe.confirmPayment({
     elements,
     confirmParams: {
-      return_url: `${window.location.origin}/dashboard.html`
+      return_url: `${location.origin}/courses/dashboard.html`
     }
   });
 
   if (error) {
-    messageEl.textContent = error.message;
+    document.getElementById("message").textContent = error.message;
   }
 });
 
