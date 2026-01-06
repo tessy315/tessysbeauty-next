@@ -45,7 +45,7 @@ async function enrollAndPay(courseId) {
     }
 
     localStorage.setItem("selected_course", courseId);
-    window.location.href = `/payment.html?course=${courseId}`;
+    window.location.href = `/checkout.html?course=${courseId}`;
 
   } catch (err) {
     console.error(err);
