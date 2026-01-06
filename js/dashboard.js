@@ -2,22 +2,21 @@
  * Tessys LMS — Fully Integrated Dashboard
  **************************************/
 
-const DASHBOARD_API = "https://academy-api.tessysbeautyy.workers.dev/courses/dashboard";
+const API = "https://academy-api.tessysbeautyy.workers.dev";
 
-// ------------------------------------
-// AUTH CHECK
-// ------------------------------------
+/* =========================
+   AUTH CHECK
+========================= */
 const userId = localStorage.getItem("academy_user_id");
-const userStatus = localStorage.getItem("academy_status");
 
-if (!userId || !userStatus) {
+if (!userId) {
   alert("Session expirée. Veuillez vous reconnecter.");
   window.location.href = "/courses/auth.html";
 }
 
-// ------------------------------------
-// LOGOUT
-// ------------------------------------
+/* =========================
+   LOGOUT
+========================= */
 document.querySelectorAll("#logoutBtn").forEach(btn => {
   btn.addEventListener("click", () => {
     localStorage.clear();
@@ -25,41 +24,60 @@ document.querySelectorAll("#logoutBtn").forEach(btn => {
   });
 });
 
-// ------------------------------------
-// SELECTED COURSE (from index.html)
-// ------------------------------------
-const selectedCourseId = localStorage.getItem("selected_course");
-
-// ------------------------------------
-// FETCH DASHBOARD DATA
-// ------------------------------------
-fetch(DASHBOARD_API, {
+/* =========================
+   ENROLL + PAY (REUSED)
+========================= */
+async function enrollAndPay(courseId) {
+  try {
+    const res = await fetch(`${API}/enroll`, {
+      method: "POST",
       headers: {
         "Authorization": "Bearer " + userId,
         "Content-Type": "application/json"
-      }
+      },
+      body: JSON.stringify({ course_id: courseId })
     });
 
-  .then(res => {
-    if (!res.ok) throw new Error("Unauthorized");
-    return res.json();
-  })
-  .then(data => {
-    renderUser(data.user);
-    renderCourses(data.courses, data.user.status);
-    // Clear selected course after use
-    localStorage.removeItem("selected_course");
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Session expirée. Veuillez vous reconnecter.");
-    localStorage.clear();
-    window.location.href = "/courses/auth.html";
-  });
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.error || "Erreur d'inscription");
+      return;
+    }
 
-// ------------------------------------
-// RENDER USER INFO
-// ------------------------------------
+    localStorage.setItem("selected_course", courseId);
+    window.location.href = `/payment.html?course=${courseId}`;
+
+  } catch (err) {
+    console.error(err);
+    alert("Erreur réseau");
+  }
+}
+
+/* =========================
+   FETCH DASHBOARD DATA
+========================= */
+fetch(`${API}/courses/dashboard`, {
+  headers: {
+    "Authorization": "Bearer " + userId,
+    "Content-Type": "application/json"
+  }
+})
+.then(res => {
+  if (!res.ok) throw new Error("Unauthorized");
+  return res.json();
+})
+.then(data => {
+  renderUser(data.user);
+  renderCourses(data.courses, data.user.status);
+})
+.catch(() => {
+  localStorage.clear();
+  window.location.href = "/courses/auth.html";
+});
+
+/* =========================
+   RENDER USER STATUS
+========================= */
 function renderUser(user) {
   const statusEl = document.getElementById("accountStatus");
 
@@ -69,22 +87,23 @@ function renderUser(user) {
   } else {
     statusEl.innerHTML = `
       En attente de paiement
-      <button id="payNowBtn" class="ml-4 bg-pink-600 text-white px-3 py-1 text-sm hover:bg-pink-700 transition">
-        Pay Now
+      <button id="payNowBtn"
+        class="ml-4 bg-pink-600 text-white px-3 py-1 text-sm hover:bg-pink-700">
+        Payer maintenant
       </button>
     `;
     statusEl.className = "text-lg font-semibold text-orange-500";
 
     document.getElementById("payNowBtn").addEventListener("click", () => {
-  const course = localStorage.getItem("selected_course");
-  if (!course) {
-    alert("Cours manquant");
-    return;
+      const courseId = localStorage.getItem("selected_course");
+      if (!courseId) {
+        alert("Cours manquant");
+        return;
+      }
+      enrollAndPay(courseId);
+    });
   }
-  window.location.href = `/payment.html?course=${course}`;
-});
-
-  }
+}
 
   // Grey out navigation links if pending
   if (user.status === "pending") {
