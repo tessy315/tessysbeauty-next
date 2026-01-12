@@ -79,6 +79,11 @@ fetch(`${API}/courses/dashboard`, {
    RENDER USER STATUS
 ========================= */
 function renderUser(user) {
+  const nameEl = document.getElementById("studentName");
+  if (nameEl && user.name) {
+    nameEl.textContent = user.name;
+  }
+
   const statusEl = document.getElementById("accountStatus");
 
   if (user.status === "active") {
@@ -93,25 +98,15 @@ function renderUser(user) {
       </button>
     `;
     statusEl.className = "text-lg font-semibold text-orange-500";
-
-    document.getElementById("payNowBtn").addEventListener("click", () => {
-      const courseId = localStorage.getItem("selected_course");
-      if (!courseId) {
-        alert("Cours manquant");
-        return;
-      }
-      enrollAndPay(courseId);
-    });
   }
-}
 
-  // Grey out navigation links if pending
   if (user.status === "pending") {
     document.querySelectorAll(".nav-mes-cours a").forEach(nav => {
       nav.classList.add("pointer-events-none", "opacity-50", "cursor-not-allowed");
     });
   }
 }
+
 
 // ------------------------------------
 // RENDER COURSES
