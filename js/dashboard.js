@@ -81,7 +81,9 @@ fetch(`${API}/courses/dashboard`, {
 function renderUser(user) {
   const nameEl = document.getElementById("studentName");
   if (nameEl && user.name) {
-    nameEl.textContent = user.name;
+    // Take only the first word (first name)
+    const firstName = user.name.trim().split(" ")[0];
+    nameEl.textContent = firstName;
   }
 
   const statusEl = document.getElementById("accountStatus");
