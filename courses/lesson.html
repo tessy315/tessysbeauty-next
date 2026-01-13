@@ -6,7 +6,6 @@
   <title>Lesson | Tessy’s Beauty Academy</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -39,67 +38,43 @@
 <!-- MAIN -->
 <main class="pt-24 max-w-7xl mx-auto px-4 pb-16 grid lg:grid-cols-4 gap-6">
 
-  <!-- LEFT: LESSON CONTENT -->
+  <!-- LEFT CONTENT -->
   <section class="lg:col-span-3 space-y-6">
 
-    <!-- LESSON TITLE -->
+    <!-- LESSON HEADER -->
     <div class="bg-white p-6 rounded-none shadow-sm">
-      <h1 class="text-2xl font-bold text-gray-800">
-       📌 Module 1 : Introduction au maquillage professionnel
-      </h1>
-      <p class="text-gray-600 mt-1">
-        Bases, hygiène et matériel essentiel
-      </p>
+      <h1 id="lessonTitle" class="text-2xl font-bold text-gray-800"></h1>
+      <p id="lessonDescription" class="text-gray-600 mt-1"></p>
     </div>
 
     <!-- VIDEO -->
     <div class="bg-white p-6 rounded-none shadow-sm">
       <h2 class="font-semibold text-lg mb-3">🎥 Vidéo du cours</h2>
-
       <div class="aspect-video bg-black">
-        <iframe
-          class="w-full h-full"
-          src="https://www.youtube.com/embed/o2if7a2F9d0"
-          title="Tessy's Beauty Academy-Bienvenue"
-          allowfullscreen>
-        </iframe>
+        <iframe id="lessonVideo"
+                class="w-full h-full"
+                src=""
+                allowfullscreen></iframe>
       </div>
     </div>
-    <!-- QUIZ -->
-<div id="quizBlock" class="bg-white p-6 rounded-none shadow-sm hidden">
-  <h2 class="font-semibold text-lg mb-3">📝 Quiz de la leçon</h2>
-  <div id="quizContent" class="space-y-4"></div>
 
-  <button id="startQuizBtn"
-    class="mt-4 bg-pink-600 text-white px-6 py-2 rounded-none hover:bg-pink-700">
-    Commencer le quiz
-  </button>
-</div>
-
-    <!-- PDF / RESOURCES -->
-    <div class="bg-white p-6 rounded-none shadow-sm">
-      <h2 class="font-semibold text-lg mb-3">📄 Ressources</h2>
-
-      <ul class="space-y-2 text-pink-600">
-        <li>
-          <a href="#" class="hover:underline">
-            Télécharger le support PDF
-          </a>
-        </li>
-        <li>
-          <a href="#" class="hover:underline">
-            Liste du matériel recommandé
-          </a>
-        </li>
-      </ul>
+    <!-- QUIZ (directement sous la vidéo) -->
+    <div id="quizSection" class="bg-white p-6 rounded-none shadow-sm hidden">
+      <h2 class="font-semibold text-lg mb-3">📝 Quiz</h2>
+      <div id="quizContent" class="space-y-4"></div>
     </div>
 
-    <!-- COMPLETE LESSON -->
+    <!-- RESSOURCES -->
+    <div class="bg-white p-6 rounded-none shadow-sm">
+      <h2 class="font-semibold text-lg mb-3">📄 Ressources</h2>
+      <ul id="lessonResources" class="space-y-2 text-pink-600"></ul>
+    </div>
+
+    <!-- COMPLETE -->
     <div class="bg-white p-6 rounded-none shadow-sm flex justify-between items-center">
       <p class="text-gray-700 font-semibold">
         Marquer la leçon comme terminée
       </p>
-
       <button id="completeLessonBtn"
               class="bg-pink-600 text-white px-6 py-2 rounded-none hover:bg-pink-700 transition">
         Terminer
@@ -108,48 +83,21 @@
 
   </section>
 
-  <!-- RIGHT: COURSE SIDEBAR -->
+  <!-- SIDEBAR -->
   <aside class="bg-white p-6 rounded-none shadow-sm h-fit">
 
-    <h3 class="font-semibold text-lg mb-4">
-      📚 Contenu du cours
-    </h3>
+    <h3 class="font-semibold text-lg mb-4">📚 Contenu du cours</h3>
 
-    <ul class="space-y-3 text-sm">
-
-      <li class="font-semibold text-pink-600">
-        ▶ Module 1 : Introduction
-      </li>
-
-      <li class="text-gray-700 hover:text-pink-600 cursor-pointer">
-        Module 2 : Préparation de la Peau et Application du Fond de Teint
-      </li>
-
-      <li class="text-gray-700 hover:text-pink-600 cursor-pointer">
-       Module 3 : Maquillage des Yeux (Ombres, Eyeliner & Sourcils)
-      </li>
-
-      <li class="text-gray-700 hover:text-pink-600 cursor-pointer">
-        Module 4 : Techniques de Contouring et Highlighting
-      </li>
-
-      <li class="text-gray-700 hover:text-pink-600 cursor-pointer">
-       Module 5 : Maquillage des Lèvres & Finalisation du Look
-      </li>
-     <li class="text-gray-700 hover:text-pink-600 cursor-pointer">
-       Module 6 : Évaluation et Certification
-      </li>
-    </ul>
+    <ul id="sidebarModules" class="space-y-3 text-sm"></ul>
 
     <!-- PROGRESS -->
     <div class="mt-6">
       <p class="text-sm text-gray-500 mb-1">Progression</p>
       <div class="w-full bg-gray-200 h-2 rounded-none">
-        <div id="progressBar"
-             class="bg-pink-500 h-2 rounded-none w-1/5"></div>
+        <div id="progressBar" class="bg-pink-500 h-2 rounded-none w-0"></div>
       </div>
       <p class="text-xs text-gray-500 mt-1">
-        <span id="progressPercent">20</span>% complété
+        <span id="progressPercent">0</span>% complété
       </p>
     </div>
 
@@ -164,8 +112,6 @@
   </p>
 </footer>
 
-
 <script src="/js/lesson.js"></script>
-
 </body>
 </html>
