@@ -71,10 +71,23 @@ function loadLesson(lesson, module) {
 
   // Vidéo YouTube
   const videoContent = lesson.contents.find(c => c.type === "video");
-  if (videoContent) {
-    const embedUrl = videoContent.url.replace("watch?v=", "embed/");
-    videoIframe.src = embedUrl;
+if (videoContent) {
+  let url = videoContent.url;
+
+  if (url.includes("watch?v=")) {
+    url = url.replace("watch?v=", "embed/");
   }
+
+  if (url.includes("/shorts/")) {
+    const id = url.split("/shorts/")[1];
+    url = `https://www.youtube.com/embed/${id}`;
+  }
+
+  videoIframe.src = url;
+} else {
+  videoIframe.src = "";
+}
+
 
   // PDF / Material
   resourcesList.innerHTML = "";
