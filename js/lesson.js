@@ -22,6 +22,11 @@ if (!authToken) {
   alert("Veuillez vous reconnecter");
   window.location.href = "/courses/auth.html";
 }
+if (!Array.isArray(lessons)) {
+  console.error("Lessons API error:", lessons);
+  showError("Erreur lors du chargement du cours");
+  return;
+}
 
 // ----------- Fetch course + lessons ----------- 
 async function fetchCourse(courseId) {
