@@ -1,7 +1,7 @@
 const API = "https://academy-api.tessysbeautyy.workers.dev";
-const authToken = localStorage.getItem("academy_user_id"); // Bearer token
+const authToken = localStorage.getItem("academy_user_id");
 
-// Elements DOM
+// DOM
 const lessonTitleEl = document.querySelector("h1");
 const lessonDescriptionEl = document.querySelector("p.text-gray-600");
 const videoIframe = document.querySelector("iframe");
@@ -9,60 +9,52 @@ const resourcesList = document.querySelector("ul.space-y-2.text-pink-600");
 const completeBtn = document.getElementById("completeLessonBtn");
 const progressBar = document.getElementById("progressBar");
 const progressPercent = document.getElementById("progressPercent");
+const quizBlock = document.getElementById("quizBlock");
+const quizContent = document.getElementById("quizContent");
 
-// Sidebar dynamique
+// State
 let allModules = [];
 let currentLesson = null;
 
-// ----------- Get course_id from URL ----------- 
-const urlParams = new URLSearchParams(window.location.search);
-const courseId = urlParams.get("course_id") || "C1"; // default to C1
+// course_id
+const courseId = new URLSearchParams(window.location.search).get("course_id");
 
 if (!authToken) {
   alert("Veuillez vous reconnecter");
   window.location.href = "/courses/auth.html";
 }
-if (!Array.isArray(lessons)) {
-  console.error("Lessons API error:", lessons);
-  showError("Erreur lors du chargement du cours");
-  return;
-}
 
-// ----------- Fetch course + lessons ----------- 
-async function fetchCourse(courseId) {
+// ---------- FETCH ----------
+async function fetchCourse() {
   try {
     const res = await fetch(`${API}/courses/lessons?course_id=${courseId}`, {
-      headers: { "Authorization": `Bearer ${authToken}` }
+      headers: { Authorization: `Bearer ${authToken}` }
     });
-    const data = await res.json();
-    if (!data || data.length === 0) return;
 
-    // Transform backend data to modules + lessons
-    allModules = transformModules(data);
+    const lessons = await res.json();
+    if (!Array.isArray(lessons)) throw new Error("Invalid lessons");
 
-    // Affiche première leçon par défaut
+    allModules = transformModules(lessons);
     loadLesson(allModules[0].lessons[0], allModules[0]);
-
-    // Sidebar
     updateSidebar();
+
   } catch (err) {
     console.error(err);
     alert("Erreur lors du chargement du cours");
   }
 }
 
-// Transform backend data into modules with lessons
+// ---------- TRANSFORM ----------
 function transformModules(lessons) {
-  const modulesMap = {};
+  const map = {};
   lessons.forEach(l => {
-    if (!modulesMap[l.module_id]) {
-      modulesMap[l.module_id] = {
-        module_id: l.module_id,
+    if (!map[l.module_id]) {
+      map[l.module_id] = {
         title: l.module_title,
         lessons: []
       };
     }
-    modulesMap[l.module_id].lessons.push({
+    map[l.module_id].lessons.push({
       lesson_id: l.lesson_id,
       title: l.lesson_title,
       description: l.description,
@@ -70,132 +62,85 @@ function transformModules(lessons) {
       completed: !!l.completed
     });
   });
-  return Object.values(modulesMap);
+  return Object.values(map);
 }
 
-// ----------- Load lesson ----------- 
+// ---------- LOAD LESSON ----------
 function loadLesson(lesson, module) {
   currentLesson = lesson;
+
   lessonTitleEl.textContent = `📌 ${module.title}`;
-  lessonDescriptionEl.textContent = lesson.description;
+  lessonDescriptionEl.textContent = lesson.description || "";
 
-  // Vidéo YouTube
-  const videoContent = lesson.contents.find(c => c.type === "video");
-if (videoContent) {
-  let url = videoContent.url;
+  // Video
+  const video = lesson.contents.find(c => c.type === "video");
+  videoIframe.src = video ? video.url.replace("watch?v=", "embed/") : "";
 
-  if (url.includes("watch?v=")) {
-    url = url.replace("watch?v=", "embed/");
-  }
-
-  if (url.includes("/shorts/")) {
-    const id = url.split("/shorts/")[1];
-    url = `https://www.youtube.com/embed/${id}`;
-  }
-
-  videoIframe.src = url;
-} else {
-  videoIframe.src = "";
-}
-
-
-  // PDF / Material
+  // Resources
   resourcesList.innerHTML = "";
-  lesson.contents.forEach(c => {
-    if (c.type === "pdf" || c.type === "material") {
+  lesson.contents
+    .filter(c => c.type === "pdf" || c.type === "material")
+    .forEach(c => {
       const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = c.url;
-      a.target = "_blank";
-      a.textContent = c.type === "pdf" ? "Télécharger le support PDF" : "Liste du matériel recommandé";
-      a.classList.add("hover:underline", "text-pink-600");
-      li.appendChild(a);
+      li.innerHTML = `<a href="${c.url}" target="_blank" class="hover:underline text-pink-600">
+        ${c.type === "pdf" ? "📄 Support PDF" : "📦 Matériel recommandé"}
+      </a>`;
       resourcesList.appendChild(li);
-    }
-  });
+    });
+
+  // Quiz
+  const quiz = lesson.contents.find(c => c.type === "quiz");
+  quizBlock.classList.toggle("hidden", !quiz);
+  if (quiz) {
+    quizContent.innerHTML = `<p class="text-gray-600">${quiz.title || "Quiz de validation"}</p>`;
+  }
 
   updateProgress();
 }
 
-// ----------- Update progress ----------- 
+// ---------- SIDEBAR ----------
+function updateSidebar() {
+  const ul = document.querySelector("aside ul");
+  ul.innerHTML = "";
+
+  allModules.forEach(mod => {
+    ul.innerHTML += `<li class="font-semibold text-pink-600">▶ ${mod.title}</li>`;
+    mod.lessons.forEach(lesson => {
+      const li = document.createElement("li");
+      li.className = "pl-4 text-sm cursor-pointer hover:text-pink-600";
+      li.textContent = lesson.title + (lesson.completed ? " ✅" : "");
+      li.onclick = () => loadLesson(lesson, mod);
+      ul.appendChild(li);
+    });
+  });
+}
+
+// ---------- PROGRESS ----------
 function updateProgress() {
-  const completedLessons = allModules.flatMap(m => m.lessons).filter(l => l.completed).length;
-  const totalLessons = allModules.flatMap(m => m.lessons).length;
-  const percent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const lessons = allModules.flatMap(m => m.lessons);
+  const done = lessons.filter(l => l.completed).length;
+  const percent = Math.round((done / lessons.length) * 100);
   progressBar.style.width = percent + "%";
   progressPercent.textContent = percent;
 }
 
-// ----------- Update sidebar + gestion bouton Terminer ----------- 
-function updateSidebar() {
-  const sidebar = document.querySelector("aside ul");
-  sidebar.innerHTML = "";
-
-  let currentLessonCompleted = false;
-
-  allModules.forEach(mod => {
-    // Module title
-    const liModule = document.createElement("li");
-    liModule.className = "font-semibold text-pink-600 cursor-pointer";
-    liModule.textContent = `▶ ${mod.title}`;
-    sidebar.appendChild(liModule);
-
-    // Lessons
-    mod.lessons.forEach(lesson => {
-      const liLesson = document.createElement("li");
-      liLesson.className = "text-gray-700 hover:text-pink-600 cursor-pointer pl-4 text-sm";
-      liLesson.textContent = lesson.title + (lesson.completed ? " ✅" : "");
-      liLesson.addEventListener("click", () => {
-        loadLesson(lesson, mod);
-        // Desab bouton si deja fini
-        completeBtn.disabled = lesson.completed;
-        completeBtn.classList.toggle("bg-gray-400", lesson.completed);
-        completeBtn.classList.toggle("cursor-not-allowed", lesson.completed);
-        completeBtn.classList.toggle("bg-pink-600", !lesson.completed);
-      });
-      sidebar.appendChild(liLesson);
-
-      // Si lesson loaded se menm sa ki fini
-      if (currentLesson && lesson.lesson_id === currentLesson.lesson_id) {
-        currentLessonCompleted = lesson.completed;
-      }
-    });
-  });
-
-  // Bouton "Terminer" selon progression
-  if (currentLesson) {
-    completeBtn.disabled = currentLessonCompleted;
-    completeBtn.classList.toggle("bg-gray-400", currentLessonCompleted);
-    completeBtn.classList.toggle("cursor-not-allowed", currentLessonCompleted);
-    completeBtn.classList.toggle("bg-pink-600", !currentLessonCompleted);
-  }
-}
-
-// ----------- Complete lesson ----------- 
-completeBtn.addEventListener("click", async () => {
+// ---------- COMPLETE ----------
+completeBtn.onclick = async () => {
   if (!currentLesson) return;
 
-  try {
-    const res = await fetch(`${API}/courses/lessons/progress`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${authToken}`
-      },
-      body: JSON.stringify({ lessonId: currentLesson.lesson_id })
-    });
-    if (res.ok) {
-      currentLesson.completed = true;
-      updateProgress();
-      updateSidebar();
-      alert("Leçon marquée comme complétée ✅");
-    } else {
-      alert("Erreur lors de la mise à jour de la leçon");
-    }
-  } catch (err) {
-    console.error(err);
-  }
-});
+  await fetch(`${API}/courses/lessons`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`
+    },
+    body: JSON.stringify({ lessonId: currentLesson.lesson_id })
+  });
 
-// ----------- Launch ----------- 
-fetchCourse(courseId);
+  currentLesson.completed = true;
+  updateProgress();
+  updateSidebar();
+};
+
+// ---------- START ----------
+fetchCourse();
