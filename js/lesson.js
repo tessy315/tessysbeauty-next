@@ -18,6 +18,11 @@ let currentLesson = null;
 const urlParams = new URLSearchParams(window.location.search);
 const courseId = urlParams.get("course_id") || "C1"; // default to C1
 
+if (!authToken) {
+  alert("Veuillez vous reconnecter");
+  window.location.href = "/courses/auth.html";
+}
+
 // ----------- Fetch course + lessons ----------- 
 async function fetchCourse(courseId) {
   try {
