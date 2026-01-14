@@ -1,276 +1,219 @@
 const API = "https://academy-api.tessysbeautyy.workers.dev";
 const authToken = localStorage.getItem("academy_user_id");
 
-// 🔐 Sécurité
+// ------------------- DOM Elements -------------------
+const lessonTitleEl = document.querySelector("h1");
+const lessonDescriptionEl = document.querySelector("p.text-gray-600");
+const videoIframe = document.querySelector("iframe");
+const resourcesList = document.querySelector("ul.space-y-2.text-pink-600");
+const completeBtn = document.getElementById("completeLessonBtn");
+const progressBar = document.getElementById("progressBar");
+const progressPercent = document.getElementById("progressPercent");
+const quizContainer = document.createElement("div"); // Quiz mini sous la vidéo
+videoIframe.parentElement.after(quizContainer);
+
+let allModules = [];
+let currentLesson = null;
+
+// ------------------- Get course_id -------------------
+const urlParams = new URLSearchParams(window.location.search);
+const courseId = urlParams.get("course_id") || "C1";
+
 if (!authToken) {
   alert("Veuillez vous reconnecter");
   window.location.href = "/courses/auth.html";
 }
 
-/* =========================
-   DOM ELEMENTS
-========================= */
-const lessonTitleEl = document.getElementById("lessonTitle");
-const lessonDescriptionEl = document.getElementById("lessonDescription");
-const videoIframe = document.getElementById("lessonVideo");
-const resourcesList = document.getElementById("lessonResources");
-const completeBtn = document.getElementById("completeLessonBtn");
-const sidebar = document.getElementById("sidebarModules");
-const progressBar = document.getElementById("progressBar");
-const progressPercent = document.getElementById("progressPercent");
-
-const quizSection = document.getElementById("quizSection");
-const quizContent = document.getElementById("quizContent");
-
-/* =========================
-   STATE
-========================= */
-let allModules = [];
-let currentLesson = null;
-
-/* =========================
-   GET course_id
-========================= */
-const params = new URLSearchParams(window.location.search);
-const courseId = params.get("course_id");
-
-if (!courseId) {
-  alert("Cours introuvable");
-  window.location.href = "/courses/dashboard.html";
-}
-
-/* =========================
-   FETCH LESSONS
-========================= */
-async function fetchCourse() {
+// ------------------- Fetch course + lessons -------------------
+async function fetchCourse(courseId) {
   try {
     const res = await fetch(`${API}/courses/lessons?course_id=${courseId}`, {
-      headers: {
-        Authorization: `Bearer ${authToken}`
-      }
+      headers: { "Authorization": `Bearer ${authToken}` }
     });
-
-    if (!res.ok) throw new Error("API error");
-
     const data = await res.json();
-
-    if (!Array.isArray(data)) {
-      console.error("Format invalide :", data);
-      return;
-    }
+    if (!data || data.length === 0) throw new Error("Aucune leçon trouvée");
 
     allModules = transformModules(data);
-
-    if (allModules.length === 0) return;
-
     loadLesson(allModules[0].lessons[0], allModules[0]);
-    renderSidebar();
-    updateProgress();
-
+    updateSidebar();
   } catch (err) {
     console.error(err);
     alert("Erreur lors du chargement du cours");
   }
 }
 
-/* =========================
-   TRANSFORM DATA
-========================= */
-function transformModules(rows) {
-  const map = {};
-
-  rows.forEach(r => {
-    if (!map[r.module_id]) {
-      map[r.module_id] = {
-        id: r.module_id,
-        title: r.module_title,
+// ------------------- Transform backend data -------------------
+function transformModules(lessons) {
+  const modulesMap = {};
+  lessons.forEach(l => {
+    if (!modulesMap[l.module_id]) {
+      modulesMap[l.module_id] = {
+        module_id: l.module_id,
+        title: l.module_title,
         lessons: []
       };
     }
-
-    map[r.module_id].lessons.push({
-      id: r.lesson_id,
-      title: r.lesson_title,
-      description: r.description || "",
-      contents: r.contents || [],
-      completed: !!r.completed
+    modulesMap[l.module_id].lessons.push({
+      lesson_id: l.lesson_id,
+      title: l.lesson_title,
+      description: l.description,
+      contents: l.content ? JSON.parse(l.content) : [],
+      completed: !!l.completed
     });
   });
-
-  return Object.values(map);
+  return Object.values(modulesMap);
 }
 
-/* =========================
-   LOAD LESSON
-========================= */
+// ------------------- Load lesson -------------------
 function loadLesson(lesson, module) {
   currentLesson = lesson;
-
   lessonTitleEl.textContent = `📌 ${module.title}`;
   lessonDescriptionEl.textContent = lesson.description;
 
-  renderVideo(lesson.contents);
-  renderResources(lesson.contents);
-  renderQuiz(lesson.contents);
+  // --- Vidéo ---
+  const videoContent = lesson.contents.find(c => c.type === "video");
+  if (videoContent) {
+    let url = videoContent.url;
+    if (url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
+    if (url.includes("/shorts/")) url = `https://www.youtube.com/embed/${url.split("/shorts/")[1]}`;
+    videoIframe.src = url;
+  } else videoIframe.src = "";
 
-  completeBtn.disabled = lesson.completed;
-  completeBtn.classList.toggle("bg-gray-400", lesson.completed);
-  completeBtn.classList.toggle("cursor-not-allowed", lesson.completed);
-}
-
-/* =========================
-   VIDEO
-========================= */
-function renderVideo(contents) {
-  const video = contents.find(c => c.type === "video");
-
-  if (!video) {
-    videoIframe.src = "";
-    return;
-  }
-
-  let url = video.url;
-
-  if (url.includes("watch?v=")) {
-    url = url.replace("watch?v=", "embed/");
-  }
-
-  if (url.includes("/shorts/")) {
-    const id = url.split("/shorts/")[1];
-    url = `https://www.youtube.com/embed/${id}`;
-  }
-
-  videoIframe.src = url;
-}
-
-/* =========================
-   RESSOURCES
-========================= */
-function renderResources(contents) {
+  // --- PDF / Matériel ---
   resourcesList.innerHTML = "";
-
-  contents.forEach(c => {
+  lesson.contents.forEach(c => {
     if (c.type === "pdf" || c.type === "material") {
       const li = document.createElement("li");
       const a = document.createElement("a");
-
       a.href = c.url;
       a.target = "_blank";
-      a.className = "hover:underline text-pink-600";
-      a.textContent =
-        c.type === "pdf"
-          ? "📄 Télécharger le support PDF"
-          : "🧰 Liste du matériel recommandé";
-
+      a.textContent = c.type === "pdf" ? "Télécharger le support PDF" : "Liste du matériel recommandé";
+      a.classList.add("hover:underline", "text-pink-600");
       li.appendChild(a);
       resourcesList.appendChild(li);
     }
   });
+
+  // --- Mini quiz sous la vidéo ---
+  renderQuiz(lesson.contents.find(c => c.type === "quiz")?.questions || []);
+
+  updateProgress();
+  updateCompleteBtn();
 }
 
-/* =========================
-   QUIZ
-========================= */
-function renderQuiz(contents) {
-  quizContent.innerHTML = "";
-  quizSection.classList.add("hidden");
+// ------------------- Render mini quiz -------------------
+function renderQuiz(questions) {
+  quizContainer.innerHTML = "";
+  if (!questions.length) return;
 
-  const quiz = contents.find(c => c.type === "quiz");
-  if (!quiz || !Array.isArray(quiz.questions)) return;
+  const h3 = document.createElement("h3");
+  h3.textContent = "📝 Quiz de la leçon";
+  h3.className = "font-semibold text-lg mb-2";
+  quizContainer.appendChild(h3);
 
-  quizSection.classList.remove("hidden");
+  questions.forEach((q, i) => {
+    const div = document.createElement("div");
+    div.className = "mb-4 bg-white p-4 rounded-none shadow-sm";
 
-  quiz.questions.forEach((q, index) => {
-    const block = document.createElement("div");
+    const p = document.createElement("p");
+    p.textContent = `${i + 1}. ${q.question}`;
+    p.className = "font-medium";
+    div.appendChild(p);
 
-    block.innerHTML = `
-      <p class="font-semibold">${index + 1}. ${q.question}</p>
-      <div class="space-y-1 mt-2">
-        ${q.options.map(opt => `
-          <label class="flex items-center gap-2">
-            <input type="radio" name="q${index}" value="${opt}">
-            ${opt}
-          </label>
-        `).join("")}
-      </div>
-    `;
+    q.options.forEach(opt => {
+      const label = document.createElement("label");
+      label.className = "block cursor-pointer mt-1";
 
-    quizContent.appendChild(block);
-  });
-}
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = `q${i}`;
+      input.value = opt;
+      input.className = "mr-2";
 
-/* =========================
-   SIDEBAR
-========================= */
-function renderSidebar() {
-  sidebar.innerHTML = "";
-
-  allModules.forEach(mod => {
-    const modLi = document.createElement("li");
-    modLi.textContent = `▶ ${mod.title}`;
-    modLi.className = "font-semibold text-pink-600";
-    sidebar.appendChild(modLi);
-
-    mod.lessons.forEach(lesson => {
-      const li = document.createElement("li");
-      li.textContent = lesson.title + (lesson.completed ? " ✅" : "");
-      li.className = "pl-4 text-gray-700 cursor-pointer hover:text-pink-600";
-
-      li.onclick = () => {
-        loadLesson(lesson, mod);
-        renderSidebar();
-      };
-
-      sidebar.appendChild(li);
+      label.appendChild(input);
+      label.append(opt);
+      div.appendChild(label);
     });
+
+    quizContainer.appendChild(div);
   });
 }
 
-/* =========================
-   PROGRESS
-========================= */
+// ------------------- Update progress -------------------
 function updateProgress() {
-  const lessons = allModules.flatMap(m => m.lessons);
-  const completed = lessons.filter(l => l.completed).length;
-  const percent = lessons.length
-    ? Math.round((completed / lessons.length) * 100)
-    : 0;
-
+  const completedLessons = allModules.flatMap(m => m.lessons).filter(l => l.completed).length;
+  const totalLessons = allModules.flatMap(m => m.lessons).length;
+  const percent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
   progressBar.style.width = percent + "%";
   progressPercent.textContent = percent;
 }
 
-/* =========================
-   COMPLETE LESSON
-========================= */
-completeBtn.onclick = async () => {
-  if (!currentLesson || currentLesson.completed) return;
+// ------------------- Sidebar + Terminer -------------------
+function updateSidebar() {
+  const sidebar = document.querySelector("aside ul");
+  sidebar.innerHTML = "";
+
+  let currentLessonCompleted = false;
+
+  allModules.forEach(mod => {
+    const liModule = document.createElement("li");
+    liModule.className = "font-semibold text-pink-600 cursor-pointer";
+    liModule.textContent = `▶ ${mod.title}`;
+    sidebar.appendChild(liModule);
+
+    mod.lessons.forEach(lesson => {
+      const liLesson = document.createElement("li");
+      liLesson.className = "text-gray-700 hover:text-pink-600 cursor-pointer pl-4 text-sm";
+      liLesson.textContent = lesson.title + (lesson.completed ? " ✅" : "");
+      liLesson.addEventListener("click", () => {
+        loadLesson(lesson, mod);
+      });
+      sidebar.appendChild(liLesson);
+
+      if (currentLesson && lesson.lesson_id === currentLesson.lesson_id) {
+        currentLessonCompleted = lesson.completed;
+      }
+    });
+  });
+
+  updateCompleteBtn(currentLessonCompleted);
+}
+
+// ------------------- Update "Terminer" button -------------------
+function updateCompleteBtn(disabled = false) {
+  if (!currentLesson) return;
+  const isCompleted = disabled || currentLesson.completed;
+  completeBtn.disabled = isCompleted;
+  completeBtn.classList.toggle("bg-gray-400", isCompleted);
+  completeBtn.classList.toggle("cursor-not-allowed", isCompleted);
+  completeBtn.classList.toggle("bg-pink-600", !isCompleted);
+}
+
+// ------------------- Complete lesson -------------------
+completeBtn.addEventListener("click", async () => {
+  if (!currentLesson) return;
 
   try {
     const res = await fetch(`${API}/courses/lessons/progress`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`
+        "Authorization": `Bearer ${authToken}`
       },
-      body: JSON.stringify({ lessonId: currentLesson.id })
+      body: JSON.stringify({ lessonId: currentLesson.lesson_id })
     });
-
-    if (!res.ok) throw new Error("Update failed");
-
-    currentLesson.completed = true;
-    updateProgress();
-    renderSidebar();
-
-    alert("Leçon complétée ✅");
-
+    if (res.ok) {
+      currentLesson.completed = true;
+      updateProgress();
+      updateSidebar();
+      alert("Leçon marquée comme complétée ✅");
+    } else {
+      alert("Erreur lors de la mise à jour de la leçon");
+    }
   } catch (err) {
     console.error(err);
-    alert("Erreur lors de la validation");
   }
-};
+});
 
-/* =========================
-   INIT
-========================= */
-fetchCourse();
+// ------------------- Init -------------------
+fetchCourse(courseId);
