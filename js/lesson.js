@@ -9,8 +9,8 @@ const resourcesList = document.querySelector("ul.space-y-2.text-pink-600");
 const completeBtn = document.getElementById("completeLessonBtn");
 const progressBar = document.getElementById("progressBar");
 const progressPercent = document.getElementById("progressPercent");
-const quizContainer = document.createElement("div"); // Quiz mini sous la vidéo
-videoIframe.parentElement.after(quizContainer);
+const quizContainer = document.getElementById("quizContent");
+const quizSection = document.getElementById("quizSection");
 
 let allModules = [];
 let currentLesson = null;
@@ -31,11 +31,13 @@ async function fetchCourse(courseId) {
       headers: { "Authorization": `Bearer ${authToken}` }
     });
     const data = await res.json();
-    if (!data || data.length === 0) throw new Error("Aucune leçon trouvée");
+    if (!data || !Array.isArray(data)) throw new Error("Aucune leçon trouvée");
 
     allModules = transformModules(data);
-    loadLesson(allModules[0].lessons[0], allModules[0]);
-    updateSidebar();
+    if (allModules.length && allModules[0].lessons.length) {
+      loadLesson(allModules[0].lessons[0], allModules[0]);
+      updateSidebar();
+    }
   } catch (err) {
     console.error(err);
     alert("Erreur lors du chargement du cours");
@@ -53,11 +55,17 @@ function transformModules(lessons) {
         lessons: []
       };
     }
+
+    let contents = [];
+    try {
+      contents = l.content ? JSON.parse(l.content) : [];
+    } catch {}
+
     modulesMap[l.module_id].lessons.push({
       lesson_id: l.lesson_id,
       title: l.lesson_title,
       description: l.description,
-      contents: l.content ? JSON.parse(l.content) : [],
+      contents,
       completed: !!l.completed
     });
   });
@@ -95,7 +103,8 @@ function loadLesson(lesson, module) {
   });
 
   // --- Mini quiz sous la vidéo ---
-  renderQuiz(lesson.contents.find(c => c.type === "quiz")?.questions || []);
+  const quizQuestions = lesson.contents.find(c => c.type === "quiz")?.questions || [];
+  renderQuiz(quizQuestions);
 
   updateProgress();
   updateCompleteBtn();
@@ -104,12 +113,12 @@ function loadLesson(lesson, module) {
 // ------------------- Render mini quiz -------------------
 function renderQuiz(questions) {
   quizContainer.innerHTML = "";
-  if (!questions.length) return;
+  if (!questions.length) {
+    quizSection.classList.add("hidden");
+    return;
+  }
 
-  const h3 = document.createElement("h3");
-  h3.textContent = "📝 Quiz de la leçon";
-  h3.className = "font-semibold text-lg mb-2";
-  quizContainer.appendChild(h3);
+  quizSection.classList.remove("hidden");
 
   questions.forEach((q, i) => {
     const div = document.createElement("div");
