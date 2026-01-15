@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nameEl = document.getElementById("studentName");
     if (nameEl && user.name) {
       const firstName = user.name.trim().split(" ")[0];
-      nameEl.textContent = `Bienvenue, ${firstName}`;
+      nameEl.textContent = `${firstName}`;
     }
 
     const statusEl = document.getElementById("accountStatus");
