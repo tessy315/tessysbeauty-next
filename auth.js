@@ -34,19 +34,13 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     localStorage.setItem("academy_status", data.status); // pending / active
     localStorage.setItem("academy_name", data.nom || "Étudiant");
 
-    // 🔹 Redirect logic
+    // 🔹 Redirect logic for pending course
     const pendingCourse = localStorage.getItem("pending_course_id");
     if (pendingCourse) {
       localStorage.removeItem("pending_course_id");
-      // Redirect to checkout for course
-      setTimeout(() => {
-        window.location.href = `/courses/checkout.html?course=${pendingCourse}`;
-      }, 500);
+      window.location.href = `/courses/checkout.html?course=${pendingCourse}`;
     } else {
-      // Normal dashboard redirect
-      setTimeout(() => {
-        window.location.href = "/courses/dashboard.html";
-      }, 500);
+      window.location.href = "/courses/dashboard.html";
     }
 
   } catch (err) {
