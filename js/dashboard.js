@@ -4,234 +4,222 @@
 
 const API = "https://academy-api.tessysbeautyy.workers.dev";
 
-/* =========================
-   AUTH CHECK
-========================= */
-const userId = localStorage.getItem("academy_user_id");
+document.addEventListener("DOMContentLoaded", () => {
 
-if (!userId) {
-  alert("Session expirée. Veuillez vous reconnecter.");
-  window.location.href = "/courses/auth.html";
-}
+  /* =========================
+     AUTH CHECK
+  ========================= */
+  const userId = localStorage.getItem("academy_user_id");
+  if (!userId) {
+    alert("Session expirée. Veuillez vous reconnecter.");
+    window.location.href = "/courses/auth.html";
+    return;
+  }
 
-/* =========================
-   LOGOUT
-========================= */
-document.querySelectorAll("#logoutBtn").forEach(btn => {
-  btn.addEventListener("click", () => {
+  /* =========================
+     LOGOUT
+  ========================= */
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "/courses/auth.html";
+    });
+  }
+
+  /* =========================
+     FETCH DASHBOARD DATA
+  ========================= */
+  fetch(`${API}/courses/dashboard`, {
+    headers: {
+      "Authorization": "Bearer " + userId,
+      "Content-Type": "application/json"
+    }
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Unauthorized");
+    return res.json();
+  })
+  .then(data => {
+    // RENDER USER
+    renderUser(data.user);
+
+    // RENDER COURSES
+    renderCourses(data.courses, data.user.status);
+  })
+  .catch(() => {
     localStorage.clear();
     window.location.href = "/courses/auth.html";
   });
-});
 
-/* =========================
-   ENROLL + PAY (REUSED)
-========================= */
-async function enrollAndPay(courseId) {
-  try {
-    const res = await fetch(`${API}/enroll`, {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + userId,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ course_id: courseId })
-    });
+  /* =========================
+     RENDER USER STATUS
+  ========================= */
+  function renderUser(user) {
+    const nameEl = document.getElementById("studentName");
+    if (nameEl && user.name) {
+      const firstName = user.name.trim().split(" ")[0];
+      nameEl.textContent = `Bienvenue, ${firstName}`;
+    }
 
-    if (!res.ok) {
-      const err = await res.json();
-      alert(err.error || "Erreur d'inscription");
+    const statusEl = document.getElementById("accountStatus");
+    if (!statusEl) return;
+
+    if (user.status === "active") {
+      statusEl.textContent = "Actif";
+      statusEl.className = "text-lg font-semibold text-green-600";
+    } else {
+      statusEl.innerHTML = `
+        En attente de paiement
+        <button id="payNowBtn"
+          class="ml-4 bg-pink-600 text-white px-3 py-1 text-sm hover:bg-pink-700">
+          Payer maintenant
+        </button>
+      `;
+      statusEl.className = "text-lg font-semibold text-orange-500";
+
+      const payBtn = document.getElementById("payNowBtn");
+      if (payBtn) {
+        payBtn.addEventListener("click", () => {
+          const selectedCourse = localStorage.getItem("selected_course");
+          if (!selectedCourse) {
+            alert("Aucun cours sélectionné");
+            return;
+          }
+          window.location.href = `/api/checkout.html?course=${selectedCourse}`;
+        });
+      }
+    }
+
+    if (user.status === "pending") {
+      document.querySelectorAll(".nav-mes-cours a").forEach(nav => {
+        nav.classList.add("pointer-events-none", "opacity-50", "cursor-not-allowed");
+      });
+    }
+  }
+
+  /* =========================
+     RENDER COURSES
+  ========================= */
+  function renderCourses(courses, status) {
+    const container = document.getElementById("coursesGrid");
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (!courses || courses.length === 0) {
+      container.innerHTML = `
+        <div class="bg-yellow-50 border border-yellow-300 p-6 text-center">
+          <h3 class="text-lg font-semibold text-yellow-700">
+            Aucun cours actif
+          </h3>
+          <p class="mt-2 text-sm text-yellow-600">
+            Vous devez vous inscrire à un cours pour accéder aux leçons.
+          </p>
+          <a
+            href="/courses/index.html"
+            class="inline-block mt-4 bg-pink-600 text-white px-5 py-2 hover:bg-pink-700"
+          >
+            S’inscrire à un cours
+          </a>
+        </div>
+      `;
       return;
     }
 
-    localStorage.setItem("selected_course", courseId);
-    window.location.href = `/checkout.html?course=${courseId}`;
+    const selectedCourseId = localStorage.getItem("selected_course") || null;
 
-  } catch (err) {
-    console.error(err);
-    alert("Erreur réseau");
-  }
-}
+    let totalLessons = 0;
+    let completedLessons = 0;
 
-/* =========================
-   FETCH DASHBOARD DATA
-========================= */
-fetch(`${API}/courses/dashboard`, {
-  headers: {
-    "Authorization": "Bearer " + userId,
-    "Content-Type": "application/json"
-  }
-})
-.then(res => {
-  if (!res.ok) throw new Error("Unauthorized");
-  return res.json();
-})
-.then(data => {
-  renderUser(data.user);
-  renderCourses(data.courses, data.user.status);
-})
-.catch(() => {
-  localStorage.clear();
-  window.location.href = "/courses/auth.html";
-});
+    courses.forEach(course => {
+      const lessons = course.lessons || [];
+      const completed = lessons.filter(l => l.completed).length;
 
-// après data reçu
-if (!data.courses || data.courses.length === 0) {
-  const container = document.getElementById("coursesGrid");
+      totalLessons += lessons.length;
+      completedLessons += completed;
 
-  container.innerHTML = `
-    <div class="bg-yellow-50 border border-yellow-300 p-6 text-center">
-      <h3 class="text-lg font-semibold text-yellow-700">
-        Aucun cours actif
-      </h3>
-      <p class="mt-2 text-sm text-yellow-600">
-        Vous devez vous inscrire à un cours pour accéder aux leçons.
-      </p>
-      <a
-        href="/courses/index.html"
-        class="inline-block mt-4 bg-pink-600 text-white px-5 py-2 hover:bg-pink-700"
-      >
-        S’inscrire à un cours
-      </a>
-    </div>
-  `;
-  return;
-}
+      const progressPercent = lessons.length === 0 ? 0 : Math.round((completed / lessons.length) * 100);
 
-/* =========================
-   RENDER USER STATUS
-========================= */
-function renderUser(user) {
-  const nameEl = document.getElementById("studentName");
-  if (nameEl && user.name) {
-    // Take only the first word (first name)
-    const firstName = user.name.trim().split(" ")[0];
-    nameEl.textContent = firstName;
-  }
+      const lessonDisabled = status === "pending" ? "opacity-50 cursor-not-allowed" : "";
+      const quizDisabled = (status === "pending" || progressPercent < 100)
+        ? "disabled bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-pink-600 text-white hover:bg-pink-700";
 
-  const statusEl = document.getElementById("accountStatus");
+      const certDisabled = !(status === "active" && course.certificate?.issued)
+        ? "disabled bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-green-100 text-green-600 underline";
 
-  if (user.status === "active") {
-    statusEl.textContent = "Actif";
-    statusEl.className = "text-lg font-semibold text-green-600";
-  } else {
-    statusEl.innerHTML = `
-      En attente de paiement
-      <button id="payNowBtn"
-        class="ml-4 bg-pink-600 text-white px-3 py-1 text-sm hover:bg-pink-700">
-        Payer maintenant
-      </button>
-    `;
-    statusEl.className = "text-lg font-semibold text-orange-500";
-  }
+      const isSelected = course.course_id === selectedCourseId;
+      const enrollText = isSelected ? "Inscrit" : "S’inscrire à ce cours";
+      const enrollDisabled = status === "pending" || isSelected ? "disabled" : "";
 
-  if (user.status === "pending") {
-    document.querySelectorAll(".nav-mes-cours a").forEach(nav => {
-      nav.classList.add("pointer-events-none", "opacity-50", "cursor-not-allowed");
-    });
-  }
-}
-
-
-// ------------------------------------
-// RENDER COURSES
-// ------------------------------------
-function renderCourses(courses, status) {
-  const container = document.getElementById("coursesGrid");
-  container.innerHTML = "";
-
-  let totalLessons = 0;
-  let completedLessons = 0;
-
-  courses.forEach(course => {
-    const lessons = course.lessons || [];
-    const completed = lessons.filter(l => l.completed).length;
-
-    totalLessons += lessons.length;
-    completedLessons += completed;
-
-    const progressPercent = lessons.length === 0 ? 0 : Math.round((completed / lessons.length) * 100);
-
-    const lessonDisabled = status === "pending" ? "opacity-50 cursor-not-allowed" : "";
-    const quizDisabled = status === "pending" || progressPercent < 100
-      ? "disabled bg-gray-300 text-gray-500 cursor-not-allowed"
-      : "bg-pink-600 text-white hover:bg-pink-700";
-
-    const certDisabled = !(status === "active" && course.certificate?.issued)
-      ? "disabled bg-gray-300 text-gray-500 cursor-not-allowed"
-      : "bg-green-100 text-green-600 underline";
-
-    // Highlight selected course from index.html
-    const isSelected = course.course_id === selectedCourseId;
-    const enrollText = isSelected ? "Inscrit" : "Continuer le cours";
-    const enrollDisabled = status === "pending" || isSelected ? "disabled" : "";
-
-    const courseCard = document.createElement("div");
-    courseCard.className = `bg-white p-6 shadow-sm mb-6`;
-    courseCard.innerHTML = `
-      <h3 class="font-semibold text-lg text-gray-800">${course.title}</h3>
-      <p class="text-sm text-gray-600 mt-2">Progression du cours</p>
-      <div class="mt-4">
-        <div class="w-full bg-gray-200 h-2 rounded-none">
-          <div class="bg-pink-500 h-2 rounded-none" style="width:${progressPercent}%"></div>
+      const courseCard = document.createElement("div");
+      courseCard.className = `bg-white p-6 shadow-sm mb-6`;
+      courseCard.innerHTML = `
+        <h3 class="font-semibold text-lg text-gray-800">${course.title}</h3>
+        <p class="text-sm text-gray-600 mt-2">Progression du cours</p>
+        <div class="mt-4">
+          <div class="w-full bg-gray-200 h-2 rounded-none">
+            <div class="bg-pink-500 h-2 rounded-none" style="width:${progressPercent}%"></div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">${progressPercent}% complété</p>
         </div>
-        <p class="text-xs text-gray-500 mt-1">${progressPercent}% complété</p>
-      </div>
 
-      <button 
-        class="mt-4 w-full py-2 rounded-none ${lessonDisabled} ${enrollDisabled} bg-pink-600 text-white hover:bg-pink-700 transition"
-        ${enrollDisabled}
-        data-course-id="${course.course_id}"
-      >
-        ${enrollText}
-      </button>
+        <button 
+          class="mt-4 w-full py-2 rounded-none ${lessonDisabled} ${enrollDisabled} bg-pink-600 text-white hover:bg-pink-700 transition"
+          data-course-id="${course.course_id}"
+        >
+          ${enrollText}
+        </button>
 
-      <button 
-        data-exam="${course.course_id}"
-        class="mt-2 w-full py-2 rounded-none transition ${quizDisabled}"
-      >
-        Commencer l'examen
-      </button>
+        <button 
+          data-exam="${course.course_id}"
+          class="mt-2 w-full py-2 rounded-none transition ${quizDisabled}"
+        >
+          Commencer l'examen
+        </button>
 
-      <a 
-        href="/certificate.html?id=${course.certificate?.certificate_id || ''}" 
-        class="block mt-2 text-center py-2 ${certDisabled}"
-      >
-        🎓 Télécharger certificat
-      </a>
-    `;
+        <a 
+          href="/certificate.html?id=${course.certificate?.certificate_id || ''}" 
+          class="block mt-2 text-center py-2 ${certDisabled}"
+        >
+          🎓 Télécharger certificat
+        </a>
+      `;
 
-    container.appendChild(courseCard);
-  });
-
-  renderGlobalProgress(totalLessons, completedLessons);
-
-  // ADD ENROLL BUTTON EVENTS
-  document.querySelectorAll("button[data-course-id]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const course = btn.dataset.courseId;
-      if (btn.disabled) return;
-
-      // Store as selected course in localStorage in case we redirect to payment
-      localStorage.setItem("selected_course", course);
-      window.location.href = "/api/payment.html";
+      container.appendChild(courseCard);
     });
-  });
 
-  // ADD QUIZ BUTTON EVENTS
-  document.querySelectorAll("[data-exam]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const course = btn.dataset.exam;
-      if (btn.disabled) return;
-      window.location.href = `/courses/quiz.html?course=${course}`;
+    renderGlobalProgress(totalLessons, completedLessons);
+
+    // ENROLL BUTTON EVENTS → redirige vers /courses/index.html?course_C1=...
+    document.querySelectorAll("button[data-course-id]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const course = btn.dataset.courseId;
+        if (btn.classList.contains("disabled")) return;
+
+        localStorage.setItem("selected_course", course);
+        window.location.href = `/courses/index.html?course_${course}=1`;
+      });
     });
-  });
-}
 
-// ------------------------------------
-// GLOBAL PROGRESS
-// ------------------------------------
-function renderGlobalProgress(total, completed) {
-  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-  document.getElementById("progressPercent").textContent = percent;
-}
+    // QUIZ BUTTON EVENTS
+    document.querySelectorAll("[data-exam]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (btn.classList.contains("disabled")) return;
+        const course = btn.dataset.exam;
+        window.location.href = `/courses/quiz.html?course=${course}`;
+      });
+    });
+  }
+
+  /* =========================
+     GLOBAL PROGRESS
+  ========================= */
+  function renderGlobalProgress(total, completed) {
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+    const el = document.getElementById("progressPercent");
+    if (el) el.textContent = percent;
+  }
+
+});
