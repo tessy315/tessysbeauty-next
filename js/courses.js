@@ -1,82 +1,115 @@
-/**************************************
- * Tessys LMS — Courses Index
- * Enroll → Stripe Payment (Clean Flow)
- **************************************/
+/******************************************
+ * Tessy’s Beauty Academy — courses.js
+ * Enrollment + Signup Redirect Flow
+ ******************************************/
 
+// ------------------------------------------
+// API BASE
+// ------------------------------------------
 const API = "https://academy-api.tessysbeautyy.workers.dev";
 
 /* =========================
-   AUTH HELPERS
+   SESSION HELPERS
 ========================= */
 function getUserId() {
-  return localStorage.getItem("academy_user_id");
+  const id = localStorage.getItem("academy_user_id");
+  return id && id !== "null" ? id : null;
+}
+
+function getUserStatus() {
+  return localStorage.getItem("academy_status");
+}
+
+function notify(message) {
+  alert(message); // ou ka ranplase ak yon snackbar pita
 }
 
 /* =========================
-   ENROLL + PAY (SINGLE ENTRY)
+   ENROLL FLOW
 ========================= */
-async function enrollAndPay(courseId) {
+function goToCheckout(courseId) {
+  window.location.href = `/courses/checkout.html?course=${courseId}`;
+}
+
+/**
+ * Main handler when a user clicks "S’inscrire"
+ */
+function handleEnrollClick(courseId) {
   const userId = getUserId();
 
+  // 🧑‍🎓 Not logged in → save intention + redirect to signup
   if (!userId) {
-    window.location.href = "/courses/auth.html";
+    localStorage.setItem("pending_course_id", courseId);
+
+    notify("Vous devez vous connecter ou créer un compte pour continuer.");
+
+    setTimeout(() => {
+      window.location.href = "/courses/signup.html";
+    }, 300);
+
     return;
   }
 
-  try {
-    // 1️⃣ Create pending enrollment
-    const res = await fetch(`${API}/enroll`, {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + userId,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ course_id: courseId })
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      alert(err.error || "Erreur lors de l'inscription");
-      return;
-    }
-
-    // Store selected course (dashboard fallback)
-    localStorage.setItem("selected_course", courseId);
-
-    // 2️⃣ Redirect to Stripe payment
-    window.location.href = `/checkout.html?course=${courseId}`;
-
-  } catch (err) {
-    console.error(err);
-    alert("Erreur réseau. Veuillez réessayer.");
-  }
+  // ✔ Logged in → go to checkout
+  goToCheckout(courseId);
 }
 
 /* =========================
-   LOAD COURSES
+   ATTACH EVENTS (STATIC HTML)
 ========================= */
-async function loadCourses() {
+function attachEnrollButtons() {
+  const buttons = document.querySelectorAll(".enroll-btn");
+
+  buttons.forEach(btn => {
+    if (btn.dataset.bound === "true") return;
+
+    btn.dataset.bound = "true";
+
+    btn.addEventListener("click", () => {
+      const courseId = btn.dataset.courseId;
+      if (!courseId) return;
+
+      btn.disabled = true;
+      const oldText = btn.textContent;
+      btn.textContent = "Chargement...";
+
+      handleEnrollClick(courseId);
+
+      // restore button
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }, 3000);
+    });
+  });
+}
+
+/* =========================
+   (OPTIONAL) LOAD COURSES FROM API
+   If you later want to generate cards dynamically.
+========================= */
+async function loadCoursesFromAPI() {
   try {
     const res = await fetch(`${API}/courses/index`);
     if (!res.ok) return;
 
     const courses = await res.json();
-    const container = document.getElementById("coursesGrid");
+    const container = document.getElementById("coursesGrid") || document.getElementById("coursesContainer");
+    if (!container) return;
+
     container.innerHTML = "";
 
-    courses.forEach(course => {
+    courses.forEach(c => {
       const card = document.createElement("div");
       card.className = "bg-white p-6 shadow-sm mb-6";
 
       card.innerHTML = `
-        <h3 class="font-semibold text-lg text-gray-800">${course.title}</h3>
-        <p class="text-sm text-gray-600 mt-2">${course.description || ""}</p>
-        <p class="mt-2 font-semibold text-pink-600">$${course.price}</p>
-
-        <button
-          class="enroll-btn mt-4 w-full py-2 bg-pink-600 text-white hover:bg-pink-700 transition"
-          data-course-id="${course.id}"
-        >
+        <h3 class="font-semibold text-lg text-gray-800">${c.title}</h3>
+        <p class="text-sm text-gray-600 mt-2">${c.description || ""}</p>
+        <p class="mt-2 font-semibold text-pink-600">$${c.price}</p>
+        <button 
+          class="enroll-btn w-full py-2 bg-pink-600 text-white hover:bg-pink-700 transition"
+          data-course-id="${c.id}">
           S'inscrire
         </button>
       `;
@@ -84,18 +117,19 @@ async function loadCourses() {
       container.appendChild(card);
     });
 
-    // Attach enroll events
-    document.querySelectorAll(".enroll-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        btn.disabled = true;
-        btn.textContent = "Redirection...";
-        enrollAndPay(btn.dataset.courseId);
-      });
-    });
+    attachEnrollButtons();
 
   } catch (err) {
-    console.error("Failed to load courses", err);
+    console.error("Failed to load courses:", err);
   }
 }
 
-loadCourses();
+/* =========================
+   INIT
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+  attachEnrollButtons();
+
+  // If you want dynamic loading:
+  // loadCoursesFromAPI();
+});
