@@ -61,7 +61,7 @@
       <nav class="hidden md:flex font-medium justify-center md:justify-end">
         <ul class="flex space-x-6 flex-wrap">
           <a href="/index.html" class="hover:text-pink-500">Accueil</a> 
-          <a href="/signup.html" class="hover:text-pink-500">S'inscrire</a> 
+          <a href="/courses/signup.html" class="hover:text-pink-500">S'inscrire</a> 
           <a href="#contact" class="hover:text-pink-500">Contact</a> 
         </ul> 
       </nav>
@@ -75,7 +75,7 @@
 
     <div id="mobile-menu" class="max-h-0 overflow-hidden transition-[max-height] duration-500 ease-in-out md:hidden flex flex-col mt-2 space-y-2 text-center">
       <a href="/index.html" class="hover:text-pink-500 block">Accueil</a>  
-      <a href="/signup.html" class="hover:text-pink-500 block">S'inscrire</a>  
+      <a href="/courses/signup.html" class="hover:text-pink-500 block">S'inscrire</a>  
       <a href="#contact" class="hover:text-pink-500 block">Contact</a>
     </div>
   </header>
@@ -85,54 +85,26 @@
 
     <div class="bg-white shadow-lg rounded-none p-6">
 
-      <h1 class="text-2xl font-semibold text-center mb-6">
-        Paiement sécurisé & activation automatique
-      </h1>
+  <h1 class="text-2xl font-semibold text-center mb-6">
+    Paiement sécurisé & activation automatique
+  </h1>
 
-      <!-- INFO MESSAGE -->
-      <div class="bg-pink-50 border border-pink-200 shadow-sm rounded-none p-6 mb-8 text-center">
+  <!-- PAYMENT FORM -->
+  <form id="payment-form">
+    <div id="payment-element" class="mb-4"></div>
 
-        <h2 class="text-xl font-semibold text-pink-700 mb-3">
-          Inscription confirmée – dernière étape ✔️
-        </h2>
+    <button
+      id="submit"
+      class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-none transition"
+    >
+      Procéder au paiement sécurisé
+    </button>
 
-        <p class="text-gray-700 leading-relaxed max-w-md mx-auto">
+    <p id="message" class="text-center text-red-600 mt-4"></p>
+  </form>
 
-          Votre inscription a bien été enregistrée.<br><br>
+</div>
 
-          🔐 <strong>Paiement 100 % sécurisé et automatique</strong><br>
-          Les paiements sont traités instantanément via <strong>Stripe</strong> ou <strong>MonCash</strong>.
-          Dès validation du paiement, votre accès est activé automatiquement, sans intervention manuelle.
-          <br><br>
-
-          💳 <strong>Montant à régler maintenant :</strong> <span class="font-semibold">1 000 HTG</span><br>
-          (frais d’inscription + accès immédiat à la plateforme en ligne)
-          <br><br>
-
-          📘 <strong>Frais restants pour la formation en présentiel :</strong><br>
-          <span class="font-semibold">7 500 HTG</span><br>
-          <span class="text-sm text-gray-600">
-            À régler avant le début des cours en salle.
-          </span>
-
-        </p>
-      </div>
-
-      <!-- PAYMENT -->
-      <form id="payment-form">
-        <div id="payment-element" class="mb-4"></div>
-
-        <button
-          id="submit"
-          class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-none transition"
-        >
-          Procéder au paiement sécurisé
-        </button>
-
-        <p id="message" class="text-center text-red-600 mt-4"></p>
-      </form>
-
-    </div>
   </main>
 
   <!-- Footer -->
