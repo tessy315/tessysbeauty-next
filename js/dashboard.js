@@ -75,6 +75,29 @@ fetch(`${API}/courses/dashboard`, {
   window.location.href = "/courses/auth.html";
 });
 
+// après data reçu
+if (!data.courses || data.courses.length === 0) {
+  const container = document.getElementById("coursesGrid");
+
+  container.innerHTML = `
+    <div class="bg-yellow-50 border border-yellow-300 p-6 text-center">
+      <h3 class="text-lg font-semibold text-yellow-700">
+        Aucun cours actif
+      </h3>
+      <p class="mt-2 text-sm text-yellow-600">
+        Vous devez vous inscrire à un cours pour accéder aux leçons.
+      </p>
+      <a
+        href="/courses/index.html"
+        class="inline-block mt-4 bg-pink-600 text-white px-5 py-2 hover:bg-pink-700"
+      >
+        S’inscrire à un cours
+      </a>
+    </div>
+  `;
+  return;
+}
+
 /* =========================
    RENDER USER STATUS
 ========================= */
