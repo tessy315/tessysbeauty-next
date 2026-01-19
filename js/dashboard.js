@@ -1,6 +1,5 @@
-
-  /**************************************
- * Tessys LMS — Dashboard (Cours + Exam + Certificat Dynamique)
+/**************************************
+ * Tessys LMS — Dashboard (Cours + Exam + Certificat)
  **************************************/
 
 const API = "https://academy-api.tessysbeautyy.workers.dev";
@@ -17,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = "/courses/auth.html";
   };
 
-  // Fetch dashboard data
+  // Fetch dashboard data depuis backend
   let payload;
   try {
     const res = await fetch(`${API}/courses/dashboard`, {
@@ -25,24 +24,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     if (!res.ok) throw new Error("Unauthorized");
     payload = await res.json();
-  } catch {
+  } catch (err) {
+    console.error(err);
     localStorage.clear();
     return window.location.href = "/courses/auth.html";
   }
 
   renderUser(payload.user);
+  renderProgress(payload.user.progress_percent || 0);
   renderCourses(payload.courses);
 });
 
 /* =========================
-   Render User
+   Render User Name
 ========================= */
 function renderUser(user) {
-    const nameEl = document.getElementById("studentName");
-    if (nameEl && user.name) {
-      const firstName = user.name.trim().split(" ")[0];
-      nameEl.textContent = `${firstName}`;
-    }
+  const nameEl = document.getElementById("studentName");
+  if (nameEl && user.name) {
+    const firstName = user.name.trim().split(" ")[0];
+    nameEl.textContent = `${firstName}`;
+  }
+}
+
+/* =========================
+   Render Global Progress
+========================= */
+function renderProgress(percent) {
+  const progressEl = document.getElementById("progressPercent");
+  if (progressEl) progressEl.textContent = percent;
+}
 
 /* =========================
    Render Courses + Exam + Certificat
@@ -77,29 +87,20 @@ function renderCourses(courses) {
       certificate_status = "locked"
     } = course;
 
-    const isActive = enrollment_status === "active";
-    const isPending = enrollment_status === "pending";
-
     // Cours button
-    const lessonBtn = isActive
+    const lessonBtn = enrollment_status === "active"
       ? `<button class="action-btn bg-green-600 text-white w-full mt-4 py-2" data-course="${course_id}">Commencer la leçon</button>`
       : `<button class="action-btn bg-orange-400 text-white w-full mt-4 py-2" data-pay="${course_id}">Paiement en attente</button>`;
 
     // Exam button
-    let examBtn;
-    if (exam_status === "available") {
-      examBtn = `<button class="exam-btn bg-pink-600 text-white w-full mt-2 py-2" data-exam="${course_id}">Commencer l'examen</button>`;
-    } else {
-      examBtn = `<button class="exam-btn bg-gray-300 text-gray-500 w-full mt-2 py-2 cursor-not-allowed" disabled>Examen</button>`;
-    }
+    const examBtn = exam_status === "available"
+      ? `<button class="exam-btn bg-pink-600 text-white w-full mt-2 py-2" data-exam="${course_id}">Commencer l'examen</button>`
+      : `<button class="exam-btn bg-gray-300 text-gray-500 w-full mt-2 py-2 cursor-not-allowed" disabled>Examen</button>`;
 
     // Certificat button
-    let certBtn;
-    if (certificate_status === "available" || certificate_status === "issued") {
-      certBtn = `<button class="cert-btn bg-green-100 text-green-600 w-full mt-2 py-2" data-cert="${course_id}">Télécharger le certificat</button>`;
-    } else {
-      certBtn = `<button class="cert-btn bg-gray-300 text-gray-500 w-full mt-2 py-2 cursor-not-allowed" disabled>Certificat</button>`;
-    }
+    const certBtn = (certificate_status === "available" || certificate_status === "issued")
+      ? `<button class="cert-btn bg-green-100 text-green-600 w-full mt-2 py-2" data-cert="${course_id}">Télécharger le certificat</button>`
+      : `<button class="cert-btn bg-gray-300 text-gray-500 w-full mt-2 py-2 cursor-not-allowed" disabled>Certificat</button>`;
 
     // Create card
     const card = document.createElement("div");
@@ -116,7 +117,6 @@ function renderCourses(courses) {
       ${examBtn}
       ${certBtn}
     `;
-
     container.appendChild(card);
   });
 
@@ -124,9 +124,10 @@ function renderCourses(courses) {
 }
 
 /* =========================
-   Bind Actions (Navigation Only)
+   Bind Actions (Navigation)
 ========================= */
 function bindActions() {
+
   // Commencer leçon
   document.querySelectorAll("[data-course]").forEach(btn => {
     btn.onclick = () => {
@@ -135,7 +136,7 @@ function bindActions() {
     };
   });
 
-  // Paiement en attente → checkout
+  // Paiement pending → checkout
   document.querySelectorAll("[data-pay]").forEach(btn => {
     btn.onclick = () => {
       const courseId = btn.dataset.pay;
@@ -143,7 +144,7 @@ function bindActions() {
     };
   });
 
-  // Examen → quiz.html
+  // Examen
   document.querySelectorAll("[data-exam]").forEach(btn => {
     btn.onclick = () => {
       const courseId = btn.dataset.exam;
@@ -151,7 +152,7 @@ function bindActions() {
     };
   });
 
-  // Certificat → verify / download
+  // Certificat
   document.querySelectorAll("[data-cert]").forEach(btn => {
     btn.onclick = () => {
       const courseId = btn.dataset.cert;
@@ -159,4 +160,3 @@ function bindActions() {
     };
   });
 }
-
