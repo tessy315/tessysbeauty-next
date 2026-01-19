@@ -78,7 +78,7 @@ document.getElementById("academy-form").addEventListener("submit", async (e) => 
     if (pendingCourse) {
       localStorage.removeItem("pending_course_id");
       setTimeout(() => {
-        window.location.href = `/courses/checkout.html?course=${pendingCourse}`;
+        window.location.href = `/api/checkout.html?course=${pendingCourse}`;
       }, 1200);
     } else {
       setTimeout(() => {
