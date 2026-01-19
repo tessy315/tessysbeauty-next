@@ -38,7 +38,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     const pendingCourse = localStorage.getItem("pending_course_id");
     if (pendingCourse) {
       localStorage.removeItem("pending_course_id");
-      window.location.href = `/courses/checkout.html?course=${pendingCourse}`;
+      window.location.href = `/api/checkout.html?course=${pendingCourse}`;
     } else {
       window.location.href = "/courses/dashboard.html";
     }
