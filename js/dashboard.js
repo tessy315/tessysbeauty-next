@@ -1,5 +1,6 @@
 /**************************************
  * Tessys LMS — Dashboard (Cours + Exam + Certificat)
+ * Tous boutons dépendent de payment_status
  **************************************/
 
 const API = "https://academy-api.tessysbeautyy.workers.dev";
@@ -82,23 +83,27 @@ function renderCourses(courses) {
       course_id,
       title,
       enrollment_status,
+      payment_status = "pending", // pending | paid
       progress_percent = 0,
       exam_status = "locked",
       certificate_status = "locked"
     } = course;
 
+    const isPaid = payment_status === "paid";
+    const isActive = enrollment_status === "active" && isPaid;
+
     // Cours button
-    const lessonBtn = enrollment_status === "active"
+    const lessonBtn = isActive
       ? `<button class="action-btn bg-green-600 text-white w-full mt-4 py-2" data-course="${course_id}">Commencer la leçon</button>`
       : `<button class="action-btn bg-orange-400 text-white w-full mt-4 py-2" data-pay="${course_id}">Paiement en attente</button>`;
 
     // Exam button
-    const examBtn = exam_status === "available"
+    const examBtn = exam_status === "available" && isPaid
       ? `<button class="exam-btn bg-pink-600 text-white w-full mt-2 py-2" data-exam="${course_id}">Commencer l'examen</button>`
       : `<button class="exam-btn bg-gray-300 text-gray-500 w-full mt-2 py-2 cursor-not-allowed" disabled>Examen</button>`;
 
     // Certificat button
-    const certBtn = (certificate_status === "available" || certificate_status === "issued")
+    const certBtn = (certificate_status === "available" || certificate_status === "issued") && isPaid
       ? `<button class="cert-btn bg-green-100 text-green-600 w-full mt-2 py-2" data-cert="${course_id}">Télécharger le certificat</button>`
       : `<button class="cert-btn bg-gray-300 text-gray-500 w-full mt-2 py-2 cursor-not-allowed" disabled>Certificat</button>`;
 
