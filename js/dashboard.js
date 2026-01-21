@@ -102,7 +102,7 @@ function renderProgress(percent) {
 }
 
 /* =========================
-   Courses
+   Courses — Only enrolled courses
 ========================= */
 function renderCourses(courses) {
   const grid = document.getElementById("coursesGrid");
@@ -127,8 +127,19 @@ function renderCourses(courses) {
   }
 
   courses.forEach(course => {
-    const isActive = course.enrollment_status === "active";
+    const enrollmentStatus = course.enrollment_status; // active | pending
     const progress = course.progress_percent || 0;
+
+    let buttonText = "";
+    let isClickable = false;
+
+    if (enrollmentStatus === "active") {
+      buttonText = progress === 0 ? "Commencer le cours" : "Continuer le cours";
+      isClickable = true;
+    } else if (enrollmentStatus === "pending") {
+      buttonText = "Paiement en attente";
+      isClickable = false;
+    }
 
     const card = document.createElement("div");
     card.className =
@@ -144,8 +155,8 @@ function renderCourses(courses) {
       </p>
 
       <div class="mt-4">
-        <div class="w-full bg-gray-200 h-2">
-          <div class="bg-pink-500 h-2" style="width:${progress}%"></div>
+        <div class="w-full bg-gray-200 h-2 rounded-none">
+          <div class="bg-pink-500 h-2 rounded-none" style="width:${progress}%"></div>
         </div>
         <p class="text-xs text-gray-500 mt-1">
           ${progress}% complété
@@ -153,15 +164,15 @@ function renderCourses(courses) {
       </div>
 
       <div class="mt-4 text-center py-2 ${
-        isActive
-          ? "bg-pink-600 text-white hover:bg-pink-700"
+        isClickable
+          ? "bg-pink-600 text-white hover:bg-pink-700 cursor-pointer"
           : "bg-gray-300 text-gray-600 cursor-not-allowed"
       }">
-        ${isActive ? "Continuer le cours" : "Paiement en attente"}
+        ${buttonText}
       </div>
     `;
 
-    if (isActive) {
+    if (isClickable) {
       card.onclick = () =>
         (window.location.href =
           `/courses/lesson.html?course=${course.course_id}`);
