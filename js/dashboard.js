@@ -15,21 +15,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     const res = await fetch(`${API}/courses/dashboard`, {
       headers: { Authorization: "Bearer " + userId }
     });
-    if (!res.ok) throw new Error("Unauthorized");
+
+    // Handle non-ok without logout
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      console.error("Dashboard fetch error:", err);
+      showError("Impossible de charger vos données. Essayez plus tard.");
+      return;
+    }
+
     payload = await res.json();
   } catch (e) {
-    console.error("Dashboard load error:", e);
-    localStorage.clear();
-    return redirectAuth();
+    console.error("Dashboard fetch exception:", e);
+    showError("Erreur de connexion au serveur. Vérifiez votre connexion.");
+    return;
   }
 
   renderUser(payload.user);
   renderAccountStatus(payload.user);
-  renderProgress(payload.user?.progress_percent || 0);
+  renderProgress(payload.user.progress_percent || 0);
 
   renderCourses(payload.courses || []);
-  renderExams(payload.exams || []);
-  renderCertificates(payload.certificates || []);
 });
 
 /* =========================
@@ -41,12 +47,22 @@ function redirectAuth() {
 
 function bindLogout() {
   const btn = document.getElementById("logoutBtn");
-  if (!btn) return;
+  if (btn) {
+    btn.onclick = () => {
+      localStorage.clear();
+      redirectAuth();
+    };
+  }
+}
 
-  btn.onclick = () => {
-    localStorage.clear();
-    redirectAuth();
-  };
+function showError(msg) {
+  const grid = document.getElementById("coursesGrid");
+  if (!grid) return;
+  grid.innerHTML = `
+    <div class="bg-red-50 border p-6 text-center col-span-full">
+      <p class="text-sm text-red-700">${msg}</p>
+    </div>
+  `;
 }
 
 /* =========================
@@ -56,14 +72,14 @@ function renderUser(user) {
   const nameEl = document.getElementById("studentName");
   if (!nameEl) return;
 
-  if (!user?.name) {
+  if (!user || !user.name) {
     nameEl.textContent = "Étudiant";
     return;
   }
 
-  const firstName = user.name.trim().split(/\s+/)[0];
-  nameEl.textContent =
-    firstName.charAt(0).toUpperCase() + firstName.slice(1);
+  const parts = user.name.trim().split(/\s+/);
+  const firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+  nameEl.textContent = firstName;
 }
 
 /* =========================
@@ -73,11 +89,10 @@ function renderAccountStatus(user) {
   const el = document.getElementById("accountStatus");
   if (!el) return;
 
-  const active = user?.status === "active";
-  el.textContent = active ? "Actif" : "En attente";
+  const active = user.status === "active";
+  el.textContent = active ? "Actif" : "Suspendu";
   el.className =
-    "text-lg font-semibold " +
-    (active ? "text-green-600" : "text-yellow-600");
+    "text-lg font-semibold " + (active ? "text-green-600" : "text-red-600");
 }
 
 /* =========================
@@ -89,7 +104,7 @@ function renderProgress(percent) {
 }
 
 /* =========================
-   Courses (FINAL FIX)
+   Courses
 ========================= */
 function renderCourses(courses) {
   const grid = document.getElementById("coursesGrid");
@@ -108,10 +123,8 @@ function renderCourses(courses) {
         </button>
       </div>
     `;
-
-    document.getElementById("goCourses").onclick = () => {
-      window.location.href = "/courses/index.html";
-    };
+    document.getElementById("goCourses").onclick = () =>
+      (window.location.href = "/courses/index.html");
     return;
   }
 
@@ -121,7 +134,7 @@ function renderCourses(courses) {
 
     const card = document.createElement("div");
     card.className =
-      "block bg-white p-6 shadow-sm hover:shadow-md transition";
+      "block bg-white p-6 rounded-none shadow-sm hover:shadow-md transition cursor-pointer";
 
     card.innerHTML = `
       <h3 class="font-semibold text-lg text-gray-800">
@@ -143,7 +156,7 @@ function renderCourses(courses) {
 
       <div class="mt-4 text-center py-2 ${
         isActive
-          ? "bg-pink-600 text-white hover:bg-pink-700 cursor-pointer"
+          ? "bg-pink-600 text-white hover:bg-pink-700"
           : "bg-gray-300 text-gray-600 cursor-not-allowed"
       }">
         ${isActive ? "Continuer le cours" : "Paiement en attente"}
@@ -151,10 +164,9 @@ function renderCourses(courses) {
     `;
 
     if (isActive) {
-      card.onclick = () => {
-        window.location.href =
-          `/courses/lesson.html?course=${course.course_id}`;
-      };
+      card.onclick = () =>
+        (window.location.href =
+          `/courses/lesson.html?course=${course.course_id}`);
     }
 
     grid.appendChild(card);
@@ -171,16 +183,14 @@ function renderExams(exams) {
   box.innerHTML = "";
 
   if (!exams.length) {
-    box.innerHTML = `
-      <p class="text-sm text-gray-500">
-        Aucun examen disponible.
-      </p>
-    `;
+    box.innerHTML = `<p class="text-sm text-gray-500">
+      Aucun examen disponible.
+    </p>`;
     return;
   }
 
   exams.forEach(exam => {
-    const unlocked = exam.enrollment_status === "active";
+    const unlocked = exam.payment_status === "paid";
 
     box.innerHTML += `
       <div class="bg-white p-6 shadow flex justify-between items-center mb-4">
