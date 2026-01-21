@@ -1,6 +1,5 @@
 /**************************************
  * Tessy’s Beauty Academy — Dashboard
-
  **************************************/
 
 const API = "https://academy-api.tessysbeautyy.workers.dev";
@@ -19,14 +18,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!res.ok) throw new Error("Unauthorized");
     payload = await res.json();
   } catch (e) {
-    console.error(e);
+    console.error("Dashboard load error:", e);
     localStorage.clear();
     return redirectAuth();
   }
 
   renderUser(payload.user);
   renderAccountStatus(payload.user);
-  renderProgress(payload.user.progress_percent || 0);
+  renderProgress(payload.user?.progress_percent || 0);
 
   renderCourses(payload.courses || []);
   renderExams(payload.exams || []);
@@ -42,29 +41,29 @@ function redirectAuth() {
 
 function bindLogout() {
   const btn = document.getElementById("logoutBtn");
-  if (btn) {
-    btn.onclick = () => {
-      localStorage.clear();
-      redirectAuth();
-    };
-  }
+  if (!btn) return;
+
+  btn.onclick = () => {
+    localStorage.clear();
+    redirectAuth();
+  };
 }
 
 /* =========================
-   Render User Name (UPDATED)
+   Render User Name
 ========================= */
 function renderUser(user) {
   const nameEl = document.getElementById("studentName");
   if (!nameEl) return;
 
-  if (!user || !user.name) {
+  if (!user?.name) {
     nameEl.textContent = "Étudiant";
     return;
   }
 
-  const parts = user.name.trim().split(/\s+/);
-  const firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-  nameEl.textContent = firstName;
+  const firstName = user.name.trim().split(/\s+/)[0];
+  nameEl.textContent =
+    firstName.charAt(0).toUpperCase() + firstName.slice(1);
 }
 
 /* =========================
@@ -74,11 +73,11 @@ function renderAccountStatus(user) {
   const el = document.getElementById("accountStatus");
   if (!el) return;
 
-  const active = user.account_status === "active";
-  el.textContent = active ? "Actif" : "Suspendu";
+  const active = user?.status === "active";
+  el.textContent = active ? "Actif" : "En attente";
   el.className =
     "text-lg font-semibold " +
-    (active ? "text-green-600" : "text-red-600");
+    (active ? "text-green-600" : "text-yellow-600");
 }
 
 /* =========================
@@ -90,7 +89,7 @@ function renderProgress(percent) {
 }
 
 /* =========================
-   Courses
+   Courses (FINAL FIX)
 ========================= */
 function renderCourses(courses) {
   const grid = document.getElementById("coursesGrid");
@@ -109,18 +108,20 @@ function renderCourses(courses) {
         </button>
       </div>
     `;
-    document.getElementById("goCourses").onclick = () =>
-      (window.location.href = "/courses/index.html");
+
+    document.getElementById("goCourses").onclick = () => {
+      window.location.href = "/courses/index.html";
+    };
     return;
   }
 
   courses.forEach(course => {
-    const isPaid = course.payment_status === "paid";
+    const isActive = course.enrollment_status === "active";
     const progress = course.progress_percent || 0;
 
     const card = document.createElement("div");
     card.className =
-      "block bg-white p-6 rounded-none shadow-sm hover:shadow-md transition";
+      "block bg-white p-6 shadow-sm hover:shadow-md transition";
 
     card.innerHTML = `
       <h3 class="font-semibold text-lg text-gray-800">
@@ -141,18 +142,19 @@ function renderCourses(courses) {
       </div>
 
       <div class="mt-4 text-center py-2 ${
-        isPaid
-          ? "bg-pink-600 text-white hover:bg-pink-700"
+        isActive
+          ? "bg-pink-600 text-white hover:bg-pink-700 cursor-pointer"
           : "bg-gray-300 text-gray-600 cursor-not-allowed"
       }">
-        ${isPaid ? "Continuer le cours" : "Paiement en attente"}
+        ${isActive ? "Continuer le cours" : "Paiement en attente"}
       </div>
     `;
 
-    if (isPaid) {
-      card.onclick = () =>
-        (window.location.href =
-          `/courses/lesson.html?course=${course.course_id}`);
+    if (isActive) {
+      card.onclick = () => {
+        window.location.href =
+          `/courses/lesson.html?course=${course.course_id}`;
+      };
     }
 
     grid.appendChild(card);
@@ -169,14 +171,16 @@ function renderExams(exams) {
   box.innerHTML = "";
 
   if (!exams.length) {
-    box.innerHTML = `<p class="text-sm text-gray-500">
-      Aucun examen disponible.
-    </p>`;
+    box.innerHTML = `
+      <p class="text-sm text-gray-500">
+        Aucun examen disponible.
+      </p>
+    `;
     return;
   }
 
   exams.forEach(exam => {
-    const unlocked = exam.payment_status === "paid";
+    const unlocked = exam.enrollment_status === "active";
 
     box.innerHTML += `
       <div class="bg-white p-6 shadow flex justify-between items-center mb-4">
