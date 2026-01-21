@@ -1,23 +1,16 @@
 /**************************************
- * Tessys LMS — Dashboard (Cours + Exam + Certificat)
- * Tous boutons dépendent de payment_status
+ * Tessy’s Beauty Academy — Dashboard
+
  **************************************/
 
 const API = "https://academy-api.tessysbeautyy.workers.dev";
 
 document.addEventListener("DOMContentLoaded", async () => {
-
   const userId = localStorage.getItem("academy_user_id");
-  if (!userId) return window.location.href = "/courses/auth.html";
+  if (!userId) return redirectAuth();
 
-  // Logout
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) logoutBtn.onclick = () => {
-    localStorage.clear();
-    window.location.href = "/courses/auth.html";
-  };
+  bindLogout();
 
-  // Fetch dashboard data depuis backend
   let payload;
   try {
     const res = await fetch(`${API}/courses/dashboard`, {
@@ -25,143 +18,226 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     if (!res.ok) throw new Error("Unauthorized");
     payload = await res.json();
-  } catch (err) {
-    console.error(err);
+  } catch (e) {
+    console.error(e);
     localStorage.clear();
-    return window.location.href = "/courses/auth.html";
+    return redirectAuth();
   }
 
   renderUser(payload.user);
+  renderAccountStatus(payload.user);
   renderProgress(payload.user.progress_percent || 0);
-  renderCourses(payload.courses);
+
+  renderCourses(payload.courses || []);
+  renderExams(payload.exams || []);
+  renderCertificates(payload.certificates || []);
 });
 
 /* =========================
-   Render User Name
+   Helpers
 ========================= */
-function renderUser(user) {
-  const nameEl = document.getElementById("studentName");
-  if (nameEl && user.name) {
-    const firstName = user.name.trim().split(" ")[0];
-    nameEl.textContent = `${firstName}`;
+function redirectAuth() {
+  window.location.href = "/courses/auth.html";
+}
+
+function bindLogout() {
+  const btn = document.getElementById("logoutBtn");
+  if (btn) {
+    btn.onclick = () => {
+      localStorage.clear();
+      redirectAuth();
+    };
   }
 }
 
 /* =========================
-   Render Global Progress
+   Render User Name (UPDATED)
 ========================= */
-function renderProgress(percent) {
-  const progressEl = document.getElementById("progressPercent");
-  if (progressEl) progressEl.textContent = percent;
+function renderUser(user) {
+  const nameEl = document.getElementById("studentName");
+  if (!nameEl) return;
+
+  if (!user || !user.name) {
+    nameEl.textContent = "Étudiant";
+    return;
+  }
+
+  const parts = user.name.trim().split(/\s+/);
+  const firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+  nameEl.textContent = firstName;
 }
 
 /* =========================
-   Render Courses + Exam + Certificat
+   Account Status
+========================= */
+function renderAccountStatus(user) {
+  const el = document.getElementById("accountStatus");
+  if (!el) return;
+
+  const active = user.account_status === "active";
+  el.textContent = active ? "Actif" : "Suspendu";
+  el.className =
+    "text-lg font-semibold " +
+    (active ? "text-green-600" : "text-red-600");
+}
+
+/* =========================
+   Global Progress
+========================= */
+function renderProgress(percent) {
+  const el = document.getElementById("progressPercent");
+  if (el) el.textContent = percent;
+}
+
+/* =========================
+   Courses
 ========================= */
 function renderCourses(courses) {
-  const container = document.getElementById("coursesGrid");
-  if (!container) return;
-  container.innerHTML = "";
+  const grid = document.getElementById("coursesGrid");
+  if (!grid) return;
 
-  if (!courses || courses.length === 0) {
-    container.innerHTML = `
-      <div class="bg-yellow-50 border p-6 text-center">
-        <p class="text-sm text-yellow-700">Vous n’êtes inscrit à aucun cours.</p>
+  grid.innerHTML = "";
+
+  if (!courses.length) {
+    grid.innerHTML = `
+      <div class="bg-yellow-50 border p-6 text-center col-span-full">
+        <p class="text-sm text-yellow-700">
+          Vous n’êtes inscrit à aucun cours.
+        </p>
         <button id="goCourses" class="mt-4 bg-pink-600 text-white px-4 py-2">
           S’inscrire à un cours
         </button>
       </div>
     `;
-    document.getElementById("goCourses").onclick = () => {
-      window.location.href = "/courses/index.html";
-    };
+    document.getElementById("goCourses").onclick = () =>
+      (window.location.href = "/courses/index.html");
     return;
   }
 
   courses.forEach(course => {
-    const {
-      course_id,
-      title,
-      enrollment_status,
-      payment_status = "pending", // pending | paid
-      progress_percent = 0,
-      exam_status = "locked",
-      certificate_status = "locked"
-    } = course;
+    const isPaid = course.payment_status === "paid";
+    const progress = course.progress_percent || 0;
 
-    const isPaid = payment_status === "paid";
-    const isActive = enrollment_status === "active" && isPaid;
-
-    // Cours button
-    const lessonBtn = isActive
-      ? `<button class="action-btn bg-green-600 text-white w-full mt-4 py-2" data-course="${course_id}">Commencer la leçon</button>`
-      : `<button class="action-btn bg-orange-400 text-white w-full mt-4 py-2" data-pay="${course_id}">Paiement en attente</button>`;
-
-    // Exam button
-    const examBtn = exam_status === "available" && isPaid
-      ? `<button class="exam-btn bg-pink-600 text-white w-full mt-2 py-2" data-exam="${course_id}">Commencer l'examen</button>`
-      : `<button class="exam-btn bg-gray-300 text-gray-500 w-full mt-2 py-2 cursor-not-allowed" disabled>Examen</button>`;
-
-    // Certificat button
-    const certBtn = (certificate_status === "available" || certificate_status === "issued") && isPaid
-      ? `<button class="cert-btn bg-green-100 text-green-600 w-full mt-2 py-2" data-cert="${course_id}">Télécharger le certificat</button>`
-      : `<button class="cert-btn bg-gray-300 text-gray-500 w-full mt-2 py-2 cursor-not-allowed" disabled>Certificat</button>`;
-
-    // Create card
     const card = document.createElement("div");
-    card.className = "bg-white p-6 shadow-sm mb-6";
-    card.innerHTML = `
-      <h3 class="font-semibold text-lg">${title}</h3>
-      <div class="mt-3">
-        <div class="w-full bg-gray-200 h-2">
-          <div class="bg-pink-500 h-2" style="width:${progress_percent}%"></div>
-        </div>
-        <p class="text-xs mt-1">${progress_percent}% complété</p>
-      </div>
-      ${lessonBtn}
-      ${examBtn}
-      ${certBtn}
-    `;
-    container.appendChild(card);
-  });
+    card.className =
+      "block bg-white p-6 rounded-none shadow-sm hover:shadow-md transition";
 
-  bindActions();
+    card.innerHTML = `
+      <h3 class="font-semibold text-lg text-gray-800">
+        ${course.title}
+      </h3>
+
+      <p class="text-sm text-gray-600 mt-2">
+        ${course.description || ""}
+      </p>
+
+      <div class="mt-4">
+        <div class="w-full bg-gray-200 h-2">
+          <div class="bg-pink-500 h-2" style="width:${progress}%"></div>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">
+          ${progress}% complété
+        </p>
+      </div>
+
+      <div class="mt-4 text-center py-2 ${
+        isPaid
+          ? "bg-pink-600 text-white hover:bg-pink-700"
+          : "bg-gray-300 text-gray-600 cursor-not-allowed"
+      }">
+        ${isPaid ? "Continuer le cours" : "Paiement en attente"}
+      </div>
+    `;
+
+    if (isPaid) {
+      card.onclick = () =>
+        (window.location.href =
+          `/courses/lesson.html?course=${course.course_id}`);
+    }
+
+    grid.appendChild(card);
+  });
 }
 
 /* =========================
-   Bind Actions (Navigation)
+   Exams
 ========================= */
-function bindActions() {
+function renderExams(exams) {
+  const box = document.getElementById("examsContainer");
+  if (!box) return;
 
-  // Commencer leçon
-  document.querySelectorAll("[data-course]").forEach(btn => {
-    btn.onclick = () => {
-      const courseId = btn.dataset.course;
-      window.location.href = `/courses/lesson.html?course=${courseId}`;
-    };
+  box.innerHTML = "";
+
+  if (!exams.length) {
+    box.innerHTML = `<p class="text-sm text-gray-500">
+      Aucun examen disponible.
+    </p>`;
+    return;
+  }
+
+  exams.forEach(exam => {
+    const unlocked = exam.payment_status === "paid";
+
+    box.innerHTML += `
+      <div class="bg-white p-6 shadow flex justify-between items-center mb-4">
+        <div>
+          <p class="font-semibold">${exam.title}</p>
+          <p class="text-sm text-gray-500">
+            ${exam.questions_count} questions • ${exam.duration_minutes} minutes
+          </p>
+        </div>
+
+        <button
+          ${unlocked ? "" : "disabled"}
+          class="px-4 py-2 ${
+            unlocked
+              ? "bg-pink-600 text-white hover:bg-pink-700"
+              : "bg-gray-300 text-gray-600 cursor-not-allowed"
+          }"
+          onclick="${
+            unlocked
+              ? `location.href='/courses/quiz.html?exam=${exam.exam_id}'`
+              : ""
+          }"
+        >
+          Commencer
+        </button>
+      </div>
+    `;
   });
+}
 
-  // Paiement pending → checkout
-  document.querySelectorAll("[data-pay]").forEach(btn => {
-    btn.onclick = () => {
-      const courseId = btn.dataset.pay;
-      window.location.href = `/api/checkout.html?course=${courseId}`;
-    };
-  });
+/* =========================
+   Certificates
+========================= */
+function renderCertificates(certificates) {
+  const box = document.getElementById("certificatesContainer");
+  if (!box) return;
 
-  // Examen
-  document.querySelectorAll("[data-exam]").forEach(btn => {
-    btn.onclick = () => {
-      const courseId = btn.dataset.exam;
-      window.location.href = `/courses/quiz.html?course=${courseId}`;
-    };
-  });
+  box.innerHTML = "";
 
-  // Certificat
-  document.querySelectorAll("[data-cert]").forEach(btn => {
-    btn.onclick = () => {
-      const courseId = btn.dataset.cert;
-      window.location.href = `/verify.html?course=${courseId}`;
-    };
+  if (!certificates.length) {
+    box.innerHTML = `
+      <div class="bg-white p-6 shadow">
+        <p class="text-gray-600">
+          Votre certificat sera disponible après réussite de l’examen.
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  certificates.forEach(cert => {
+    box.innerHTML += `
+      <div class="bg-white p-6 shadow mb-4">
+        <p class="font-semibold">${cert.title}</p>
+        <button
+          class="mt-4 bg-green-600 text-white px-4 py-2 hover:bg-green-700"
+          onclick="location.href='/verify.html?cert=${cert.certificate_id}'"
+        >
+          Télécharger le certificat
+        </button>
+      </div>
+    `;
   });
 }
