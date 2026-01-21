@@ -16,18 +16,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       headers: { Authorization: "Bearer " + userId }
     });
 
-    // Handle non-ok without logout
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: res.statusText }));
-      console.error("Dashboard fetch error:", err);
-      showError("Impossible de charger vos données. Essayez plus tard.");
-      return;
-    }
+    if (!res.ok) throw new Error("Dashboard fetch error: " + res.status);
 
     payload = await res.json();
   } catch (e) {
-    console.error("Dashboard fetch exception:", e);
-    showError("Erreur de connexion au serveur. Vérifiez votre connexion.");
+    console.error("Dashboard fetch error:", e);
+    showError("Impossible de charger vos données. Essayez plus tard.");
     return;
   }
 
@@ -36,6 +30,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderProgress(payload.user.progress_percent || 0);
 
   renderCourses(payload.courses || []);
+  renderExams(payload.exams || []);
+  renderCertificates(payload.certificates || []);
 });
 
 /* =========================
@@ -57,16 +53,17 @@ function bindLogout() {
 
 function showError(msg) {
   const grid = document.getElementById("coursesGrid");
-  if (!grid) return;
-  grid.innerHTML = `
-    <div class="bg-red-50 border p-6 text-center col-span-full">
-      <p class="text-sm text-red-700">${msg}</p>
-    </div>
-  `;
+  if (grid) {
+    grid.innerHTML = `
+      <div class="bg-red-50 border p-6 text-center col-span-full">
+        <p class="text-sm text-red-700">${msg}</p>
+      </div>
+    `;
+  }
 }
 
 /* =========================
-   Render User Name
+   Render User
 ========================= */
 function renderUser(user) {
   const nameEl = document.getElementById("studentName");
@@ -92,7 +89,8 @@ function renderAccountStatus(user) {
   const active = user.status === "active";
   el.textContent = active ? "Actif" : "Suspendu";
   el.className =
-    "text-lg font-semibold " + (active ? "text-green-600" : "text-red-600");
+    "text-lg font-semibold " +
+    (active ? "text-green-600" : "text-red-600");
 }
 
 /* =========================
@@ -100,7 +98,7 @@ function renderAccountStatus(user) {
 ========================= */
 function renderProgress(percent) {
   const el = document.getElementById("progressPercent");
-  if (el) el.textContent = percent;
+  if (el) el.textContent = percent + "%";
 }
 
 /* =========================
@@ -176,16 +174,14 @@ function renderCourses(courses) {
 /* =========================
    Exams
 ========================= */
-function renderExams(exams) {
+function renderExams(exams = []) {
   const box = document.getElementById("examsContainer");
   if (!box) return;
 
   box.innerHTML = "";
 
   if (!exams.length) {
-    box.innerHTML = `<p class="text-sm text-gray-500">
-      Aucun examen disponible.
-    </p>`;
+    box.innerHTML = `<p class="text-sm text-gray-500">Aucun examen disponible.</p>`;
     return;
   }
 
@@ -224,7 +220,7 @@ function renderExams(exams) {
 /* =========================
    Certificates
 ========================= */
-function renderCertificates(certificates) {
+function renderCertificates(certificates = []) {
   const box = document.getElementById("certificatesContainer");
   if (!box) return;
 
