@@ -68,35 +68,55 @@ function renderPublicCourses() {
 
   COURSES_CATALOG.forEach(course => {
     const card = document.createElement("div");
-    card.className = "bg-white shadow-sm p-6 relative rounded-none";
+    card.className = "bg-white shadow-sm rounded-none overflow-hidden";
 
     card.innerHTML = `
+      <!-- Level badge -->
       <span class="absolute top-4 right-4 text-xs 
-        bg-${course.level_color}-100 text-${course.level_color}-700 px-3 py-1 rounded-none">
+        bg-${course.level_color}-100 text-${course.level_color}-700 px-3 py-1 rounded-none z-10">
         ${course.level}
       </span>
 
-      <div class="flex gap-2 mb-3">${renderLanguages(course.languages)}</div>
+      <!-- Preview image top -->
+      ${course.preview_image ? `<img src="${course.preview_image}" class="w-full h-48 object-cover"/>` : ""}
 
-      <h3 class="text-lg font-semibold text-gray-800 mb-2">${course.title}</h3>
+      <div class="p-6">
+        <!-- Languages -->
+        <div class="flex gap-2 mb-3">${renderLanguages(course.languages)}</div>
 
-      <p class="text-sm text-gray-600 mb-2">${course.description}</p>
+        <!-- Title -->
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">${course.title}</h3>
 
-      <p class="text-sm text-gray-500 mb-2 font-semibold">📍 ${course.location}</p>
+        <!-- Description -->
+        <p class="text-sm text-gray-600 mb-2">${course.description}</p>
 
-      ${course.preview_image ? `<img src="${course.preview_image}" class="w-full mb-3"/>` : ""}
+        <!-- Location warning for presentiel -->
+        ${
+          course.formats?.presentiel
+            ? `<p class="text-sm text-red-700 font-semibold mb-2">📍 Lieu (présentiel): ${course.location}</p>`
+            : ""
+        }
 
-      <ul class="text-sm text-gray-600 mb-2 space-y-1">
-        ${course.features.map(f => `<li>✔️ ${f}</li>`).join("")}
-      </ul>
+        <!-- Features -->
+        <ul class="text-sm text-gray-600 mb-2 space-y-1">
+          ${course.features.map(f => `<li>✔️ ${f}</li>`).join("")}
+        </ul>
 
-      ${renderFormatsDropdown(course)}
+        <!-- Formats dropdown -->
+        ${renderFormatsDropdown(course)}
 
-      ${course.preview_video ? `<button class="text-sm text-pink-600 underline mb-3" data-video="${course.preview_video}">▶️ Aperçu vidéo</button>` : ""}
+        <!-- Preview video -->
+        ${
+          course.preview_video
+            ? `<button class="text-sm text-pink-600 underline mb-3" data-video="${course.preview_video}">▶️ Aperçu vidéo</button>`
+            : ""
+        }
 
-      <button class="enroll-btn w-full px-4 py-2 rounded-none bg-pink-600 text-white hover:bg-pink-700" data-course-id="${course.course_id}">
-        S’inscrire
-      </button>
+        <!-- Enroll button -->
+        <button class="enroll-btn w-full px-4 py-2 rounded-none bg-pink-600 text-white hover:bg-pink-700" data-course-id="${course.course_id}">
+          S’inscrire
+        </button>
+      </div>
     `;
 
     grid.appendChild(card);
