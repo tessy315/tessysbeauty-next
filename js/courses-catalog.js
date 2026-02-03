@@ -1,5 +1,5 @@
 /* =====================================================
-   Courses Catalog — Shared Source of Truth
+   Courses Catalog 
 ===================================================== */
 
 export const COURSES_CATALOG = [
