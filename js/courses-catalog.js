@@ -20,7 +20,7 @@ export const COURSES_CATALOG = [
     preview_image: "https://i.ibb.co/Vp3L3M8x/Training-TBA.jpg",
     preview_video: null,
 
-    location: "Delmas 33, Port-au-Prince",
+    location: "Banj Delmas 66, Port-au-Prince",
 
     features: [
       "Vidéos explicatives",
@@ -46,7 +46,7 @@ export const COURSES_CATALOG = [
     preview_image: null,
     preview_video: null,
 
-    location: "Delmas 33, Port-au-Prince",
+    location: "Banj, Delmas 66, Port-au-Prince",
 
     features: [
       "Techniques avancées",
@@ -72,7 +72,7 @@ export const COURSES_CATALOG = [
     preview_image: null,
     preview_video: null,
 
-    location: "Port-au-Prince",
+    location: "Banj, Delmas 66, Port-au-Prince",
 
     features: [
       "Création de personnages",
@@ -98,7 +98,7 @@ export const COURSES_CATALOG = [
     preview_image: null,
     preview_video: null,
 
-    location: "Delmas 33, Port-au-Prince",
+    location: "Banj, Delmas 66, Port-au-Prince",
 
     features: [
       "Manucure & pédicure",
