@@ -68,17 +68,16 @@ function renderPublicCourses() {
 
   COURSES_CATALOG.forEach(course => {
     const card = document.createElement("div");
-    card.className = "bg-white shadow-sm rounded-none overflow-hidden";
+    card.className = "bg-white shadow-sm rounded-none overflow-hidden relative";
 
     card.innerHTML = `
-      <!-- Level badge -->
-      <span class="absolute top-4 right-4 text-xs 
-        bg-${course.level_color}-100 text-${course.level_color}-700 px-3 py-1 rounded-none z-10">
-        ${course.level}
-      </span>
-
-      <!-- Preview image top -->
-      ${course.preview_image ? `<img src="${course.preview_image}" class="w-full h-48 object-cover"/>` : ""}
+      <!-- Preview image top + level badge -->
+      <div class="relative">
+        ${course.preview_image ? `<img src="${course.preview_image}" class="w-full h-48 object-cover"/>` : ""}
+        <span class="absolute top-4 right-4 text-xs bg-${course.level_color}-100 text-${course.level_color}-700 px-3 py-1 rounded-none z-10">
+          ${course.level}
+        </span>
+      </div>
 
       <div class="p-6">
         <!-- Languages -->
@@ -93,7 +92,10 @@ function renderPublicCourses() {
         <!-- Location warning for presentiel -->
         ${
           course.formats?.presentiel
-            ? `<p class="text-sm text-red-700 font-semibold mb-2">📍 Lieu (présentiel): ${course.location}</p>`
+            ? `<p class="text-sm text-red-700 font-semibold mb-2">
+                 📍 Lieu : ${course.location} <br>
+                 ⚠️ Assurez-vous de pouvoir vous déplacer avant paiement.
+               </p>`
             : ""
         }
 
