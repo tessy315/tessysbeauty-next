@@ -1,5 +1,5 @@
 /* =====================================================
-   Courses Catalog 
+   Courses Catalog — Source of Truth
 ===================================================== */
 
 export const COURSES_CATALOG = [
@@ -18,16 +18,22 @@ export const COURSES_CATALOG = [
     ],
 
     preview_image: "https://i.ibb.co/Vp3L3M8x/Training-TBA.jpg",
-    preview_video: null,
+    preview_video: "https://cdn.tessysbeauty.com/previews/c1.mp4",
 
-    location: "Banj Delmas 66, Port-au-Prince",
+    location: "Banj, Delmas 66, Port-au-Prince",
 
     features: [
       "Vidéos explicatives",
       "Supports PDF",
       "Évaluation finale",
       "Certificat officiel"
-    ]
+    ],
+
+    formats: {
+      online: { label: "En ligne", price: 10 },
+      presentiel: { label: "Présentiel", price: 40, capacity: 15, booked: 15 },
+      combo: { label: "Combo", price: 60, capacity: 15, booked: 10 }
+    }
   },
 
   {
@@ -53,7 +59,13 @@ export const COURSES_CATALOG = [
       "Cas pratiques",
       "Examen certifiant",
       "Certificat numérique"
-    ]
+    ],
+
+    formats: {
+      online: { label: "En ligne", price: 10 },
+      presentiel: { label: "Présentiel", price: 50, capacity: 12, booked: 5 },
+      combo: { label: "Combo", price: 55, capacity: 15, booked: 7 }
+    }
   },
 
   {
@@ -79,7 +91,13 @@ export const COURSES_CATALOG = [
       "Couleurs & effets spéciaux",
       "Maquillage scénique",
       "Certificat artistique"
-    ]
+    ],
+
+    formats: {
+      online: { label: "En ligne", price: 15 },
+      presentiel: { label: "Présentiel", price: 50, capacity: 10, booked: 2 },
+      combo: { label: "Combo", price: 60, capacity: 12, booked: 0 }
+    }
   },
 
   {
@@ -105,6 +123,12 @@ export const COURSES_CATALOG = [
       "Gel, acrylique & capsules",
       "Nail art tendance",
       "Certificat professionnel"
-    ]
+    ],
+
+    formats: {
+      online: { label: "En ligne", price: 12 },
+      presentiel: { label: "Présentiel", price: 45, capacity: 15, booked: 15 },
+      combo: { label: "Combo", price: 55, capacity: 15, booked: 5 }
+    }
   }
 ];
