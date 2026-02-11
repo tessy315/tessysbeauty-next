@@ -49,8 +49,8 @@ export const COURSES_CATALOG = [
       { code: "fr", label: "Français", primary: true }
     ],
 
-    preview_image: null,
-    preview_video: null,
+    preview_image: "https://i.ibb.co/D0pjZ1r/Makeup-On-Demand-TBM.jpg",
+    preview_video: "https://res.cloudinary.com/dzrvlahyb/video/upload/v1693300000/VID-20250829-WA0003_pipbbr.mp4",
 
     location: "Banj, Delmas 66, Port-au-Prince",
 
