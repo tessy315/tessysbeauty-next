@@ -18,7 +18,7 @@ export const COURSES_CATALOG = [
     ],
 
     preview_image: "https://i.ibb.co/Vp3L3M8x/Training-TBA.jpg",
-    preview_video: "https://cdn.tessysbeauty.com/previews/c1.mp4",
+    preview_video: "https://youtube.com/shorts/o2if7a2F9d0?feature=share",
 
     location: "Banj, Delmas 66, Port-au-Prince",
 
