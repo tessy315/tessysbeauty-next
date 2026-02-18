@@ -56,18 +56,18 @@ function transformModules(lessons) {
       };
     }
 
-    let contents = [];
+    let quizData = [];
     try {
-      contents = l.content ? JSON.parse(l.content) : [];
-    } catch (e) {
-      console.error("JSON parse error:", e);
-    }
+      quizData = l.quiz ? JSON.parse(l.quiz) : [];
+    } catch {}
 
     modulesMap[l.module_id].lessons.push({
       lesson_id: l.lesson_id,
-      title: l.lesson_title,
+      title: l.title,
       description: l.description,
-      contents,
+      video_url: l.video_url,
+      pdf_url: l.pdf_url,
+      quiz: quizData,
       completed: !!l.completed
     });
   });
@@ -78,18 +78,13 @@ function transformModules(lessons) {
 function loadLesson(lesson, module) {
   currentLesson = lesson;
   lessonTitleEl.textContent = `📌 ${module.title}`;
-  lessonDescriptionEl.textContent = lesson.description;
+  lessonDescriptionEl.textContent = lesson.description || "";
 
   // --- Vidéo ---
-  const videoContent = lesson.contents.find(c => c.type === "video");
-  if (videoContent && videoContent.url) {
-    let url = videoContent.url;
-
-    // YouTube watch?v= → embed
+  if (lesson.video_url) {
+    let url = lesson.video_url;
     if (url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
-    // YouTube Shorts → embed
     if (url.includes("/shorts/")) url = `https://www.youtube.com/embed/${url.split("/shorts/")[1]}`;
-
     videoIframe.src = url;
   } else {
     videoIframe.src = "";
@@ -97,31 +92,19 @@ function loadLesson(lesson, module) {
 
   // --- PDF / Matériel ---
   resourcesList.innerHTML = "";
-  lesson.contents.forEach(c => {
-    if (c.type === "pdf" || c.type === "material") {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.target = "_blank";
-      a.classList.add("hover:underline", "text-pink-600");
-
-      if (c.type === "pdf" && c.url) {
-        // Transform Google Drive link to direct download
-        const fileId = c.url.match(/\/d\/([a-zA-Z0-9_-]+)/)?.[1];
-        a.href = fileId ? `https://drive.google.com/uc?export=download&id=${fileId}` : c.url;
-        a.textContent = "Télécharger le support PDF";
-      } else if (c.type === "material") {
-        a.href = c.url;
-        a.textContent = "Liste du matériel recommandé";
-      }
-
-      li.appendChild(a);
-      resourcesList.appendChild(li);
-    }
-  });
+  if (lesson.pdf_url) {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = lesson.pdf_url;
+    a.target = "_blank";
+    a.textContent = "Télécharger le support PDF";
+    a.classList.add("hover:underline", "text-pink-600");
+    li.appendChild(a);
+    resourcesList.appendChild(li);
+  }
 
   // --- Mini quiz sous la vidéo ---
-  const quizQuestions = lesson.contents.find(c => c.type === "quiz")?.questions || [];
-  renderQuiz(quizQuestions);
+  renderQuiz(lesson.quiz || []);
 
   updateProgress();
   updateCompleteBtn();
