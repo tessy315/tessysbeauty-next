@@ -17,7 +17,7 @@ let currentLesson = null;
 
 // ------------------- Get course_id -------------------
 const urlParams = new URLSearchParams(window.location.search);
-const courseId = urlParams.get("course_id") || "C1";
+const courseId = urlParams.get("course") || "C1";
 
 if (!authToken) {
   alert("Veuillez vous reconnecter");
