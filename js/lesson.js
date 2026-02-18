@@ -59,7 +59,9 @@ function transformModules(lessons) {
     let contents = [];
     try {
       contents = l.content ? JSON.parse(l.content) : [];
-    } catch {}
+    } catch (e) {
+      console.error("JSON parse error:", e);
+    }
 
     modulesMap[l.module_id].lessons.push({
       lesson_id: l.lesson_id,
@@ -75,51 +77,52 @@ function transformModules(lessons) {
 // ------------------- Load lesson -------------------
 function loadLesson(lesson, module) {
   currentLesson = lesson;
+  lessonTitleEl.textContent = `📌 ${module.title}`;
+  lessonDescriptionEl.textContent = lesson.description;
 
-  // Titre + description
-  lessonTitleEl.textContent = `📌 ${module.title} – ${lesson.title}`;
-  lessonDescriptionEl.textContent = lesson.description || "";
-
-  // --- Vidéo (sèlman videyo ki asosye) ---
+  // --- Vidéo ---
   const videoContent = lesson.contents.find(c => c.type === "video");
   if (videoContent && videoContent.url) {
     let url = videoContent.url;
+
+    // YouTube watch?v= → embed
     if (url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
-    if (url.includes("/shorts/")) {
-      const videoId = url.split("/shorts/")[1].split(/[/?&]/)[0];
-      url = `https://www.youtube.com/embed/${videoId}`;
-    }
+    // YouTube Shorts → embed
+    if (url.includes("/shorts/")) url = `https://www.youtube.com/embed/${url.split("/shorts/")[1]}`;
+
     videoIframe.src = url;
-    videoIframe.parentElement.classList.remove("hidden");
   } else {
     videoIframe.src = "";
-    videoIframe.parentElement.classList.add("hidden");
   }
 
-  // --- PDF / Matériel (sèlman sa ki asosye) ---
+  // --- PDF / Matériel ---
   resourcesList.innerHTML = "";
-  const resourceContents = lesson.contents.filter(c => c.type === "pdf" || c.type === "material");
-  if (resourceContents.length) {
-    resourceContents.forEach(c => {
+  lesson.contents.forEach(c => {
+    if (c.type === "pdf" || c.type === "material") {
       const li = document.createElement("li");
       const a = document.createElement("a");
-      a.href = c.url;
       a.target = "_blank";
-      a.textContent = c.type === "pdf" ? "Télécharger le support PDF" : "Voir le matériel recommandé";
       a.classList.add("hover:underline", "text-pink-600");
+
+      if (c.type === "pdf" && c.url) {
+        // Transform Google Drive link to direct download
+        const fileId = c.url.match(/\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+        a.href = fileId ? `https://drive.google.com/uc?export=download&id=${fileId}` : c.url;
+        a.textContent = "Télécharger le support PDF";
+      } else if (c.type === "material") {
+        a.href = c.url;
+        a.textContent = "Liste du matériel recommandé";
+      }
+
       li.appendChild(a);
       resourcesList.appendChild(li);
-    });
-    resourcesList.parentElement.classList.remove("hidden");
-  } else {
-    resourcesList.parentElement.classList.add("hidden");
-  }
+    }
+  });
 
-  // --- Quiz (sèlman sa ki asosye) ---
+  // --- Mini quiz sous la vidéo ---
   const quizQuestions = lesson.contents.find(c => c.type === "quiz")?.questions || [];
   renderQuiz(quizQuestions);
 
-  // Update progress / bouton terminer
   updateProgress();
   updateCompleteBtn();
 }
@@ -133,6 +136,7 @@ function renderQuiz(questions) {
   }
 
   quizSection.classList.remove("hidden");
+
   questions.forEach((q, i) => {
     const div = document.createElement("div");
     div.className = "mb-4 bg-white p-4 rounded-none shadow-sm";
