@@ -19,7 +19,6 @@ let currentLesson = null;
 const urlParams = new URLSearchParams(window.location.search);
 const courseId = urlParams.get("course") || "C1";
 
-// ------------------- Check login -------------------
 if (!authToken) {
   alert("Veuillez vous reconnecter");
   window.location.href = "/courses/auth.html";
@@ -32,11 +31,9 @@ async function fetchCourse(courseId) {
       headers: { "Authorization": `Bearer ${authToken}` }
     });
     const data = await res.json();
-
     if (!data || !Array.isArray(data)) throw new Error("Aucune leçon trouvée");
 
     allModules = transformModules(data);
-
     if (allModules.length && allModules[0].lessons.length) {
       loadLesson(allModules[0].lessons[0], allModules[0]);
       updateSidebar();
@@ -60,7 +57,9 @@ function transformModules(lessons) {
     }
 
     let contents = [];
-    try { contents = l.content ? JSON.parse(l.content) : []; } catch {}
+    try {
+      contents = l.content ? JSON.parse(l.content) : [];
+    } catch {}
 
     modulesMap[l.module_id].lessons.push({
       lesson_id: l.lesson_id,
@@ -76,37 +75,51 @@ function transformModules(lessons) {
 // ------------------- Load lesson -------------------
 function loadLesson(lesson, module) {
   currentLesson = lesson;
-  lessonTitleEl.textContent = `📌 ${lesson.title}`;
-  lessonDescriptionEl.textContent = lesson.description;
 
-  // --- Vidéo ---
+  // Titre + description
+  lessonTitleEl.textContent = `📌 ${module.title} – ${lesson.title}`;
+  lessonDescriptionEl.textContent = lesson.description || "";
+
+  // --- Vidéo (sèlman videyo ki asosye) ---
   const videoContent = lesson.contents.find(c => c.type === "video");
-  if (videoContent) {
+  if (videoContent && videoContent.url) {
     let url = videoContent.url;
     if (url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
-    if (url.includes("/shorts/")) url = `https://www.youtube.com/embed/${url.split("/shorts/")[1]}`;
+    if (url.includes("/shorts/")) {
+      const videoId = url.split("/shorts/")[1].split(/[/?&]/)[0];
+      url = `https://www.youtube.com/embed/${videoId}`;
+    }
     videoIframe.src = url;
-  } else videoIframe.src = "";
+    videoIframe.parentElement.classList.remove("hidden");
+  } else {
+    videoIframe.src = "";
+    videoIframe.parentElement.classList.add("hidden");
+  }
 
-  // --- PDF / Matériel ---
+  // --- PDF / Matériel (sèlman sa ki asosye) ---
   resourcesList.innerHTML = "";
-  lesson.contents.forEach(c => {
-    if (c.type === "pdf" || c.type === "material") {
+  const resourceContents = lesson.contents.filter(c => c.type === "pdf" || c.type === "material");
+  if (resourceContents.length) {
+    resourceContents.forEach(c => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = c.url;
       a.target = "_blank";
-      a.textContent = c.type === "pdf" ? "Télécharger le support PDF" : "Liste du matériel recommandé";
+      a.textContent = c.type === "pdf" ? "Télécharger le support PDF" : "Voir le matériel recommandé";
       a.classList.add("hover:underline", "text-pink-600");
       li.appendChild(a);
       resourcesList.appendChild(li);
-    }
-  });
+    });
+    resourcesList.parentElement.classList.remove("hidden");
+  } else {
+    resourcesList.parentElement.classList.add("hidden");
+  }
 
-  // --- Mini quiz sous la vidéo ---
+  // --- Quiz (sèlman sa ki asosye) ---
   const quizQuestions = lesson.contents.find(c => c.type === "quiz")?.questions || [];
   renderQuiz(quizQuestions);
 
+  // Update progress / bouton terminer
   updateProgress();
   updateCompleteBtn();
 }
@@ -120,14 +133,13 @@ function renderQuiz(questions) {
   }
 
   quizSection.classList.remove("hidden");
-
   questions.forEach((q, i) => {
     const div = document.createElement("div");
     div.className = "mb-4 bg-white p-4 rounded-none shadow-sm";
 
     const p = document.createElement("p");
     p.textContent = `${i + 1}. ${q.question}`;
-    p.className = "font-medium mb-2";
+    p.className = "font-medium";
     div.appendChild(p);
 
     q.options.forEach(opt => {
@@ -175,7 +187,9 @@ function updateSidebar() {
       const liLesson = document.createElement("li");
       liLesson.className = "text-gray-700 hover:text-pink-600 cursor-pointer pl-4 text-sm";
       liLesson.textContent = lesson.title + (lesson.completed ? " ✅" : "");
-      liLesson.addEventListener("click", () => loadLesson(lesson, mod));
+      liLesson.addEventListener("click", () => {
+        loadLesson(lesson, mod);
+      });
       sidebar.appendChild(liLesson);
 
       if (currentLesson && lesson.lesson_id === currentLesson.lesson_id) {
