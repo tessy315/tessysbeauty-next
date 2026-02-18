@@ -56,18 +56,13 @@ function transformModules(lessons) {
       };
     }
 
-    let quizData = [];
-    try {
-      quizData = l.quiz ? JSON.parse(l.quiz) : [];
-    } catch {}
-
     modulesMap[l.module_id].lessons.push({
       lesson_id: l.lesson_id,
       title: l.title,
       description: l.description,
-      video_url: l.video_url,
-      pdf_url: l.pdf_url,
-      quiz: quizData,
+      video_url: l.video_url || null,
+      pdf_url: l.pdf_url || null,
+      quiz: l.quiz ? JSON.parse(l.quiz) : [],
       completed: !!l.completed
     });
   });
@@ -78,7 +73,7 @@ function transformModules(lessons) {
 function loadLesson(lesson, module) {
   currentLesson = lesson;
   lessonTitleEl.textContent = `📌 ${module.title}`;
-  lessonDescriptionEl.textContent = lesson.description || "";
+  lessonDescriptionEl.textContent = lesson.description;
 
   // --- Vidéo ---
   if (lesson.video_url) {
@@ -86,9 +81,7 @@ function loadLesson(lesson, module) {
     if (url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
     if (url.includes("/shorts/")) url = `https://www.youtube.com/embed/${url.split("/shorts/")[1]}`;
     videoIframe.src = url;
-  } else {
-    videoIframe.src = "";
-  }
+  } else videoIframe.src = "";
 
   // --- PDF / Matériel ---
   resourcesList.innerHTML = "";
@@ -104,7 +97,7 @@ function loadLesson(lesson, module) {
   }
 
   // --- Mini quiz sous la vidéo ---
-  renderQuiz(lesson.quiz || []);
+  renderQuiz(lesson.quiz);
 
   updateProgress();
   updateCompleteBtn();
@@ -113,7 +106,7 @@ function loadLesson(lesson, module) {
 // ------------------- Render mini quiz -------------------
 function renderQuiz(questions) {
   quizContainer.innerHTML = "";
-  if (!questions.length) {
+  if (!questions || !questions.length) {
     quizSection.classList.add("hidden");
     return;
   }
