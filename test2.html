@@ -4,272 +4,166 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Tessy's Beauty & More</title>
-
-<!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
-
-<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
 <style>
-body {
-  font-family: 'Nunito', sans-serif;
-  background: radial-gradient(circle at 30% 30%, #f0c6d5, #ffc0cb);
-  overflow-x: hidden;
+/* Futurist hover animations */
+.slide img {
+  transition: transform 0.5s ease, filter 0.5s ease;
 }
-
-/* Hero */
-#home {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  min-height: 90vh;
-  background: url('https://i.ibb.co/dsLzQ91s/Hero-Tessys-Face.png') center/cover no-repeat;
+.slide img:hover {
+  transform: scale(1.05) rotate(-1deg);
+  filter: drop-shadow(0 0 15px rgba(255,0,128,0.6));
 }
-
-#home::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.2), rgba(255,182,193,0.1));
-  z-index: 1;
-  animation: pulseBG 15s infinite alternate;
+.whatsapp-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255,0,128,0.6);
 }
-@keyframes pulseBG {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; }
-  100% { background-position: 0% 0%; }
-}
-
-/* Particles */
-#hero-particles {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-/* Buttons hover futurist */
-button, .whatsapp-btn {
-  transition: all 0.3s ease-in-out;
-}
-button:hover, .whatsapp-btn:hover {
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 0 20px rgba(255,105,180,0.6);
-}
-
-/* Slides hover */
-.slide:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 30px rgba(255,105,180,0.4);
-  transition: all 0.4s ease-in-out;
-}
-
-/* Typing cursor */
-#hero-title::after {
-  content: '|';
-  animation: blink 1s infinite;
-}
-@keyframes blink {
-  0%, 50%, 100% { opacity: 1; }
-  25%, 75% { opacity: 0; }
-}
-
-/* Sections gradient/futurist */
-section {
-  transition: all 0.5s ease-in-out;
-}
-section:hover {
-  transform: translateY(-2px);
-}
-
-/* Footer hover glow */
-footer a:hover {
-  text-shadow: 0 0 10px rgba(255,182,193,0.6);
+button:hover {
+  box-shadow: 0 0 20px rgba(255,105,180,0.8);
 }
 </style>
 </head>
-<body class="min-h-screen text-gray-800">
+<body class="min-h-screen bg-gradient-to-b from-pink-100 to-white text-gray-800">
 
 <!-- Header -->
-<header id="man-header" class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
-  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-    <a href="index.html" class="flex items-center gap-3">
-      <img src="https://i.ibb.co/7HsTJyz/Tessys-Beauty-Logo.png" alt="Tessy's Beauty & More Logo" class="h-14 w-auto object-contain"/>
-      <span class="text-pink-700 font-semibold text-xl md:text-2xl" style="font-family: 'Nunito', sans-serif;">Tessy’s Beauty & More</span>
-    </a>
-    <nav class="hidden md:flex font-medium justify-center md:justify-end">
-      <ul class="flex space-x-6 flex-wrap">
-        <li><a href="/academy.html" class="hover:text-pink-500 transition-all duration-300">Academy</a></li>
-        <li><a href="#services" class="hover:text-pink-500 transition-all duration-300">Services</a></li>
-        <li><a href="#contact" class="hover:text-pink-500 transition-all duration-300">Contact</a></li>
-        <li><a href="#about" class="hover:text-pink-500 transition-all duration-300">À propos</a></li>
-      </ul>
-    </nav>
-    <div class="md:hidden">
-      <button id="hamburger" class="text-pink-600 text-2xl">&#9776;</button>
-    </div>
-  </div>
+<header class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
+<div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+<a href="index.html" class="flex items-center gap-3 transition-all duration-500">
+<img src="https://i.ibb.co/7HsTJyz/Tessys-Beauty-Logo.png" class="h-14 md:h-20 w-auto max-w-[260px] object-contain transition-all duration-500"/>
+<span class="text-pink-700 font-semibold text-2xl" style="font-family: 'Nunito', sans-serif;">Tessy’s Beauty & More</span>
+</a>
+<nav class="hidden md:flex space-x-6 font-medium">
+<a href="/academy.html" class="hover:text-pink-500 transition">Academy</a>
+<a href="#services" class="hover:text-pink-500 transition">Services</a>
+<a href="#contact" class="hover:text-pink-500 transition">Contact</a>
+<a href="#about" class="hover:text-pink-500 transition">À propos</a>
+</nav>
+</div>
 </header>
 
-<!-- Hero -->
-<main id="home" class="page-section relative">
-  <canvas id="hero-particles"></canvas>
-  <div class="relative z-10 bg-white/40 backdrop-blur-sm p-6 md:p-10 max-w-2xl shadow-lg">
-    <h1 id="hero-title" class="text-5xl md:text-6xl text-pink-700 mb-4 drop-shadow-sm" style="font-family: 'Great Vibes', cursive;"></h1>
-    <p class="text-gray-800 text-lg md:text-xl tracking-tight" style="font-family: 'Nunito', sans-serif;">
-      Découvrez Tessy's Beauty AI : votre beauté, guidée par l’intelligence artificielle.
-    </p>
-    <button onclick="window.location.href='/academy.html'" class="px-6 py-3 bg-pink-600 text-white rounded-none shadow">Visiter Notre Academie</button>
-  </div>
-</main>
+<main class="mt-24">
+
+<!-- Hero Section -->
+<section class="relative flex flex-col items-center justify-center text-center px-4 py-24 md:py-32 h-[90vh] bg-center bg-cover" style="background-image: url('https://i.ibb.co/dsLzQ91s/Hero-Tessys-Face.png');">
+<div class="absolute inset-0 bg-gradient-to-br from-pink-300/70 via-pink-100/50 to-white/30"></div>
+<div class="relative z-10 bg-white/40 backdrop-blur-sm p-6 md:p-10 max-w-2xl shadow-lg">
+<h1 class="text-5xl md:text-6xl text-pink-700 mb-4 drop-shadow-sm" style="font-family: 'Great Vibes', cursive;">Sublimez Votre Beauté</h1>
+<p class="text-gray-800 text-lg md:text-xl" style="font-family: 'Nunito', sans-serif;">Découvrez Tessy's Beauty AI : votre beauté, guidée par l’intelligence artificielle.</p>
+<button onclick="window.location.href='/academy.html'" class="mt-4 px-6 py-3 bg-pink-600 text-white rounded-none shadow hover:bg-pink-700 transition">Visiter Notre Academie</button>
+</div>
+</section>
 
 <!-- Services Section -->
-<section id="services" class="relative py-20 px-4 bg-gradient-to-r from-pink-200 via-white to-pink-100 backdrop-blur-lg overflow-hidden">
-  <div class="max-w-3xl mx-auto text-center mb-12">
-    <h3 class="text-3xl text-pink-700 drop-shadow mb-2 font-medium">Services & Produits</h3>
-    <p class="text-gray-800 text-lg md:text-xl tracking-tight">Découvrez nos formations, services personnalisés et produits professionnels</p>
-  </div>
+<section id="services" class="relative py-20 px-4 bg-gradient-to-r from-pink-200 via-white to-pink-100 overflow-hidden">
+<div class="max-w-3xl mx-auto text-center mb-12">
+<h3 class="text-3xl text-pink-700 mb-2 font-medium">Services & Produits</h3>
+<p class="text-gray-800 text-lg md:text-xl">Découvrez nos formations, services personnalisés et produits professionnels</p>
+</div>
 
-  <!-- Slides Container -->
-  <div class="relative overflow-hidden shadow-2xl">
-    <div id="slides-container" class="flex transition-transform duration-700 ease-in-out space-x-4">
+<div class="relative overflow-hidden shadow-2xl">
+<div id="slides-container" class="flex transition-transform duration-700 ease-in-out space-x-4">
 
-      <!-- Slide 1 -->
-      <div class="slide flex-shrink-0 w-full sm:w-full flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-4 rounded">
-        <div class="w-full h-72 md:h-80 overflow-hidden mb-4">
-          <img src="https://i.ibb.co/CKCRJMnk/tessysbeauty-AI.png" alt="Tessy's Beauty AI" class="w-full h-full object-cover">
-        </div>
-        <h4 class="text-xl mb-2 text-pink-700">Tessy’s Beauty AI</h4>
-        <p class="text-gray-800 text-lg md:text-xl">Explorez notre IA qui personnalise vos formations et optimise votre expérience beauté.</p>
-        <a href="/academy.html" class="whatsapp-btn inline-flex items-center gap-2 px-6 py-2 border border-pink-600 text-pink-700 rounded-none text-sm">🤖 En savoir plus</a>
-      </div>
+<!-- Slide 1 -->
+<div class="slide flex-shrink-0 w-full sm:w-full flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-4">
+<img src="https://i.ibb.co/CKCRJMnk/tessysbeauty-AI.png" alt="Tessy's Beauty AI" class="w-full h-72 md:h-80 object-cover mb-4">
+<h4 class="text-xl mb-2 text-pink-700">Tessy’s Beauty AI</h4>
+<p class="text-gray-800">Explorez notre IA qui personnalise vos formations, optimise votre expérience beauté et connecte vos besoins aux meilleurs services et produits.</p>
+<a href="/academy.html" class="whatsapp-btn inline-flex items-center gap-2 px-6 py-2 border border-pink-600 text-pink-700 rounded-none text-sm mt-3 hover:bg-pink-600 hover:text-white">
+<span class="animate-pulse">🤖</span> En savoir plus
+</a>
+</div>
 
-      <!-- Slide 2 -->
-      <div class="slide flex-shrink-0 w-full sm:w-full flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-4 rounded">
-        <div class="w-full h-72 md:h-80 overflow-hidden mb-4">
-          <img src="https://i.ibb.co/Vp3L3M8x/Training-TBA.jpg" alt="Formations" class="w-full h-full object-cover">
-        </div>
-        <h4 class="text-xl mb-2 text-pink-700">Formations Professionnelles</h4>
-        <p class="text-gray-800 mb-6 px-4">Apprenez les techniques professionnelles de maquillage, soins et beauté.</p>
-        <a href="https://wa.me/50939310139" class="whatsapp-btn inline-flex items-center gap-2 px-6 py-2 border border-pink-600 text-pink-700 rounded-none text-sm">📝 Réservez maintenant</a>
-      </div>
+<!-- Slide 2 -->
+<div class="slide flex-shrink-0 w-full sm:w-full flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-4">
+<img src="https://i.ibb.co/Vp3L3M8x/Training-TBA.jpg" alt="Formations" class="w-full h-72 md:h-80 object-cover mb-4">
+<h4 class="text-xl mb-2 text-pink-700">Formations Professionnelles</h4>
+<p class="text-gray-800 mb-3">Apprenez les techniques professionnelles de maquillage, soins et beauté à travers Tessy’s Beauty Academy.</p>
+<a href="https://wa.me/50939310139?text=Salut!" class="whatsapp-btn inline-flex items-center gap-2 px-6 py-2 border border-pink-600 text-pink-700 rounded-none text-sm hover:bg-pink-600 hover:text-white">
+<span class="animate-pulse">📝</span> Réservez maintenant
+</a>
+</div>
 
-      <!-- Slide 3 -->
-      <div class="slide flex-shrink-0 w-full sm:w-full flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-4 rounded">
-        <div class="w-full h-72 md:h-80 overflow-hidden mb-4">
-          <img src="https://i.ibb.co/D0pjZ1r/Makeup-On-Demand-TBM.jpg" alt="Maquillage sur demande" class="w-full h-full object-cover">
-        </div>
-        <h4 class="text-xl mb-2 text-pink-700">Maquillage sur demande</h4>
-        <p class="text-gray-800 text-lg md:text-xl">Mariage, graduation, photoshoot... Expertise professionnelle pour chaque occasion.</p>
-        <a href="https://wa.me/50939310139" class="whatsapp-btn inline-flex items-center gap-2 px-6 py-2 border border-pink-600 text-pink-700 rounded-none text-sm">💄 Réservez maintenant</a>
-      </div>
+<!-- Ajoute plis slides jan ou bezwen -->
 
-    </div>
-  </div>
+</div>
+
+<!-- Prev/Next -->
+<button id="prev-slide" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-pink-600 text-white px-4 py-2 rounded-none hover:scale-110 hover:shadow-lg transition-all duration-300 z-20">&#10094;</button>
+<button id="next-slide" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-pink-600 text-white px-4 py-2 rounded-none hover:scale-110 hover:shadow-lg transition-all duration-300 z-20">&#10095;</button>
+</div>
 </section>
 
 <!-- About Section -->
-<section id="about" class="relative py-20 px-4 bg-gradient-to-tr from-pink-50 via-white to-pink-100 backdrop-blur-lg overflow-hidden">
-  <div class="max-w-3xl mx-auto text-center mb-12">
-    <h3 class="text-3xl text-pink-700 drop-shadow mb-2 font-medium">À propos de nous</h3>
-    <p class="text-gray-800 text-lg md:text-xl tracking-tight">Découvrez l'histoire et la mission de Tessy's Beauty & More</p>
-  </div>
+<section id="about" class="relative py-20 px-4 bg-gradient-to-tr from-pink-50 via-white to-pink-100 overflow-hidden">
+<div class="max-w-3xl mx-auto text-center mb-12">
+<h3 class="text-3xl text-pink-700 mb-2 font-italic">À propos de nous</h3>
+<p class="text-gray-800 text-lg md:text-xl">Découvrez l'histoire et la mission de Tessy's Beauty & More</p>
+</div>
 
-  <!-- About Slides -->
-  <div class="relative overflow-hidden shadow-2xl">
-    <div id="about-slides-container" class="relative min-h-[400px]">
-      <!-- Slide 1 -->
-      <div class="slide absolute inset-0 opacity-100 transition-opacity duration-1000 flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-6">
-        <div class="w-full h-72 md:h-80 overflow-hidden mb-4">
-          <img src="https://i.ibb.co/WWqQSMPt/About-Us-Tessys-Profile-Pic.jpg" alt="Notre Histoire" class="w-full h-full object-cover">
-        </div>
-        <h4 class="text-xl mb-2 text-pink-700">Notre Histoire</h4>
-        <p class="text-gray-800 text-lg md:text-xl tracking-tight">Depuis notre ouverture, Tessy's Beauty & More a toujours mis la confiance et l'élégance des femmes au cœur de son travail.</p>
-      </div>
+<div id="about-slides-container" class="relative min-h-[400px]">
+<!-- Slide 1 -->
+<div class="slide absolute inset-0 opacity-100 transition-opacity duration-1000 flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-6">
+<img src="https://i.ibb.co/WWqQSMPt/About-Us-Tessys-Profile-Pic.jpg" class="w-full h-72 md:h-80 object-cover mb-4">
+<h4 class="text-xl mb-2 text-pink-700">Notre Histoire</h4>
+<p class="text-gray-800">Depuis notre ouverture, Tessy's Beauty & More a toujours mis la confiance et l'élégance des femmes au cœur de son travail.</p>
+</div>
 
-      <!-- Slide 2 -->
-      <div class="slide absolute inset-0 opacity-0 transition-opacity duration-1000 flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-6">
-        <div class="w-full h-72 md:h-80 overflow-hidden mb-4">
-          <img src="https://i.ibb.co/CsMSsjwC/About-Us-Wall-Frame-Pic.jpg" alt="Notre Mission" class="w-full h-full object-cover">
-        </div>
-        <h4 class="text-xl mb-2 text-pink-700">Notre Mission</h4>
-        <p class="text-gray-800 text-lg md:text-xl tracking-tight">Offrir des services professionnels de beauté tout en transmettant l'art du maquillage à travers notre académie.</p>
-      </div>
-    </div>
-  </div>
+<!-- Slide 2 -->
+<div class="slide absolute inset-0 opacity-0 transition-opacity duration-1000 flex flex-col items-center text-center bg-white/10 backdrop-blur-lg p-6">
+<img src="https://i.ibb.co/CsMSsjwC/About-Us-Wall-Frame-Pic.jpg" class="w-full h-72 md:h-80 object-cover mb-4">
+<h4 class="text-xl mb-2 text-pink-700">Notre Mission</h4>
+<p class="text-gray-800">Offrir des services professionnels de beauté tout en transmettant l'art du maquillage à travers notre académie.</p>
+</div>
+</div>
 </section>
 
 <!-- Contact Section -->
-<section id="contact" class="relative py-20 px-6 bg-gradient-to-br from-pink-100 via-white to-pink-200 backdrop-blur-lg">
-  <div class="max-w-3xl mx-auto text-center bg-white/30 backdrop-blur-lg p-10 shadow-xl border border-white/40 glow-border">
-    <h3 class="text-3xl mb-6 text-pink-700">Contactez-nous</h3>
-    <p class="text-gray-800 text-lg md:text-xl tracking-tight">Pour plus d'informations ou pour une réservation, contactez-nous via WhatsApp ou email.</p>
-    <div class="flex flex-col items-center gap-4 mt-6">
-      <a href="https://wa.me/50939310139" class="group relative inline-block bg-green-500 text-white px-6 py-3 rounded-none shadow-lg transition-transform duration-300 hover:scale-105">Écrivez-nous sur WhatsApp</a>
-      <a href="mailto:tessysbeautyy@gmail.com" class="group relative inline-block bg-pink-500 text-white px-6 py-3 rounded-none shadow-lg transition-transform duration-300 hover:scale-105">Envoyez-nous un email</a>
-    </div>
-  </div>
+<section id="contact" class="relative py-20 px-6 bg-gradient-to-br from-pink-100 via-white to-pink-200">
+<div class="max-w-3xl mx-auto text-center bg-white/30 backdrop-blur-lg p-10 shadow-xl border border-white/40">
+<h3 class="text-3xl mb-6 text-pink-700">Contactez-nous</h3>
+<p class="text-gray-800 text-lg md:text-xl mb-4">Pour plus d'informations ou pour une réservation, contactez-nous via WhatsApp ou email.</p>
+<a href="https://wa.me/50939310139" class="inline-block bg-green-500 text-white px-6 py-3 rounded-none shadow-lg mb-3 hover:scale-105 transition">WhatsApp</a>
+<a href="mailto:tessysbeautyy@gmail.com" class="inline-block bg-pink-500 text-white px-6 py-3 rounded-none shadow-lg hover:scale-105 transition">Email</a>
+</div>
 </section>
 
 <!-- Footer -->
-<footer class="bg-pink-600 text-white text-center py-6 px-4 relative">
-  <p class="text-xs italic text-white/80 mb-2">ℹ️ Certaines images sur ce site sont des illustrations générées.</p>
-  <p class="mb-3"><a href="#" class="text-white italic hover:text-pink-300 hover:underline transition-colors duration-300">Termes & Conditions</a></p>
-  <div class="flex justify-center gap-6 mb-3">
-    <a href="#" class="text-white/90 hover:text-white transition-transform duration-300 hover:scale-110"><i class="fab fa-facebook-f text-xl"></i></a>
-    <a href="#" class="text-white/90 hover:text-white transition-transform duration-300 hover:scale-110"><i class="fab fa-instagram text-xl"></i></a>
-    <a href="#" class="text-white/90 hover:text-white transition-transform duration-300 hover:scale-110"><i class="fab fa-tiktok text-xl"></i></a>
-  </div>
-  <p class="text-sm text-white/90">© 2025 Tessy’s Beauty & More | Tous droits réservés.</p>
+<footer class="bg-pink-600 text-white text-center py-6 px-4">
+<p class="text-xs italic text-white/80 mb-2">ℹ️Certaines images sur ce site sont des illustrations générées.</p>
+<p class="mb-3"><a href="#" class="text-white italic hover:text-pink-300 hover:underline transition-colors">Termes & Conditions</a></p>
+<div class="flex justify-center gap-6 mb-3">
+<a href="#" class="hover:scale-110 transition"><i class="fab fa-facebook-f text-xl"></i></a>
+<a href="#" class="hover:scale-110 transition"><i class="fab fa-instagram text-xl"></i></a>
+<a href="#" class="hover:scale-110 transition"><i class="fab fa-tiktok text-xl"></i></a>
+</div>
+<p class="text-sm text-white/90">© 2025 Tessy’s Beauty & More | Tous droits réservés.</p>
 </footer>
 
-<!-- JS Particles + Typing -->
+<!-- JS Sliders -->
 <script>
-const canvas = document.getElementById('hero-particles');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const particles = [];
-for (let i = 0; i < 80; i++) {
-  particles.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 3 + 1,
-    dx: (Math.random()-0.5)*0.5,
-    dy: (Math.random()-0.5)*0.5
-  });
+// Services Slider
+const slidesContainer = document.getElementById('slides-container');
+const slides = document.querySelectorAll('#slides-container .slide');
+let currentIndex = 0;
+function showSlide(index){
+  const width = slides[0].clientWidth + 16;
+  slidesContainer.style.transform = `translateX(-${width * index}px)`;
 }
-function animateParticles() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,182,193,0.6)';
-    ctx.fill();
-    p.x+=p.dx;
-    p.y+=p.dy;
-    if(p.x<0||p.x>canvas.width)p.dx*=-1;
-    if(p.y<0||p.y>canvas.height)p.dy*=-1;
-  });
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
+document.getElementById('prev-slide').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+slides.length)%slides.length; showSlide(currentIndex);});
+document.getElementById('next-slide').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%slides.length; showSlide(currentIndex);});
+setInterval(()=>{currentIndex=(currentIndex+1)%slides.length; showSlide(currentIndex);},5000);
 
-/* Typing Hero Title */
-const text = "Sublimez Votre Beauté";
-let index = 0;
-const titleEl = document.getElementById('hero-title');
-function typeHero(){ if(index<text.length){ titleEl.innerHTML+=text[index]; index++; setTimeout(typeHero,150); } }
-typeHero();
+// About Slider
+const aboutSlides = document.querySelectorAll('#about-slides-container .slide');
+let aboutIndex = 0;
+function showAboutSlide(index){
+  aboutSlides.forEach((s,i)=>s.style.opacity=i===index?1:0);
+}
+setInterval(()=>{aboutIndex=(aboutIndex+1)%aboutSlides.length; showAboutSlide(aboutIndex);},6000);
 </script>
+
 </body>
 </html>
