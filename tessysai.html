@@ -1,157 +1,139 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tessy’s Beauty AI – Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tessy’s Beauty AI – Demo Futurist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+    }
 
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    /* Gradient animé futurist */
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .bg-gradient-futurist {
+      background: linear-gradient(270deg, #ff85c0, #ff3f8b, #7f5af0, #3f51b5);
+      background-size: 800% 800%;
+      animation: gradientMove 15s ease infinite;
+    }
 
+    /* Typing AI effect */
+    .typing {
+      border-right: 2px solid #ff3f8b;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    /* Particles canvas */
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+  </style>
 </head>
-<body class="bg-pink-50 font-[Nunito]">
+<body class="relative min-h-screen bg-gradient-futurist text-white overflow-x-hidden">
+
+<!-- Particles background -->
+<canvas id="particles-js"></canvas>
 
 <!-- HEADER -->
-<header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md shadow z-50">
-  <div class="max-w-6xl mx-auto flex justify-between items-center px-4 py-4">
-    <a href="#" class="text-2xl font-bold text-pink-700">Tessy’s Beauty AI</a>
-    <nav class="hidden md:flex gap-6 font-semibold">
-      <a href="#demo" class="hover:text-pink-500">Demo</a>
-      <a href="#features" class="hover:text-pink-500">Fonctionnalités</a>
-      <a href="#contact" class="hover:text-pink-500">Contact</a>
+<header class="fixed top-0 left-0 w-full bg-black/40 backdrop-blur-md z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <span class="text-2xl font-bold text-pink-400">Tessy’s AI</span>
+    <nav class="space-x-4 hidden md:flex font-semibold">
+      <a href="#demo" class="hover:text-pink-300 transition">Demo</a>
+      <a href="#explore" class="hover:text-pink-300 transition">Explore</a>
+      <a href="#contact" class="hover:text-pink-300 transition">Contact</a>
     </nav>
-    <button id="hamburger" class="md:hidden text-2xl text-pink-600">&#9776;</button>
-  </div>
-  <div id="mobile-menu" class="max-h-0 overflow-hidden transition-[max-height] duration-500 md:hidden text-center space-y-2">
-    <a href="#demo" class="block hover:text-pink-500">Demo</a>
-    <a href="#features" class="block hover:text-pink-500">Fonctionnalités</a>
-    <a href="#contact" class="block hover:text-pink-500">Contact</a>
   </div>
 </header>
 
-<main class="pt-28">
+<main class="pt-28 relative z-10">
 
-<!-- HERO -->
-<section class="text-center py-24 px-6 bg-gradient-to-b from-pink-200 to-white">
-  <h1 class="text-5xl font-bold text-pink-700 mb-4">Découvrez Tessy’s Beauty AI</h1>
-  <p class="text-gray-700 mb-8 text-lg md:text-xl max-w-3xl mx-auto">
-    Une plateforme intelligente pour recommander les meilleurs professionnels et formations beauté selon vos besoins.
-  </p>
-  <a href="#demo" class="px-8 py-3 bg-pink-600 text-white font-semibold rounded-none shadow hover:bg-pink-700 transition">
-    Lancer la démo
-  </a>
-</section>
-
-<!-- DEMO INTERACTIF -->
-<section id="demo" class="py-20 px-6 bg-white">
-  <div class="max-w-5xl mx-auto text-center">
-    <h2 class="text-4xl text-pink-700 font-bold mb-6">Démo AI Interactive</h2>
-    <p class="text-gray-700 mb-8">Simulez vos recommandations beauté personnalisées.</p>
-
-    <!-- FORM -->
-    <div class="flex flex-col md:flex-row gap-4 justify-center mb-6">
-      <input id="userType" type="text" placeholder="Votre type de peau / objectif..." 
-        class="border border-gray-300 px-4 py-2 w-full md:w-1/3 rounded-none focus:outline-pink-500">
-      <select id="experienceLevel" class="border border-gray-300 px-4 py-2 w-full md:w-1/3 rounded-none focus:outline-pink-500">
-        <option value="">Niveau d'expérience</option>
-        <option value="debutant">Débutant</option>
-        <option value="intermediaire">Intermédiaire</option>
-        <option value="avance">Avancé</option>
-      </select>
-      <button id="runDemo" class="px-6 py-2 bg-pink-600 text-white font-semibold rounded-none shadow hover:bg-pink-700 transition">
-        Obtenir recommandations
-      </button>
-    </div>
-
-    <!-- RESULTATS -->
-    <div id="results" class="grid md:grid-cols-3 gap-6 mt-8"></div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section id="features" class="py-20 px-6 bg-pink-50">
-  <div class="max-w-6xl mx-auto text-center">
-    <h2 class="text-4xl text-pink-700 font-bold mb-12">Fonctionnalités clés</h2>
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="bg-white p-6 shadow rounded-none">
-        <h3 class="text-xl font-semibold text-pink-700 mb-2">Recommandations IA</h3>
-        <p>Suggestions personnalisées basées sur votre profil et vos besoins beauté.</p>
-      </div>
-      <div class="bg-white p-6 shadow rounded-none">
-        <h3 class="text-xl font-semibold text-pink-700 mb-2">Formation adaptée</h3>
-        <p>Accès à des cours ciblés selon votre niveau et objectif.</p>
-      </div>
-      <div class="bg-white p-6 shadow rounded-none">
-        <h3 class="text-xl font-semibold text-pink-700 mb-2">Réservation facile</h3>
-        <p>Réservez vos professionnels de beauté directement depuis la plateforme.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" class="py-20 px-6 bg-white">
-  <div class="max-w-4xl mx-auto text-center">
-    <h2 class="text-4xl text-pink-700 font-bold mb-6">Contactez-nous</h2>
-    <p class="text-gray-700 mb-6">Pour plus d’informations ou partenariats.</p>
-    <input type="email" placeholder="Votre email" class="border border-gray-300 px-4 py-2 w-full md:w-1/2 rounded-none focus:outline-pink-500 mb-4">
-    <textarea placeholder="Votre message" class="border border-gray-300 px-4 py-2 w-full md:w-1/2 rounded-none focus:outline-pink-500 mb-4"></textarea>
-    <button class="px-6 py-2 bg-pink-600 text-white font-semibold rounded-none shadow hover:bg-pink-700 transition">
-      Envoyer
+  <!-- HERO -->
+  <section class="text-center py-32 px-6">
+    <h1 class="text-5xl font-bold mb-6">Découvrez Tessy’s Beauty AI</h1>
+    <p class="text-xl mb-8">Votre assistant IA pour trouver les meilleurs professionnels de beauté, avec recommandations personnalisées en temps réel.</p>
+    <button id="getAI" class="px-8 py-3 bg-pink-600 hover:bg-pink-700 rounded-none font-semibold shadow-lg transition transform hover:scale-105">
+      Obtenir recommandations
     </button>
-  </div>
-</section>
+    <p id="aiLoader" class="mt-6 text-pink-400 text-lg italic hidden typing">Tessy’s AI réfléchit...</p>
+  </section>
+
+  <!-- DEMO CARDS -->
+  <section id="demo" class="max-w-6xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 gap-8 px-6 mb-32">
+    <div class="bg-white/20 backdrop-blur-md rounded-none p-6 shadow-lg border border-white/30 text-center hover:scale-105 transition transform">
+      <img src="https://i.ibb.co/D0pjZ1r/Makeup-On-Demand-TBM.jpg" class="w-full h-48 object-cover mb-4 rounded-none">
+      <h4 class="text-lg font-semibold text-pink-400 mb-1">Marie L.</h4>
+      <p>Maquillage professionnel</p>
+    </div>
+    <div class="bg-white/20 backdrop-blur-md rounded-none p-6 shadow-lg border border-white/30 text-center hover:scale-105 transition transform">
+      <img src="https://i.ibb.co/fwT1ktB/Skin-Care-Products.jpg" class="w-full h-48 object-cover mb-4 rounded-none">
+      <h4 class="text-lg font-semibold text-pink-400 mb-1">Sophie J.</h4>
+      <p>Soins esthétiques</p>
+    </div>
+    <div class="bg-white/20 backdrop-blur-md rounded-none p-6 shadow-lg border border-white/30 text-center hover:scale-105 transition transform">
+      <img src="https://i.ibb.co/z0b0LrZ/Hair-Care-Products.jpg" class="w-full h-48 object-cover mb-4 rounded-none">
+      <h4 class="text-lg font-semibold text-pink-400 mb-1">Angela K.</h4>
+      <p>Cosmétique & cheveux</p>
+    </div>
+  </section>
 
 </main>
 
 <!-- FOOTER -->
-<footer class="bg-pink-600 text-white text-center py-6">
-  <p>© 2025 Tessy’s Beauty AI Demo</p>
+<footer class="bg-black/60 text-white text-center py-6 relative z-10">
+  <p class="text-sm">© 2026 Tessy’s Beauty AI – Demo Futurist</p>
 </footer>
 
-<!-- JS Demo AI -->
+<!-- JS -->
 <script>
-  const runDemo = document.getElementById('runDemo');
-  const results = document.getElementById('results');
+  const getAI = document.getElementById('getAI');
+  const aiLoader = document.getElementById('aiLoader');
 
-  runDemo.addEventListener('click', () => {
-    const type = document.getElementById('userType').value.trim();
-    const level = document.getElementById('experienceLevel').value;
+  function showRecommendations() {
+    alert('🎉 Recommandations IA générées ! (Demo)');
+  }
 
-    if(!type || !level){
-      alert("Merci de remplir tous les champs !");
-      return;
-    }
+  getAI.addEventListener('click', () => {
+    aiLoader.classList.remove('hidden');
+    setTimeout(() => {
+      aiLoader.classList.add('hidden');
+      showRecommendations();
+    }, 2000); // simulate AI thinking
+  });
 
-    // Simulated AI recommendation
-    const recommendations = [
-      {name:"Marie L.", job:"Maquillage professionnel", image:"https://i.ibb.co/D0pjZ1r/Makeup-On-Demand-TBM.jpg"},
-      {name:"Sophie J.", job:"Soins esthétiques", image:"https://i.ibb.co/fwT1ktB/Skin-Care-Products.jpg"},
-      {name:"Angela K.", job:"Cosmétique & cheveux", image:"https://i.ibb.co/z0b0LrZ/Hair-Care-Products.jpg"}
-    ];
-
-    results.innerHTML = "";
-    recommendations.forEach(r => {
-      const card = document.createElement('div');
-      card.className = "bg-white shadow rounded-none p-4 text-center";
-      card.innerHTML = `
-        <img src="${r.image}" class="w-full h-48 object-cover mb-2 rounded-none">
-        <h4 class="font-semibold text-pink-700">${r.name}</h4>
-        <p class="text-gray-700">${r.job}</p>
-        <button class="mt-2 px-4 py-2 bg-pink-600 text-white rounded-none shadow hover:bg-pink-700 transition">
-          Voir profil
-        </button>
-      `;
-      results.appendChild(card);
+  // Simple particles effect
+  const canvas = document.getElementById('particles-js');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const particles = [];
+  for (let i = 0; i < 80; i++) {
+    particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2+1, dx: Math.random()*0.5-0.25, dy: Math.random()*0.5-0.25 });
+  }
+  function animate() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,200,255,0.6)';
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if(p.x<0||p.x>canvas.width) p.dx*=-1;
+      if(p.y<0||p.y>canvas.height) p.dy*=-1;
     });
-  });
-
-  // Mobile menu toggle
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
-  hamburger.addEventListener('click', () => {
-    mobileMenu.style.maxHeight = mobileMenu.style.maxHeight === "500px" ? "0" : "500px";
-  });
+    requestAnimationFrame(animate);
+  }
+  animate();
 </script>
 
 </body>
