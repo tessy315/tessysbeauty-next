@@ -116,14 +116,55 @@ button:hover, .whatsapp-btn:hover {
 
 <!-- Hero -->
 <main id="home" class="page-section relative">
-  <canvas id="hero-particles"></canvas>
-  <div class="relative z-10 bg-white/40 backdrop-blur-sm p-6 md:p-10 max-w-2xl shadow-lg">
-    <h1 id="hero-title" class="text-5xl md:text-6xl text-pink-700 mb-4 drop-shadow-sm" style="font-family: 'Great Vibes', cursive;"></h1>
-    <p class="text-gray-800 text-lg md:text-xl tracking-tight" style="font-family: 'Nunito', sans-serif;">
-      Découvrez Tessy's Beauty AI : votre beauté, guidée par l’intelligence artificielle.
-    </p>
-    <button onclick="window.location.href='/academy.html'" class="px-6 py-3 bg-pink-600 text-white rounded-none shadow">Visiter Notre Academie</button>
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white">
+
+  <!-- Animated Glow Background -->
+  <div class="absolute w-[600px] h-[600px] bg-pink-500/30 blur-[120px] rounded-full top-[-200px] left-[-200px] animate-pulse"></div>
+  <div class="absolute w-[500px] h-[500px] bg-purple-500/30 blur-[120px] rounded-full bottom-[-200px] right-[-200px] animate-pulse"></div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+
+    <!-- LEFT CONTENT -->
+    <div>
+      <h1 class="text-5xl md:text-6xl font-bold leading-tight">
+        <span class="text-pink-400">Tessy’s Beauty AI</span><br>
+        Beauty Powered by Intelligence
+      </h1>
+
+      <p class="mt-6 text-lg text-gray-300">
+        La première plateforme beauté intelligente en Haïti combinant
+        formation, services, e-commerce et intelligence artificielle.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="/tessysai.html"
+           class="px-6 py-3 bg-pink-500 hover:bg-pink-600 transition duration-300 shadow-[0_0_20px_rgba(255,105,180,0.6)]">
+           Explore AI
+        </a>
+
+        <a href="/academy.html"
+           class="px-6 py-3 border border-pink-400 hover:bg-pink-400/10 transition duration-300">
+           Join Academy
+        </a>
+
+        <a href="https://tessys-beauty-shop.myshopify.com/"
+           class="px-6 py-3 border border-white/30 hover:border-white transition duration-300">
+           Shop Products
+        </a>
+      </div>
+    </div>
+
+    <!-- RIGHT VISUAL -->
+    <div class="relative flex justify-center">
+      <div class="relative w-[350px] h-[350px] border border-pink-400/30">
+        <img src="https://i.ibb.co/CKCRJMnk/tessysbeauty-AI.png"
+             class="w-full h-full object-cover opacity-80">
+        <div class="absolute inset-0 border border-pink-500/40 animate-pulse"></div>
+      </div>
+    </div>
+
   </div>
+</section>
 </main>
 
 <!-- Services, Slides, About, Contact, Footer -->
