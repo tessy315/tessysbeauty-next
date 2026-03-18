@@ -32,16 +32,6 @@ if(menuBtn && mobileMenu){
   });
 }
 
-// ========================
-// MOBILE DETAILS TOGGLE (optional enhancement)
-// ========================
-document.querySelectorAll("#mobileMenu details").forEach(detail => {
-  const summary = detail.querySelector("summary");
-  summary.addEventListener("click", e => {
-    // toggle open state
-    detail.open = !detail.open;
-  });
-});
 
 // ========================
 // COUNTER ANIMATION
