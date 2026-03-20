@@ -368,3 +368,82 @@ setTimeout(() => {
   });
 
 }, 400);
+
+const track = document.getElementById("academySliderTrack");
+const cards = document.querySelectorAll("#academySliderTrack a");
+const progressContainer = document.getElementById("academyProgress");
+
+let currentIndex = 0;
+let visibleCards = getVisibleCards();
+let totalSlides = Math.ceil(cards.length / visibleCards);
+
+// DETECT SCREEN SIZE
+function getVisibleCards() {
+  if (window.innerWidth < 640) return 1;     // mobile
+  if (window.innerWidth < 1024) return 2;    // tablet
+  return 3;                                  // desktop
+}
+
+// CREATE SEGMENTS
+function createSegments() {
+  progressContainer.innerHTML = "";
+  totalSlides = Math.ceil(cards.length / visibleCards);
+
+  for (let i = 0; i < totalSlides; i++) {
+    const seg = document.createElement("div");
+    seg.classList.add("segment");
+
+    seg.addEventListener("click", () => {
+      currentIndex = i;
+      updateSlider();
+      resetAutoSlide();
+    });
+
+    progressContainer.appendChild(seg);
+  }
+}
+
+// UPDATE SLIDER
+function updateSlider() {
+  const cardWidth = cards[0].offsetWidth;
+  const gap = 16; // px-2 + px-2 ≈ gap
+  const offset = -(currentIndex * (cardWidth * visibleCards));
+
+  track.style.transform = `translateX(${offset}px)`;
+
+  const segments = document.querySelectorAll("#academyProgress .segment");
+  segments.forEach((seg, index) => {
+    seg.classList.toggle("active", index === currentIndex);
+  });
+}
+
+// AUTO SLIDE
+let autoSlide = setInterval(nextSlide, 4000);
+
+function nextSlide() {
+  currentIndex = (currentIndex + 1) % totalSlides;
+  updateSlider();
+}
+
+function resetAutoSlide() {
+  clearInterval(autoSlide);
+  autoSlide = setInterval(nextSlide, 4000);
+}
+
+// PAUSE ON HOVER
+cards.forEach(card => {
+  card.addEventListener("mouseenter", () => clearInterval(autoSlide));
+  card.addEventListener("mouseleave", () => resetAutoSlide());
+});
+
+// HANDLE RESIZE 🔥
+window.addEventListener("resize", () => {
+  visibleCards = getVisibleCards();
+  currentIndex = 0;
+  createSegments();
+  updateSlider();
+});
+
+// INIT
+createSegments();
+updateSlider();
