@@ -35,20 +35,25 @@ if(menuBtn && mobileMenu){
 // ========================
 // SEARCH BAR
 // ========================
-const openSearch = document.getElementById("openSearch");
-const closeSearch = document.getElementById("closeSearch");
-const searchBar = document.getElementById("searchBar");
 
-openSearch.addEventListener("click", () => {
+const openBtn = document.getElementById("openSearchDesktop");
+const closeBtn = document.getElementById("closeSearchDesktop");
+const searchBar = document.getElementById("searchBarDesktop");
+const nav = document.getElementById("mainNav");
+
+openBtn.addEventListener("click", () => {
+  nav.classList.add("opacity-0");
   searchBar.classList.remove("opacity-0", "pointer-events-none");
   searchBar.classList.add("opacity-100");
   searchBar.querySelector("input").focus();
 });
 
-closeSearch.addEventListener("click", () => {
+closeBtn.addEventListener("click", () => {
+  nav.classList.remove("opacity-0");
   searchBar.classList.add("opacity-0", "pointer-events-none");
   searchBar.classList.remove("opacity-100");
 });
+
 
 
 // ========================
