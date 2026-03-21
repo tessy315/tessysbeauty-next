@@ -1,4 +1,72 @@
 // ========================
+// SEARCH DATA
+// ========================
+const searchData = [
+  { name: "Home", url: "/" },
+  { name: "Analyzer", url: "/tessysai.html" },
+  { name: "Academy", url: "/academy.html" },
+  { name: "TessyPro", url: "/tessypro.html" },
+  { name: "Tessy's Shop", url: "https://tessys-beauty-shop.myshopify.com/" },
+  { name: "Blog", url: "#" },
+  { name: "Forum", url: "#" },
+  { name: "TessyChat", url: "#" },
+];
+
+// ========================
+// LOCAL SEARCH SYSTEM
+// ========================
+const searchInput = document.querySelector("#searchBarDesktop input");
+const resultsContainer = document.getElementById("searchResults");
+
+if (searchInput && resultsContainer) {
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase().trim();
+
+    resultsContainer.innerHTML = "";
+
+    if (query === "") {
+      resultsContainer.classList.add("hidden");
+      return;
+    }
+
+    const filtered = searchData.filter(item =>
+      item.name.toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+      resultsContainer.innerHTML = `<div class="p-3 text-sm text-gray-500">No results found</div>`;
+      resultsContainer.classList.remove("hidden");
+      return;
+    }
+
+    filtered.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "p-3 hover:bg-pink-50 cursor-pointer text-sm";
+
+      div.innerText = item.name;
+
+      div.addEventListener("click", () => {
+        window.location.href = item.url;
+      });
+
+      resultsContainer.appendChild(div);
+    });
+
+    resultsContainer.classList.remove("hidden");
+  });
+
+  // Hide results when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+      resultsContainer.classList.add("hidden");
+    }
+  });
+
+}
+
+
+// ========================
 // HEADER DROPDOWN (DESKTOP)
 // ========================
 document.querySelectorAll(".dropdown").forEach(dropdown => {
