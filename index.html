@@ -29,7 +29,26 @@
       Tessy’s Beauty AI
     </div>
 
- 
+ <!-- SEARCH BAR FULL WIDTH -->
+<div id="searchBar" class="fixed inset-0 bg-white/95 backdrop-blur-xl flex items-center px-4 md:px-8 opacity-0 pointer-events-none transition duration-300 z-50">
+
+  <div class="w-full flex items-center gap-3 border-b border-pink-300 pb-2">
+
+    <!-- INPUT -->
+    <input 
+      type="text" 
+      placeholder="Search anything..." 
+      class="w-full bg-transparent outline-none text-base md:text-lg text-gray-800 placeholder-gray-500"
+    >
+
+    <!-- CLOSE BUTTON -->
+    <button id="closeSearch" class="text-xl text-gray-800 hover:text-pink-400">
+      ✕
+    </button>
+
+  </div>
+
+</div>
 <!-- DESKTOP NAV -->
 <nav class="hidden lg:flex items-center space-x-8 text-gray-800 relative">
 
@@ -153,7 +172,7 @@
     <div class="flex items-center gap-6">
 
     <!-- SEARCH ICON -->
-<button class="text-gray-800 hover:text-pink-400 transition">
+<button id="openSearch" class="text-gray-800 hover:text-pink-400 transition">
   <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
     <circle cx="11" cy="11" r="8"></circle>
     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
