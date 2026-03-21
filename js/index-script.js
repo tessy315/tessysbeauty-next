@@ -32,6 +32,24 @@ if(menuBtn && mobileMenu){
   });
 }
 
+// ========================
+// SEARCH BAR
+// ========================
+const openSearch = document.getElementById("openSearch");
+const closeSearch = document.getElementById("closeSearch");
+const searchBar = document.getElementById("searchBar");
+
+openSearch.addEventListener("click", () => {
+  searchBar.classList.remove("opacity-0", "pointer-events-none");
+  searchBar.classList.add("opacity-100");
+  searchBar.querySelector("input").focus();
+});
+
+closeSearch.addEventListener("click", () => {
+  searchBar.classList.add("opacity-0", "pointer-events-none");
+  searchBar.classList.remove("opacity-100");
+});
+
 
 // ========================
 // COUNTER ANIMATION
