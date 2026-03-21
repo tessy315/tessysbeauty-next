@@ -149,7 +149,7 @@
 
 </nav>
 <!-- SEARCH BAR (HIDDEN INITIALLY) -->
-  <div id="searchBarDesktop" class="absolute left-0 top-0 w-full h-full flex items-center bg-white/90 
+  <div id="searchBarDesktop" class="absolute inset-0 h-full flex items-center bg-white/90 
     backdrop-blur-xl px-4 opacity-0 pointer-events-none transition duration-300 border border-pink-300 shadow-[0_0_15px_rgba(236,72,153,0.25)] 
     focus-within:border-pink-400 focus-within:shadow-[0_0_20px_rgba(236,72,153,0.4)]">
 
@@ -158,12 +158,15 @@
       placeholder="Search anything..." 
       class="w-full bg-transparent outline-none text-gray-800 text-sm focus:ring-0"
     >
-    <div id="searchResults" class="absolute top-full left-0 w-full bg-white mt-2 rounded-none overflow-hidden 
-      hidden border border-pink-300 shadow-[0_10px_25px_rgba(236,72,153,0.2)]">
-
-    <button id="closeSearchDesktop" class="ml-4 text-gray-800 hover:text-pink-400">
-      ✕
-    </button>
+    <!-- CLOSE BUTTON -->
+  <button id="closeSearchDesktop" class="ml-3 text-gray-800 hover:text-pink-400 text-lg">
+    ✕
+  </button>
+  <!-- RESULTS -->
+  <div id="searchResults" class="absolute top-full left-0 w-full bg-white mt-2 hidden 
+    border border-pink-300 shadow-[0_10px_25px_rgba(236,72,153,0.2)]">
+  </div>
+    
 
   </div>
 
@@ -805,12 +808,13 @@
         <!-- Video -->
         <div class="aspect-video relative">
           <iframe
-            class="w-full h-full"
-            src="https://www.youtube.com/embed/VIDEO_ID"
-            title="Testimonial"
-            frameborder="0"
-            allowfullscreen>
-          </iframe>
+  class="w-full h-full"
+  src="https://www.youtube.com/embed/Xv1mEbkpyzc"
+  title="Testimonial"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen>
+</iframe>
 
           <!-- Play overlay -->
           <div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition">
