@@ -538,3 +538,30 @@ window.addEventListener("resize", () => {
 // INIT
 createSegments();
 updateSlider();
+
+// ========================
+// YOUTUBE IFRAME
+// ========================
+  let player;
+
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('ytPlayer');
+  }
+
+  const container = document.querySelector('.group');
+
+  // Hover → aktive son
+  container.addEventListener('mouseenter', () => {
+    if (player) player.unMute();
+  });
+
+  // Lè li kite → remute
+  container.addEventListener('mouseleave', () => {
+    if (player) player.mute();
+  });
+
+  // Click → aktive son tou (mobile friendly)
+  container.addEventListener('click', () => {
+    if (player) player.unMute();
+  });
+
