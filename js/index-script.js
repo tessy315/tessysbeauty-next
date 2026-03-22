@@ -429,37 +429,43 @@ setTimeout(() => {
   const closeBtn = document.getElementById("closeModal");
 
   const ecoData = {
-  "AI LAB🌸": {
+  "AI LAB": {
     title: "Advanced AI-powered beauty diagnostics.",
     subtitle: "Unlock smarter beauty insights. Make confident decisions. Elevate every result."
   },
   
-  "ACADEMY🎓": {
+  "ACADEMY": {
     title: "Structured beauty education for real-world skills.",
     subtitle: "Learn in-demand skills. Build your expertise. Create your own opportunities."
   },
   
-  "TESSYPRO💼": {
+  "TESSYPRO": {
     title: "Grow your freelance beauty business.",
     subtitle: "Turn your talent into income. Build your visibility. Scale without limits."
   },
   
-  "SHOP🛍️": {
+  "SHOP": {
     title: "Curated beauty products, all in one place.",
     subtitle: "Discover trusted products. Shop with confidence. Enhance every experience."
   }
 };
 
-  document.querySelectorAll(".eco-card").forEach(card => {
-    card.addEventListener("click", () => {
-      const name = card.innerText.trim();
-      if (!ecoData[name]) return;
+ document.querySelectorAll(".eco-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const name = card.innerText.trim();
+    const data = ecoData[name];
+    if (!data) return;
 
-      modalTitle.innerText = name;
-      modalText.innerText = ecoData[name];
-      modal.classList.add("active");
-    });
+    modalTitle.innerText = name;
+
+    modalText.innerHTML = `
+      <strong class="block mb-2 text-gray-800">${data.title}</strong>
+      <span>${data.subtitle}</span>
+    `;
+
+    modal.classList.add("active");
   });
+});
 
   if (closeBtn) {
     closeBtn.onclick = () => modal.classList.remove("active");
