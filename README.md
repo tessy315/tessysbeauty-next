@@ -3,7 +3,7 @@ Tessy’s Beauty & More — GitHub README
 
 Tessy’s Beauty & More est un écosystème digital complet combinant :
 
-Tessy’s Beauty Academy : plateforme de formation en ligne pour acquérir des compétences monétisables
+Tessy’s Beauty Academy : plateforme de formation en ligne et en présentiel pour acquérir des compétences monétisables
 
 TessyPro : plateforme freelance pour générer des opportunités économiques
 
@@ -21,7 +21,7 @@ Infrastructure / Cloud : Cloudflare
 
 Versioning / Collaboration : GitHub
 
-AI-ready : Python (prévu pour intégration future)
+AI-ready : API ChatGPT, Python (prévu pour intégration future)
 
 E-commerce : Shopify Liquid
 
