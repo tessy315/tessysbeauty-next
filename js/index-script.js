@@ -429,11 +429,26 @@ setTimeout(() => {
   const closeBtn = document.getElementById("closeModal");
 
   const ecoData = {
-    "AI LAB": "Advanced beauty diagnostics powered by AI.",
-    "ACADEMY": "Learn beauty skills with structured courses.",
-    "TESSYPRO": "Grow your freelance beauty business.",
-    "SHOP": "Access curated beauty products."
-  };
+  "AI LAB🌸": {
+    title: "Advanced AI-powered beauty diagnostics.",
+    subtitle: "Unlock smarter beauty insights. Make confident decisions. Elevate every result."
+  },
+  
+  "ACADEMY🎓": {
+    title: "Structured beauty education for real-world skills.",
+    subtitle: "Learn in-demand skills. Build your expertise. Create your own opportunities."
+  },
+  
+  "TESSYPRO💼": {
+    title: "Grow your freelance beauty business.",
+    subtitle: "Turn your talent into income. Build your visibility. Scale without limits."
+  },
+  
+  "SHOP🛍️": {
+    title: "Curated beauty products, all in one place.",
+    subtitle: "Discover trusted products. Shop with confidence. Enhance every experience."
+  }
+};
 
   document.querySelectorAll(".eco-card").forEach(card => {
     card.addEventListener("click", () => {
