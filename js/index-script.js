@@ -106,20 +106,27 @@ if(menuBtn && mobileMenu){
 
 const openBtn = document.getElementById("openSearchDesktop");
 const closeBtn = document.getElementById("closeSearchDesktop");
-const searchBar = document.getElementById("searchBarDesktop");
-const nav = document.getElementById("mainNav");
+const desktopSearch = document.getElementById("searchBarDesktop");
+
+const mobileSearch = document.getElementById("searchBarMobile");
+const closeMobileSearch = document.getElementById("closeSearchMobile");
 
 openBtn.addEventListener("click", () => {
-  nav.classList.add("opacity-0");
-  searchBar.classList.remove("opacity-0", "pointer-events-none");
-  searchBar.classList.add("opacity-100");
-  searchBar.querySelector("input").focus();
+  if (window.innerWidth < 1024) {
+    mobileSearch.classList.remove("hidden");
+  } else {
+    desktopSearch.classList.remove("opacity-0", "pointer-events-none");
+    desktopSearch.classList.add("opacity-100", "pointer-events-auto");
+  }
 });
 
 closeBtn.addEventListener("click", () => {
-  nav.classList.remove("opacity-0");
-  searchBar.classList.add("opacity-0", "pointer-events-none");
-  searchBar.classList.remove("opacity-100");
+  desktopSearch.classList.add("opacity-0", "pointer-events-none");
+  desktopSearch.classList.remove("opacity-100", "pointer-events-auto");
+});
+
+closeMobileSearch.addEventListener("click", () => {
+  mobileSearch.classList.add("hidden");
 });
 
 
